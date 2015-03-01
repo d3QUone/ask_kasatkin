@@ -11,12 +11,13 @@ def index_page(request):
     data = {}
     data["popular_tags"] = []
     append = data["popular_tags"].append
-    demo_pop_tags = ["Python", "MySQL", "Ruby", "apple", "iOS", "swift", "django", "php", "flask",
+    demo_pop_tags = ["Technopark", "Baumanka", "C", "Python", "MySQL", "Ruby", "apple", "iOS", "swift", "django", "php", "flask",
                      "objective-c", "Ubuntu-server", "VPS", "Coffee Script", "sudo"]
     demo_labels = ["label label-default", "label label-primary", "label label-success",
                    "label label-info", "label label-warning", "label label-danger"]
     for tag in demo_pop_tags:
         append({"text": tag, "label": demo_labels[randint(0, len(demo_labels)-1)]})
+    data["popular_users"] = ["Vasya Pupkin", "accl_9912_xz", "Dart Vader", "ggl.cm"]
     data["questions"] = []
     # make sure the user is logged
     if request.user.is_authenticated():

@@ -3,7 +3,6 @@
 
 {% block title %}Ask-Kasatkin Main Page{% endblock %}
 
-<!-- do if_logged-stuff on backend side -->
 {% block header %}
     <div class="container-fluid">
     {% if not personal %}
@@ -11,10 +10,10 @@
         &nbsp;
         <a href="{% url 'core:home' %}" style="text-decoration: underline;" class="btn btn-primary">Log in</a>
     {% else %}
-        <div class="col-xs-4">
+        <div class="col-xs-3">
             <img class="img-rounded" style="height: 35px;" src="{% static 'core' %}/{{ personal.avatar }}"><br>
         </div>
-        <div class="col-xs-8">
+        <div class="col-xs-9">
             {{ personal.nickname }}
             <br>
             <a href="settings">Settings</a>
@@ -25,23 +24,21 @@
     </div>
 {% endblock %}
 
-
 {% block content %}
     <div class="container-fluid">
     {% for item in questions %}
-        <div class="row" style="box-shadow: 0 0 1px black; padding: 3px 12px 3px 12px;">
-            <div class="col-xs-3">
-                <img class="img-rounded" style="height: 80px;" src="{% static 'core' %}/{{ item.avatar }}"><br>
+        <div class="row" style="box-shadow: 0 0 1px black; padding: 3px 3px 3px 3px;">
+            <div class="col-xs-2" style="margin-bottom: 3px; padding-left: 4%;">
+                <img class="img-rounded" style="height: 80px; margin-top: 3px;" src="{% static 'core' %}/{{ item.avatar }}"><br>
                 <strong>Rating: {{ item.rating }}</strong><br>
                 <!-- use JQuery to like -->
-                <a href="" class="btn btn-success btn-sm">Up</a>
-                <a href="" class="btn btn-danger btn-sm">Down</a>
+                <a href="" class="btn btn-success btn-sm" style="width: 30px;">+</a>
+                <a href="" class="btn btn-danger btn-sm" style="width: 30px;">-</a>
             </div>
-            <div class="col-xs-9" style="position: relative;">
+            <div class="col-xs-10" style="position: relative;">
                 <p><a href="{{ item.link }}" style="text-decoration: underline;"><strong>{{ item.title }}</strong></a></p>
                 <p>{{ item.text }}</p>
-
-                <div style="position: relative; bottom: 0px;">
+                <div style="position: relative; bottom: 3px;">
                 {%  if item.tags %}
                     <strong>Tags: </strong>
                     {% for tag in item.tags %}
@@ -57,13 +54,10 @@
     </div>
 {% endblock %}
 
-
 {% block pagination %}
-
 {% endblock %}
 
-
-{% block scripts %}
+{#% block scripts %#}
 <!-- move to popup with JS
         <form class="form-inline" style="display: none;">
             <div class="form-group">
@@ -74,4 +68,4 @@
             </div>
             <button type="submit" class="btn btn-default">Login</button>
         </form> -->
-{% endblock %}
+{#% endblock %#}

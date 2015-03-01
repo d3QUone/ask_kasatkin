@@ -41,16 +41,16 @@
             <!-- RIGHT COLUMN: (tags + best members), the same for all cases -->
             <!-- + all tags are links to search-by-tag -->
             <p><h4>Popular Tags:</h4></p>
-            {% for tag in popular_tags %}<span class="{{ tag.label }}">{{ tag.text }}</span>
+            {% for tag in popular_tags %}<a href="/search_by_tag_method?tag={{ tag.text }}"><span class="{{ tag.label }}">{{ tag.text }}</span></a>
             {% endfor %}
             <br>
             <hr>
             {% if popular_users %}
-                <p><h4>Popular Users:</h4></p>
+                <p><h4>Best Members:</h4></p>
                 {% for pop_user in popular_users %}<p><span style="text-decoration: underline;">{{ pop_user }}</span></p>
                 {%  endfor %}
             {% else %}
-                <p>No popular user yet</p>
+                <p>No best members yet</p>
             {% endif %}
         </div>
     </div>

@@ -1,5 +1,5 @@
+# coding:utf8
 from django.db import models
-
 
 # the user :)
 class the_user(models.Model):

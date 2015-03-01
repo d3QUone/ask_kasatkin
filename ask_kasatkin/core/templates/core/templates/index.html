@@ -1,15 +1,16 @@
 {% extends "core/templates/base.html" %}
+{% load staticfiles %}
 
 {% block title %}Ask-Kasatkin Main Page{% endblock %}
 
 <!-- do if_logged-stuff on backend side -->
 {% block header %}
     <div class="navbar-form navbar-right">
-    {% if not logged %}
+    {% if not personal %}
         <!-- return 2 links ... service.views.register -->
-        <a href="{% url 'core:register' %}" style="text-decoration: underline;">Register</a>
+        <a href="{% url 'core:home' %}" style="text-decoration: underline;">Register</a>
         or
-        <a href=" login_page_link "><u>Log in</u></a>
+        <a href="..login_page_link " style="text-decoration: underline;">Log in</a>
         
         <!-- move to popup with JS -->
         <form class="form-inline" style="display: none;">
@@ -23,20 +24,28 @@
         </form>
     {% else %}
         Hi, logged man!
-        <!-- personal data here: ava, nick, settings-link, logout-link -->
+        <!-- personal data here: ava, nick, settings-link, logout-link-->
     {% endif %}
     </div>
 {% endblock %}
 
 
 {% block content %}
-    {% for item in quesions %}
+    <!--div class="container-fluid"-->
+    {% for item in questions %}
+        <div class="row-fluid" style="box-shadow: 0 0 1px black; padding: 3px 12px 3px 12px;">
+            <div class="col-xs-3">
+                <img src="{% static 'core' %}/{{ item.avatar }}">
+            </div>
+            <div class="col-xs-9">
+                <p><a href="{{ item.link }}"><strong>{{ item.title }}</strong></a></p>
 
-
-
+                {{ item.text }}
+            </div>
+        </div>
+        <br>
     {% endfor %}
 {% endblock %}
-
 
 
 {% block pagination %}

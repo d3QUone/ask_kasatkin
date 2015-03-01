@@ -1,13 +1,14 @@
+# coding:utf8
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.template import loader, RequestContext
 
-from random import randint
+from random import randint  # used in demo
 
 # -- main page methods:
 def index_page(request):
-    # demonstation
+    # ------- A STATIC DEMO -------
     data = {}
     data["popular_tags"] = []
     append = data["popular_tags"].append
@@ -18,13 +19,40 @@ def index_page(request):
     for tag in demo_pop_tags:
         append({"text": tag, "label": demo_labels[randint(0, len(demo_labels)-1)]})
     data["popular_users"] = ["Vasya Pupkin", "accl_9912_xz", "Dart Vader", "ggl.cm"]
-    data["questions"] = []
-    # make sure the user is logged
+    data["questions"] = [
+        {
+            "title": "how to make a pretty block with css?",
+            "text": "few text now to test",  # first 400 chars e.g
+            # "date": "28.02.15 ",  # no data in block, needed for sorting only
+            "rating": -1,
+            "answers": 1,  # contributed answers
+            "tags": ["CSS3", "HTML5"],
+
+            "author": "CSS_KILLER",
+            "avatar": "1335.jpg",
+
+            "link": "link_to_open_the_question_thread_by_ID_i_think"
+        },
+        {
+            "title": "what's wrong with my django-app urls?",
+            "text": "When you use a ModelForm, the call to is_valid() will perform these validation steps for all the fields that are included on the form. See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[:400] + "...",  # first 400 chars e.g
+            # "date": "28.02.15 ",  # no data in block, needed for sorting only
+            "rating": 3,
+            "answers": 2,  # contributed answers
+            "tags": ["Python", "Django", "MySQL"],  # 3 tags - MAX
+
+            "author": "Vladimir",
+            "avatar": "79.jpg",
+
+            "link": "link_to_open_the_question_thread_by_ID_i_think"
+        }
+    ]
+    # make sure the user is logged + load personal data
     if request.user.is_authenticated():
-        data["logged"] = True
-    else:
-        data["logged"] = False
-        # if not - render actually only the other page header
+        data["personal"] = {
+            "nickname": "Vladimir",
+            "avatar": "link...."
+        }
     return render(request, "core/templates/index.html", data)
 
 

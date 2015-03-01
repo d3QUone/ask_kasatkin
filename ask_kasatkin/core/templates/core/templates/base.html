@@ -7,21 +7,22 @@
 <title>{% block title %}{% endblock %}</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 </head>
-
 <body>
 <div class="container">
     <!-- STATIC HEADER-BLOCK -->
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container-fluid">
             <div class="row-fluid">
+                <div class="col-xs-2" style="margin-top: 4px;">
+                    <a href="{% url 'core:home' %}"><h4>Ask-Kasatkin<!--small>ответы на все вопросы</small--></h4></a>
+                </div>
+                <div class="col-xs-6">
+                    <form method="GET" action="/search" class="form-inline" style="margin-top: 8px;">
+                        <input name="request" type="search" class="form-control" placeholder="Find something" style="width: 75%;">
+                        <input type="sumbit" class="btn btn-primary" value="Search" title="Perform a search" style="width: 20%;">
+                    </form>
+                </div>
                 <div class="col-xs-4">
-                    <!-- + add link back -->
-                    <h4>Ask-Kasatkin<!--small>ответы на все вопросы</small--></h4>
-                </div>
-                <div class="col-xs-3">
-                    <!-- + add search field somewhere here, the same for all cases -->
-                </div>
-                <div class="col-xs-5">
                     {% block header %}{% endblock %}
                 </div>
             </div>
@@ -54,8 +55,6 @@
         </div>
     </div>
 </div>
-
-<!-- Latest compiled and minified JavaScript -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 {% block scripts %}{% endblock %}

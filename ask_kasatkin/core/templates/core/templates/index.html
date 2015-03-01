@@ -45,7 +45,8 @@
                         <a href="/search_by_tag_method?tag={{ tag }}" style="text-decoration: underline;">{{ tag }}</a>&nbsp;
                     {% endfor %}
                 {% endif %}
-                <strong>Asked:</strong> {{ item.author }}
+                <strong>Asked:</strong> {{ item.author }} &nbsp;&nbsp;
+                <a href="{{ item.link }}"><strong>Answer ({{ item.answers }})</strong></a>
                 </div>
             </div>
         </div>

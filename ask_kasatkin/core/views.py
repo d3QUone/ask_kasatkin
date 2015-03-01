@@ -43,6 +43,18 @@ def index_page(request):
 
             "author": "Vladimir",
             "avatar": "Vladimir.jpg"
+        },
+        {
+            "title": "long-long title test | "*7,
+            "link": "link_to_open_the_question_thread_by_ID_i_think",
+            "text": "See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[:400] + "...",  # first 400 chars e.g
+            # "date": "28.02.15 ",  # no data in block, needed for sorting only
+            "rating": 341550,
+            "answers": 200124,  # contributed answers
+            "tags": ["Long tags are rather cool but not in Bootstrap :)", "Testing tempate with big footer", "noSQL is here"],  # 3 tags - MAX
+
+            "author": "1335",
+            "avatar": "1335.jpg"
         }
     ]
     # make sure the user is logged + load personal data

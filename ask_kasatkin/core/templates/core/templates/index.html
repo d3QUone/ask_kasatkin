@@ -31,20 +31,34 @@
 
 
 {% block content %}
-    <!--div class="container-fluid"-->
+    <div class="container-fluid">
     {% for item in questions %}
-        <div class="row-fluid" style="box-shadow: 0 0 1px black; padding: 3px 12px 3px 12px;">
+        <div class="row" style="box-shadow: 0 0 1px black; padding: 3px 12px 3px 12px;">
             <div class="col-xs-3">
-                <img src="{% static 'core' %}/{{ item.avatar }}">
+                <img class="img-rounded" style="height: 80px;" src="{% static 'core' %}/{{ item.avatar }}"><br>
+                <strong>Rating: {{ item.rating }}</strong><br>
+                <!-- use JQuery to like -->
+                <a href="" class="btn btn-success btn-sm">Up</a>
+                <a href="" class="btn btn-danger btn-sm">Down</a>
             </div>
-            <div class="col-xs-9">
-                <p><a href="{{ item.link }}"><strong>{{ item.title }}</strong></a></p>
+            <div class="col-xs-9" style="position: relative;">
+                <p><a href="{{ item.link }}" style="text-decoration: underline;"><strong>{{ item.title }}</strong></a></p>
+                <p>{{ item.text }}</p>
 
-                {{ item.text }}
+                <div style="position: relative; bottom: 0px;">
+                {%  if item.tags %}
+                    <strong>Tags: </strong>
+                    {% for tag in item.tags %}
+                        <a href="/search_by_tag_method?tag={{ tag }}" style="text-decoration: underline;">{{ tag }}</a>&nbsp;
+                    {% endfor %}
+                {% endif %}
+                <strong>Asked:</strong> {{ item.author }}
+                </div>
             </div>
         </div>
         <br>
     {% endfor %}
+    </div>
 {% endblock %}
 
 

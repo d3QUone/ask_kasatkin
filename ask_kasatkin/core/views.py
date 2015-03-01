@@ -22,6 +22,7 @@ def index_page(request):
     data["questions"] = [
         {
             "title": "how to make a pretty block with css?",
+            "link": "link_to_open_the_question_thread_by_ID_i_think",
             "text": "few text now to test",  # first 400 chars e.g
             # "date": "28.02.15 ",  # no data in block, needed for sorting only
             "rating": -1,
@@ -29,12 +30,11 @@ def index_page(request):
             "tags": ["CSS3", "HTML5"],
 
             "author": "CSS_KILLER",
-            "avatar": "CSS_KILLER.jpg", # img = author + '.jpg'
-
-            "link": "link_to_open_the_question_thread_by_ID_i_think"
+            "avatar": "CSS_KILLER.jpg"  # img = author + '.jpg'
         },
         {
             "title": "what's wrong with my django-app urls?",
+            "link": "link_to_open_the_question_thread_by_ID_i_think",
             "text": "When you use a ModelForm, the call to is_valid() will perform these validation steps for all the fields that are included on the form. See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[:400] + "...",  # first 400 chars e.g
             # "date": "28.02.15 ",  # no data in block, needed for sorting only
             "rating": 3,
@@ -42,9 +42,7 @@ def index_page(request):
             "tags": ["Python", "Django", "MySQL"],  # 3 tags - MAX
 
             "author": "Vladimir",
-            "avatar": "Vladimir.jpg",
-
-            "link": "link_to_open_the_question_thread_by_ID_i_think"
+            "avatar": "Vladimir.jpg"
         }
     ]
     # make sure the user is logged + load personal data

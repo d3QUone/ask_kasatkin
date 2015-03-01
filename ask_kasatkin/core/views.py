@@ -41,7 +41,16 @@ def register(request):
 
 def validate_registration(request):
     # - get data
-    # - check & save, redirect OR send an error msg
+    # - check & save
+    '''
+    login_ = request.POST['input_login']
+    nickname_ = request.POST['input_nickname']
+    email_ = request.POST['input_email']
+    password1_ = request.POST['input_password']
+    password2_ = request.POST['input_password_rep']
+    '''
+    # a) OK - create a new user, return main page
+    # b) send an error msg, return the same page
     return HttpResponse("render main page after successful registration")
 
 

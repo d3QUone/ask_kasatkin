@@ -10,15 +10,9 @@ from random import randint  # used in demo
 def index_page(request):
     # ------- A STATIC DEMO -------
     data = {}
-    data["popular_tags"] = []
-    append = data["popular_tags"].append
-    demo_pop_tags = ["Technopark", "Baumanka", "C", "Python", "MySQL", "Ruby", "apple", "iOS", "swift", "django", "php", "flask",
-                     "objective-c", "Ubuntu-server", "VPS", "Coffee Script", "sudo"]
-    demo_labels = ["label label-default", "label label-primary", "label label-success",
-                   "label label-info", "label label-warning", "label label-danger"]
-    for tag in demo_pop_tags:
-        append({"text": tag, "label": demo_labels[randint(0, len(demo_labels)-1)]})
-    data["popular_users"] = ["Vasya Pupkin", "accl_9912_xz", "Dart Vader", "ggl.cm"]
+    data["popular_tags"] = get_popular_tags()
+    data["popular_users"] = get_best_members()
+
     data["questions"] = [
         {
             "title": "how to make a pretty block with css?",
@@ -75,7 +69,10 @@ def log_in(request):
 
 # simple return
 def register(request):
-    return render(request, "core/templates/register.html")
+    data = {}
+    data["popular_tags"] = get_popular_tags()
+    data["popular_users"] = get_best_members()
+    return render(request, "core/templates/register.html", data)
 
 
 def validate_registration(request):
@@ -105,3 +102,29 @@ def self_settings(request):
     else:
         # can't be so, but who knows ....
         return HttpResponse("-redirect to te main page!")
+
+
+# future mockup
+def search(request):
+    return HttpResponse("JSON result ... ")
+
+
+
+# -- ALL METHODS CALL THIS! (static demo now)
+
+# returns popular tags from file ? cache
+def get_popular_tags():
+    res = []
+    append = res.append
+    demo_pop_tags = ["Technopark", "Baumanka", "C", "Python", "MySQL", "Ruby", "apple", "iOS", "swift", "django", "php", "flask",
+                     "objective-c", "Ubuntu-server", "VPS", "Coffee Script", "sudo"]
+    demo_labels = ["label label-default", "label label-primary", "label label-success",
+                   "label label-info", "label label-warning", "label label-danger"]
+    for tag in demo_pop_tags:
+        append({"text": tag, "label": demo_labels[randint(0, len(demo_labels)-1)]})
+    return res
+
+
+# returns best members from file ? cache
+def get_best_members():
+    return ["Vasya Pupkin", "accl_9912_xz", "Dart Vader", "ggl.cm"]

@@ -6,7 +6,7 @@
 {% block header %}
     <div class="container-fluid">
     {% if not personal %}
-        <a href="{% url 'core:home' %}" style="text-decoration: underline;" class="btn btn-primary">Register</a>
+        <a href="{% url 'core:register' %}" style="text-decoration: underline;" class="btn btn-primary">Register</a>
         &nbsp;
         <a href="{% url 'core:home' %}" style="text-decoration: underline;" class="btn btn-primary">Log in</a>
     {% else %}

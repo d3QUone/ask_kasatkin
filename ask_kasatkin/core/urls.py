@@ -6,6 +6,6 @@ from django.conf.urls.static import static
 
 urlpatterns = patterns('',
     url(r'^$', index_page, name='home'),
-    url(r'^register/$', register, name='register'),
-    url(r'^validate/$', validate_registration, name='validate'),
+    url(r'register/$', register, name='register'),
+    url(r'validate/$', validate_registration, name='validate'),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

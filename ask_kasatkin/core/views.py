@@ -29,7 +29,7 @@ def index_page(request):
             "tags": ["CSS3", "HTML5"],
 
             "author": "CSS_KILLER",
-            "avatar": "1335.jpg",
+            "avatar": "CSS_KILLER.jpg", # img = author + '.jpg'
 
             "link": "link_to_open_the_question_thread_by_ID_i_think"
         },
@@ -42,7 +42,7 @@ def index_page(request):
             "tags": ["Python", "Django", "MySQL"],  # 3 tags - MAX
 
             "author": "Vladimir",
-            "avatar": "79.jpg",
+            "avatar": "Vladimir.jpg",
 
             "link": "link_to_open_the_question_thread_by_ID_i_think"
         }

@@ -5,26 +5,22 @@
 
 <!-- do if_logged-stuff on backend side -->
 {% block header %}
-    <div class="navbar-form navbar-right">
+    <div class="container-fluid">
     {% if not personal %}
-        <!-- return 2 links ... service.views.register -->
-        <a href="{% url 'core:home' %}" style="text-decoration: underline;">Register</a>
-        or
-        <a href="..login_page_link " style="text-decoration: underline;">Log in</a>
-        
-        <!-- move to popup with JS -->
-        <form class="form-inline" style="display: none;">
-            <div class="form-group">
-                <input type="email" class="form-control" id="user_email" placeholder="jane.doe@example.com">
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control" id="password">
-            </div>
-            <button type="submit" class="btn btn-default">Login</button>
-        </form>
+        <a href="{% url 'core:home' %}" style="text-decoration: underline;" class="btn btn-primary">Register</a>
+        &nbsp;
+        <a href="{% url 'core:home' %}" style="text-decoration: underline;" class="btn btn-primary">Log in</a>
     {% else %}
-        Hi, logged man!
-        <!-- personal data here: ava, nick, settings-link, logout-link-->
+        <div class="col-xs-4">
+            <img class="img-rounded" style="height: 35px;" src="{% static 'core' %}/{{ personal.avatar }}"><br>
+        </div>
+        <div class="col-xs-8">
+            {{ personal.nickname }}
+            <br>
+            <a href="settings">Settings</a>
+            &nbsp;
+            <a href="logout">Log out</a>
+        </div>
     {% endif %}
     </div>
 {% endblock %}
@@ -68,5 +64,14 @@
 
 
 {% block scripts %}
-<!-- add JS to show popup/layout window -->
+<!-- move to popup with JS
+        <form class="form-inline" style="display: none;">
+            <div class="form-group">
+                <input type="email" class="form-control" id="user_email" placeholder="jane.doe@example.com">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" id="password">
+            </div>
+            <button type="submit" class="btn btn-default">Login</button>
+        </form> -->
 {% endblock %}

@@ -49,7 +49,7 @@ def index_page(request):
     if request.user.is_authenticated():
         data["personal"] = {
             "nickname": "Vladimir",
-            "avatar": "link...."
+            "avatar": "Vladimir.jpg"
         }
     return render(request, "core/templates/index.html", data)
 

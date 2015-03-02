@@ -1,9 +1,13 @@
 {% extends "core/templates/base.html" %}
-{% block title %}Ask-Kasatkin Registration Page{% endblock %}
+{% block title %}Ask-Kasatkin Registration Page{% endblock title %}
 
 {% block header %}
-    <!-- + one link to login -->
-{% endblock %}
+    <div class="container-fluid">
+        <a href="{% url 'core:register' %}" style="text-decoration: underline;" class="btn btn-primary">Register</a>
+        &nbsp;
+        <a href="{% url 'core:login' %}" style="text-decoration: underline;" class="btn btn-primary">Log in</a>
+    </div>
+{% endblock header%}
 
 <!-- vertical registration form -->
 {% block content %}
@@ -17,33 +21,54 @@
         </div>
     {% endif %}
     <!-- action -> JS to check forms are filled -> send POST  -->
-    <form action="{% url 'core:validate' %}"  method="POST">
+    <form method="POST" action="{% url 'core:validate_register' %}">
+        {% csrf_token %}
         <div class="form-group">
-            <label for="input_login">Login</label>
+            <!--label for="input_login">Login</label-->
             <input class="form-control" name="input_login" placeholder="Enter login">
                 </div>
         <div class="form-group">
-            <label for="input_nickname">Nickname</label>
+            <!--label for="input_nickname">Nickname</label-->
             <input class="form-control" name="input_nickname" placeholder="Enter nickname">
                 </div>
         <div class="form-group">
-            <label for="input_email">Email address</label>
+            <!--label for="input_email">Email address</label-->
             <input type="email" class="form-control" name="input_email" placeholder="Enter email">
                 </div>
         <div class="form-group">
-            <label for="input_password">Password</label>
-            <input type="password" class="form-control" name="input_password" placeholder="Password">
+            <!--label for="input_password">Password</label-->
+            <input type="password" class="form-control" name="input_password" placeholder="Enter password">
                 </div>
         <div class="form-group">
-            <label for="input_password_rep">Repeat password</label>
-            <input type="password" class="form-control" name="input_password_rep" placeholder="Password">
+            <!--label for="input_password_rep">Repeat password</label-->
+            <input type="password" class="form-control" name="input_password_rep" placeholder="Repeat password">
                 </div>
         <div class="form-group">
-            <label for="avatar">Upload avatar</label>
+            <!--label for="avatar">Upload avatar</label-->
             <input type="file" name="avatar">
-                <p class="help-block">JPG, GIF allowed. 100px * 100px are prefered</p>
+                <p class="help-block">Upload avatar. JPG, GIF allowed. 100px * 100px are prefered</p>
                 </div>
-        <button type="submit" class="btn btn-default">Register</button>
+        <button onclick="c()" type="submit" class="btn btn-default">Register</button>
     </form>
     </div>
-{% endblock %}
+{% endblock content %}
+
+
+{% block scripts %}
+<script>
+function c(){
+    var t = "{% url 'core:validate_register' %}";
+
+    // check if all fields are filled:
+    var a = document.getElementsByName("input_login");
+    if (a.count > 0) {
+        alert("good");
+    }
+    else {
+        alert("bad");
+    }
+
+
+}
+</script>
+{% endblock scripts %}

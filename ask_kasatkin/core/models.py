@@ -5,6 +5,7 @@ from django.db import models
 class the_user(models.Model):
     email = models.CharField(max_length=100)
     nickname = models.CharField(max_length=100)
+    login = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
     avatar_link = models.CharField(max_length=200) # link to static file on the f-server ?
     date = models.DateTimeField("user was registered")

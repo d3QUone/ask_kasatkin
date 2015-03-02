@@ -8,7 +8,7 @@
     {% if not personal %}
         <a href="{% url 'core:register' %}" style="text-decoration: underline;" class="btn btn-primary">Register</a>
         &nbsp;
-        <a href="{% url 'core:home' %}" style="text-decoration: underline;" class="btn btn-primary">Log in</a>
+        <a href="{% url 'core:login' %}" style="text-decoration: underline;" class="btn btn-primary">Log in</a>
     {% else %}
         <div class="col-xs-3">
             <img class="img-rounded" style="height: 35px;" src="{% static 'core' %}/{{ personal.avatar }}"><br>

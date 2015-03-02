@@ -1,4 +1,5 @@
 # coding:utf8
+from django import forms
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
@@ -9,10 +10,7 @@ from random import randint  # used in demo
 # -- main page methods:
 def index_page(request):
     # ------- A STATIC DEMO -------
-    data = {}
-    data["popular_tags"] = get_popular_tags()
-    data["popular_users"] = get_best_members()
-
+    data = get_static_data()
     data["questions"] = [
         {
             "title": "how to make a pretty block with css?",
@@ -60,22 +58,53 @@ def index_page(request):
     return render(request, "core/templates/index.html", data)
 
 
+class LoginForm(forms.Form):
+    login_ = forms.CharField(max_length=100)
+    passw_ = forms.CharField(max_length=100)
+
+
+def show_login(request):
+    return render(request, "core/templates/login.html", get_static_data())
+
+
 # returns main page back
-def log_in(request):
-    # - pop-up was in frontend
-    # - gets data from POST (from index_page), login
-    return render(request, "core/templates/index.html")
+def validate_login(request):
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+
+        data = get_static_data()
+        #data["login"] = str(form)
+
+        return render(request, "core/templates/login.html", data)
+
+
+
+
+    '''
+    #login_ = str(request.POST) #["input_login"]
+    #passw_ = request.POST["input_password"]
+
+    data = get_static_data()
+    data["login"] = login_
+    #data["pass"] = passw_
+    return render(request, "core/templates/login.html", data)
+
+    error = 1
+    if error:
+
+        data["error"] = {"title": "Wrong data", "text": "Incorrect login"} # as a demo
+        return render(request, "core/templates/login.html", data)
+    else:
+        return render(request, "core/templates/index.html", data)
+    '''
 
 
 # simple return
 def register(request):
-    data = {}
-    data["popular_tags"] = get_popular_tags()
-    data["popular_users"] = get_best_members()
-    return render(request, "core/templates/register.html", data)
+    return render(request, "core/templates/register.html", get_static_data())
 
 
-def validate_registration(request):
+def validate_register(request):
     # - get data
     # - check & save
     '''
@@ -113,7 +142,7 @@ def search(request):
 # -- ALL METHODS CALL THIS! (static demo now)
 
 # returns popular tags from file ? cache
-def get_popular_tags():
+def get_static_data():
     res = []
     append = res.append
     demo_pop_tags = ["Technopark", "Baumanka", "C", "Python", "MySQL", "Ruby", "apple", "iOS", "swift", "django", "php", "flask",
@@ -122,9 +151,8 @@ def get_popular_tags():
                    "label label-info", "label label-warning", "label label-danger"]
     for tag in demo_pop_tags:
         append({"text": tag, "label": demo_labels[randint(0, len(demo_labels)-1)]})
-    return res
 
-
-# returns best members from file ? cache
-def get_best_members():
-    return ["Vasya Pupkin", "accl_9912_xz", "Dart Vader", "ggl.cm"]
+    data = {}
+    data["popular_tags"] = res
+    data["popular_users"] = ["Vasya Pupkin", "accl_9912_xz", "Dart Vader", "ggl.cm"]
+    return data

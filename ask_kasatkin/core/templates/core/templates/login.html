@@ -16,7 +16,8 @@
     <h4>Login</h4>
     {% if error %}
         <div class="alert alert-danger" role="alert">
-            <strong>{{ error.title }}</strong>{{ error.text }}
+            <strong>{{ error.title }}</strong>
+            <p>{{ error.text }}</p>
         </div>
     {% endif %}
     <form method="POST" action="{% url 'core:validate_login' %}">
@@ -27,23 +28,9 @@
         <div class="form-group">
             <input type="password" class="form-control" name="input_password" placeholder="Enter password">
                 </div>
-        <button type="submit" class="btn btn-default">Log in!</button>
+        <input type="submit" class="btn btn-default" value="Log in!"/>
     </form>
-
-    <br><strong>Or</strong>&nbsp;<a href="{% url 'core:register' %}" style="text-decoration: underline;">create new account</a>
-
-    <br>
-    {% if login %}
-        {{ login }}
-    {% else %}
-        None
-    {% endif %}
-    &nbsp;
-    {% if pass %}
-         {{ pass }}
-    {% else %}
-        None
-    {% endif %}
+    <br><strong>Or:</strong>&nbsp;&nbsp;<a href="{% url 'core:register' %}" style="text-decoration: underline;">create new account</a>
     </div>
 {% endblock content %}
 

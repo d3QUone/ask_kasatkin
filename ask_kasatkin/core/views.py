@@ -58,68 +58,60 @@ def index_page(request):
     return render(request, "core/templates/index.html", data)
 
 
-class LoginForm(forms.Form):
-    login_ = forms.CharField(max_length=100)
-    passw_ = forms.CharField(max_length=100)
-
-
+# render login page
 def show_login(request):
     return render(request, "core/templates/login.html", get_static_data())
 
 
-# returns main page back
+# check input values + return main page back
 def validate_login(request):
-    if request.method == "POST":
-        form = LoginForm(request.POST)
-
-        data = get_static_data()
-        #data["login"] = str(form)
-
-        return render(request, "core/templates/login.html", data)
-
-
-
-
-    '''
-    #login_ = str(request.POST) #["input_login"]
-    #passw_ = request.POST["input_password"]
-
     data = get_static_data()
-    data["login"] = login_
-    #data["pass"] = passw_
+    if request.method == "POST":
+        rec_login = request.POST["input_login"]
+        rec_passw = request.POST["input_password"]
+        if len(rec_login) == 0:
+            data["error"] = {"title": "No login", "text": "Please enter your login and try again"}
+        elif len(rec_passw) == 0:
+            data["error"] = {"title": "No password", "text": "Please enter your password and try again"}
+        else:
+            # do login stuff ...
+            user = authenticate(username=rec_login, password=rec_passw)
+            data["error"] = {"title": str(user), "text": ""}
+
+            # return main....
+    else:
+        data["error"] = {"title": "Wrong request", "text": "You should use POST-requests only to login"}
+    # returns error message
     return render(request, "core/templates/login.html", data)
 
-    error = 1
-    if error:
 
-        data["error"] = {"title": "Wrong data", "text": "Incorrect login"} # as a demo
-        return render(request, "core/templates/login.html", data)
-    else:
-        return render(request, "core/templates/index.html", data)
-    '''
-
-
-# simple return
+# render registration page
 def register(request):
     return render(request, "core/templates/register.html", get_static_data())
 
 
+# check input values + return info
 def validate_register(request):
-    # - get data
-    # - check & save
-    '''
-    login_ = request.POST['input_login']
-    nickname_ = request.POST['input_nickname']
-    email_ = request.POST['input_email']
-    password1_ = request.POST['input_password']
-    password2_ = request.POST['input_password_rep']
-    '''
-    # a) OK - create a new user, return main page
-    # b) send an error msg, return the same page
-    return HttpResponse("render main page after successful registration")
+    data = get_static_data()
+    if request.method == "POST":
+        login_ = request.POST['input_login']
+        nickname_ = request.POST['input_nickname']
+        email_ = request.POST['input_email']
+        password1_ = request.POST['input_password']
+        password2_ = request.POST['input_password_rep']
+
+        # a) check all fields are filled
+        # b) work with file ...
+        # c) OK - create a new user, return main page
+        # d) send an error msg, return the same page
+
+    else:
+        data["error"] = {"title": "Wrong request", "text": "You should use POST-requests only to login"}
+    # returns error message
+    return render(request, "core/templates/register.html", data)
 
 
-# -- shown only for loged users:
+# -- shown only for logged users:
 def self_logout(request):
     logout(request)
     return HttpResponse("logout OK + link to success message")
@@ -133,7 +125,7 @@ def self_settings(request):
         return HttpResponse("-redirect to te main page!")
 
 
-# future mockup
+# future mock up
 def search(request):
     return HttpResponse("JSON result ... ")
 

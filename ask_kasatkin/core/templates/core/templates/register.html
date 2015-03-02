@@ -17,7 +17,8 @@
     <h4>Registration page. <small>Please fill all fields!</small></h4>
     {% if error %}
         <div id="registration_error" class="alert alert-danger" role="alert">
-            <strong>{{ error.title }}</strong>{{ error.text }}
+            <strong>{{ error.title }}</strong>
+            <p>{{ error.text }}</p>
         </div>
     {% endif %}
     <!-- action -> JS to check forms are filled -> send POST  -->
@@ -55,7 +56,7 @@
 
 
 {% block scripts %}
-<script>
+<!--script>
 function c(){
     var t = "{% url 'core:validate_register' %}";
 
@@ -67,8 +68,6 @@ function c(){
     else {
         alert("bad");
     }
-
-
 }
-</script>
+</script-->
 {% endblock scripts %}

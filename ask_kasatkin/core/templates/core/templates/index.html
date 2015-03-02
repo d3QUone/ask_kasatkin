@@ -1,7 +1,7 @@
 {% extends "core/templates/base.html" %}
 {% load staticfiles %}
 
-{% block title %}Ask-Kasatkin Main Page{% endblock %}
+{% block title %}Ask-Kasatkin Main Page{% endblock title %}
 
 {% block header %}
     <div class="container-fluid">
@@ -16,16 +16,16 @@
         <div class="col-xs-9">
             {{ personal.nickname }}
             <br>
-            <a href="settings">Settings</a>
+            <a href="{% url 'core:settings' %}">Settings</a>
             &nbsp;
-            <a href="logout">Log out</a>
+            <a href="{% url 'core:logout' %}">Log out</a>
         </div>
     {% endif %}
     </div>
-{% endblock %}
+{% endblock header %}
 
 {% block content %}
-    <div class="container-fluid">
+    <div class="col-xs-8">
     {% for item in questions %}
         <div class="row" style="box-shadow: 0 0 1px black; padding: 3px 3px 3px 3px;">
             <div class="col-xs-2" style="margin-bottom: 3px; padding-left: 4%;">
@@ -53,10 +53,10 @@
         <br>
     {% endfor %}
     </div>
-{% endblock %}
+{% endblock content %}
 
 {% block pagination %}
-{% endblock %}
+{% endblock pagination %}
 
 {#% block scripts %#}
 <!-- move to popup with JS

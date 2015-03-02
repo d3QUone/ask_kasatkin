@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="description" content="Сайт с ответами на любые вопросы. Русский конкурент Stackoverflow">
 <meta name="keywords" content="stackoverflow, python, django, ask, kasatkin, techopark, mail.ru, mail.ru group, mailru, mailru group, технопарк, мэйл.ру, мэйл.ру груп">
-<title>{% block title %}{% endblock %}</title>
+<title>{% block title %}{% endblock title %}</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 </head>
 <body>
@@ -25,19 +25,18 @@
                     <input type="submit" class="btn btn-success" value="Ask new" title="Ask new question">
                 </div>
                 <div class="col-xs-3" style="margin-top: 8px;">
-                    {% block header %}{% endblock %}
+                    {% block header %}{% endblock header %}
                 </div>
             </div>
         </div>
     </nav>
     <!-- CONTENT-BLOCKS -->
     <div class="row-fluid">
-        <div class="col-xs-9">
-            <!-- LEFT COLUMN: questions / register / add answer / add question / etc. -->
-            {% block content %}{% endblock %}
-            {% block pagination %}{% endblock %}
-        </div>
-        <div class="col-xs-3">
+        <!--div class="col-xs-9"-->
+        <!-- LEFT COLUMN: questions / register / add answer / add question / etc. -->
+        {% block content %}{% endblock content %}
+        {% block pagination %}{% endblock pagination %}
+        <div class="col-xs-4">
             <!-- RIGHT COLUMN: (tags + best members), the same for all cases -->
             <!-- + all tags are links to search-by-tag -->
             <p><h4>Popular Tags:</h4></p>

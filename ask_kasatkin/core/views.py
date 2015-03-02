@@ -1,5 +1,4 @@
 # coding:utf8
-from django import forms
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
@@ -7,7 +6,7 @@ from django.template import loader, RequestContext
 
 from random import randint  # used in demo
 
-# -- main page methods:
+# -- gets new questions, etc...
 def index_page(request):
     # ------- A STATIC DEMO -------
     data = get_static_data()
@@ -49,8 +48,9 @@ def index_page(request):
             "avatar": "1335.jpg"
         }
     ]
-    # make sure the user is logged + load personal data
+    # make sure the user is logged
     if request.user.is_authenticated():
+        # load from model ...
         data["personal"] = {
             "nickname": "Vladimir",
             "avatar": "Vladimir.jpg"
@@ -76,9 +76,11 @@ def validate_login(request):
         else:
             # do login stuff ...
             user = authenticate(username=rec_login, password=rec_passw)
-            data["error"] = {"title": str(user), "text": ""}
-
-            # return main....
+            if user: # - cool :)
+                login(request, user)
+                return index_page(request) #render(request, "core/templates/index.html", data)
+            else:
+                data["error"] = {"title": str(user), "text": "No such user"}
     else:
         data["error"] = {"title": "Wrong request", "text": "You should use POST-requests only to login"}
     # returns error message
@@ -114,7 +116,7 @@ def validate_register(request):
 # -- shown only for logged users:
 def self_logout(request):
     logout(request)
-    return HttpResponse("logout OK + link to success message")
+    return index_page(request)
 
 
 def self_settings(request):

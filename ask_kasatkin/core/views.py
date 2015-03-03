@@ -16,20 +16,17 @@ def index_page(request):
             "title": "how to make a pretty block with css?",
             "link": "link_to_open_the_question_thread_by_ID_i_think",
             "text": "few text now to test",  # first 400 chars e.g
-            # "date": "28.02.15 ",  # no data in block, needed for sorting only
             "rating": -1,
             "answers": 1,  # contributed answers
             "tags": ["CSS3", "HTML5"],
 
             "author": "CSS_KILLER",
-            "avatar": "CSS_KILLER.jpg"  # img = author + '.jpg'
+            "avatar": "CSS_KILLER.jpg"  # img = author_ID + '.jpg'
         },
         {
             "title": "what's wrong with my django-app urls?",
             "link": "link_to_open_the_question_thread_by_ID_i_think",
-            "text": "When you use a ModelForm, the call to is_valid() will perform these validation steps for all the fields that are included on the form. See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[
-                    :400] + "...",  # first 400 chars e.g
-            # "date": "28.02.15 ",  # no data in block, needed for sorting only
+            "text": "When you use a ModelForm, the call to is_valid() will perform these validation steps for all the fields that are included on the form. See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[:400] + "...",  # first 400 chars e.g
             "rating": 3,
             "answers": 2,  # contributed answers
             "tags": ["Python", "Django", "MySQL"],  # 3 tags - MAX
@@ -40,9 +37,7 @@ def index_page(request):
         {
             "title": "long-long title test | " * 7,
             "link": "link_to_open_the_question_thread_by_ID_i_think",
-            "text": "See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[
-                    :400] + "...",  # first 400 chars e.g
-            # "date": "28.02.15 ",  # no data in block, needed for sorting only
+            "text": "See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[:400] + "...",  # first 400 chars e.g
             "rating": 341550,
             "answers": 200124,  # contributed answers
             "tags": ["Long tags are rather cool but not in Bootstrap :)", "Testing tempate with big footer",
@@ -54,9 +49,12 @@ def index_page(request):
     ]
     # make sure the user is logged:
     if request.user.is_authenticated():
+        # get ID, ask properties by ID
+        user_id = request.user.id
+        prop = user_properties.objects.get(user_id=user_id)
         data["personal"] = {
-            "nickname": request.user.nickname,
-            "avatar": str(request.user.id) + ".jpg"
+            "nickname": prop.nickname,
+            "avatar": str(user_id) + ".jpg"
         }
     return render(request, "core/templates/index.html", data)
 
@@ -94,7 +92,22 @@ def register(request):
     return render(request, "core/templates/register.html", get_static_data())
 
 
-# check input values + return info
+# validation used in registration
+def validate_new_email(email):
+    if len(email) > 4:
+        return True
+    else:
+        return False
+
+
+def save_avatar_by_id(f, user_id):
+    # -- nex step -- get file extension with JS on frontend, save by correct extension
+    with open('core/static/core/{0}.jpg'.format(user_id), 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+
+# check input values + return info - OK
 def validate_register(request):
     data = get_static_data()
     if request.method == "POST":
@@ -103,35 +116,35 @@ def validate_register(request):
         email_ = request.POST['input_email']
         password1_ = request.POST['input_password']
         password2_ = request.POST['input_password_rep']
+        avatar_file = request.FILES['avatar']
 
-        if len(login_) < 6:
-            data["error"] = {"title": "Login-field", "text": "Please use login at least 6 symbols long"}
-        elif len(nickname_) < 3:
-            data["error"] = {"title": "Nickname-field", "text": "Please use nickname at least 3 symbols long"}
-        elif len(password1_) < 6:
-            data["error"] = {"title": "Password-field", "text": "Please use password at least 6 symbols long"}
+        if len(login_) < 5:
+            data["error"] = {"title": "Login-field", "text": "Please use login at least 5 symbols long"}
+        elif len(nickname_) < 5:
+            data["error"] = {"title": "Nickname-field", "text": "Please use nickname at least 5 symbols long"}
+        elif len(password1_) < 5:
+            data["error"] = {"title": "Password-field", "text": "Please use password at least 5 symbols long"}
         else:
             if validate_new_email(email_):
                 if password1_ == password2_:
-                    # check if no such login
-                    # check if no such nickname
-                    # check if no such email
+                    try:
+                        user = User.objects.create_user(username=login_, email=email_, password=password1_)
+                        user.save()
+                        save_avatar_by_id(avatar_file, user.id)
 
-                    user = User()
-                    user.email = email_
-                    user.username = login_
-                    user.password = password1_
-                    user.save()
+                        props = user_properties()
+                        props.user = user
+                        props.nickname = nickname_
+                        props.save()
 
-                    props = user_properties()
-                    props.user = user
-                    props.nickname = nickname_
-                    props.save()
-
-                    # return render(request, "core/templates/index.html", data)
-                    #user = authenticate(username=login_, password=password1_)
-                    #login(request, user)
-                    return index_page(request)
+                        '''
+                        # uncomment to return logged in user
+                        user = authenticate(username=login_, password=password1_)
+                        login(request, user)
+                        '''
+                        return index_page(request)
+                    except Exception as ex:
+                        data["error"] = {"title": "Internal server error", "text": str(ex)}
                 else:
                     data["error"] = {"title": "Passwords don't match",
                                      "text": "Please be careful on typing your password"}
@@ -153,21 +166,21 @@ def self_settings(request):
     if request.user.is_authenticated():
         return HttpResponse("settings page")
     else:
-        # can't be so, but who knows ....
-        return HttpResponse("-redirect to te main page!")
+        return index_page(request)
+
+
+def new_question(request):
+    return HttpResponse("show add new question form")
+
+
+def add_new_question(request):
+    return HttpResponse("recieve and process data")
 
 
 # future mock up
 def search(request):
     return HttpResponse("JSON result ... ")
 
-
-# validation used in registration
-def validate_new_email(email):
-    if len(email) > 4:
-        return True
-    else:
-        return False
 
 
 # returns popular tags from file ? cache
@@ -183,5 +196,5 @@ def get_static_data():
 
     data = {}
     data["popular_tags"] = res
-    data["popular_users"] = ["Vasya Pupkin", "accl_9912_xz", "Dart Vader", "ggl.cm"]
+    data["popular_users"] = ["Vasya Pupkin", "accl_9912_xz", "Dart Vader", "ggl.cm", "qwerTY"]
     return data

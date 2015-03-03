@@ -40,9 +40,15 @@ class the_answer(models.Model):
         return super(the_answer, self).save(*args, **kwargs)
 
 
+# used for searching tips
 class the_tag(models.Model):
     name = models.CharField(max_length=100)
-    used_in = models.ForeignKey(the_question)
+
+
+# USE MANY TO MANY for linking unique tags with questions
+class store_tag(models.Model):
+    tag = models.ForeignKey(the_tag)
+    question = models.ForeignKey(the_question)
 
 
 #       add class to store

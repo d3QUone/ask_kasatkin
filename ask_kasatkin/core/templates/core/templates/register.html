@@ -21,7 +21,6 @@
             <p>{{ error.text }}</p>
         </div>
     {% endif %}
-    <!-- action -> JS to check forms are filled -> send POST  -->
     <form enctype="multipart/form-data" method="POST" action="{% url 'core:validate_register' %}">
         {% csrf_token %}
         <div class="form-group">

@@ -21,7 +21,7 @@ def index_page(request):
             "tags": ["CSS3", "HTML5"],
 
             "author": "CSS_KILLER",
-            "avatar": "CSS_KILLER.jpg"  # img = author_ID + '.jpg'
+            "avatar": "demo_CSS_KILLER.jpg"  # img = author_ID + '.jpg'
         },
         {
             "title": "what's wrong with my django-app urls?",
@@ -32,7 +32,7 @@ def index_page(request):
             "tags": ["Python", "Django", "MySQL"],  # 3 tags - MAX
 
             "author": "Vladimir",
-            "avatar": "Vladimir.jpg"
+            "avatar": "demo_Vladimir.jpg"
         },
         {
             "title": "long-long title test | " * 7,
@@ -44,7 +44,7 @@ def index_page(request):
                      "noSQL is here"],  # 3 tags - MAX
 
             "author": "1335",
-            "avatar": "1335.jpg"
+            "avatar": "demo_1335.jpg"
         }
     ]
     # make sure the user is logged:
@@ -116,7 +116,10 @@ def validate_register(request):
         email_ = request.POST['input_email']
         password1_ = request.POST['input_password']
         password2_ = request.POST['input_password_rep']
-        avatar_file = request.FILES['avatar']
+        try:
+            avatar_file = request.FILES['avatar']
+        except:
+            avatar_file = request.POST['avatar']  # no file sent
 
         if len(login_) < 5:
             data["error"] = {"title": "Login-field", "text": "Please use login at least 5 symbols long"}
@@ -127,24 +130,26 @@ def validate_register(request):
         else:
             if validate_new_email(email_):
                 if password1_ == password2_:
-                    try:
-                        user = User.objects.create_user(username=login_, email=email_, password=password1_)
-                        user.save()
-                        save_avatar_by_id(avatar_file, user.id)
+                    if len(avatar_file) > 0:
+                        try:
+                            user = User.objects.create_user(username=login_, email=email_, password=password1_)
+                            user.save()
+                            save_avatar_by_id(avatar_file, user.id)
 
-                        props = user_properties()
-                        props.user = user
-                        props.nickname = nickname_
-                        props.save()
-
-                        '''
-                        # uncomment to return logged in user
-                        user = authenticate(username=login_, password=password1_)
-                        login(request, user)
-                        '''
-                        return index_page(request)
-                    except Exception as ex:
-                        data["error"] = {"title": "Internal server error", "text": str(ex)}
+                            props = user_properties()
+                            props.user = user
+                            props.nickname = nickname_
+                            props.save()
+                            '''
+                            # uncomment to return logged in user
+                            user = authenticate(username=login_, password=password1_)
+                            login(request, user)
+                            '''
+                            return index_page(request)
+                        except Exception as ex:
+                            data["error"] = {"title": "Internal server error", "text": str(ex)}
+                    else:
+                        data["error"] = {"title": "No avatar", "text": "Avatar is required to create new account"}
                 else:
                     data["error"] = {"title": "Passwords don't match",
                                      "text": "Please be careful on typing your password"}
@@ -162,17 +167,63 @@ def self_logout(request):
     return index_page(request)
 
 
-def self_settings(request):
+def self_settings(request, error = None):
+    data = get_static_data()
+    if error:
+        data["error"] = error
     if request.user.is_authenticated():
-        return HttpResponse("settings page")
-    else:
-        return index_page(request)
+        user_id = request.user.id
+        data["nickname"] = user_properties.objects.get(user_id=user_id).nickname
+        data["email"] = User.objects.get(id=user_id).email
+        data["avatar"] = "{0}.jpg".format(user_id)  # don't forget to allow GIF, JPEG and save dat
+    return render(request, "core/templates/setting.html", data)
 
 
+def update_settings(request):
+    data = get_static_data()
+    if request.method == "POST":
+        if request.user.is_authenticated():
+            uid = request.user.id
+            error = None
+
+            # update nickname if OK
+            nickname_ = request.POST['input_nickname']
+            if len(nickname_) > 0:
+                if len(nickname_) > 4:
+                    props = user_properties.objects.get(user_id=uid)
+                    props.nickname = nickname_
+                    props.save()
+                else:
+                    error = {"title": "Your nickname must be at least 5 chars long", "text": ""}
+
+            # upload new ava if any
+            try:
+                avatar_file = request.FILES['avatar']
+                save_avatar_by_id(avatar_file, uid)
+            except:
+                pass
+
+            # update email if OK
+            email_ = request.POST['input_email']
+            if len(email_) > 0:
+                if validate_new_email(email_):
+                    user = User.objects.get(id=uid)
+                    user.email = email_
+                    user.save()
+                else:
+                    error = {"title": "Incorrect email", "text": "Please use a valid email"}
+            return self_settings(request, error=error)  # return the same page with new data
+        else:
+            data["error"] = {"title": "Auth error", "text": "Login and try once more please"}
+    return render(request, "core/templates/setting.html", data)
+
+
+# show add-new-question page
 def new_question(request):
     return HttpResponse("show add new question form")
 
 
+# upload data and add question
 def add_new_question(request):
     return HttpResponse("recieve and process data")
 
@@ -180,7 +231,6 @@ def add_new_question(request):
 # future mock up
 def search(request):
     return HttpResponse("JSON result ... ")
-
 
 
 # returns popular tags from file ? cache

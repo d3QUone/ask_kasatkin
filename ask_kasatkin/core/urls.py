@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from core.views import index_page, show_login, validate_login, register, validate_register, self_settings, self_logout
+from core.views import index_page, show_login, validate_login, register, validate_register, self_settings, update_settings, self_logout, new_question, add_new_question
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -11,5 +11,8 @@ urlpatterns = patterns('',
     url(r'^register/$', register, name='register'),
     url(r'^validate_register/$', validate_register, name='validate_register'),
     url(r'^settings/$', self_settings, name='settings'),
+    url(r'^update_settings/$', update_settings, name='validate_settings'),
+    url(r'^add/$', new_question, name='create_question'),  # do this in front-end later
+    url(r'^save_question/$', add_new_question, name='save_question'),
     url(r'^logout/$', self_logout, name='logout'),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

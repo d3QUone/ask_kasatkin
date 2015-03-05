@@ -1,29 +1,6 @@
 {% extends "core/templates/base.html" %}
 {% load staticfiles %}
-
 {% block title %}Ask-Kasatkin Main Page{% endblock title %}
-
-{% block header %}
-    <div class="container-fluid">
-    {% if not personal %}
-        <a href="{% url 'core:register' %}" style="text-decoration: underline;" class="btn btn-primary">Register</a>
-        &nbsp;
-        <a href="{% url 'core:login' %}" style="text-decoration: underline;" class="btn btn-primary">Log in</a>
-    {% else %}
-        <div class="col-xs-3">
-            <img class="img-rounded" style="height: 35px;" src="{% static 'core' %}/{{ personal.avatar }}"><br>
-        </div>
-        <div class="col-xs-9">
-            {{ personal.nickname }}
-            <br>
-            <a href="{% url 'core:settings' %}">Settings</a>
-            &nbsp;
-            <a href="{% url 'core:logout' %}">Log out</a>
-        </div>
-    {% endif %}
-    </div>
-{% endblock header %}
-
 {% block content %}
     <div class="col-xs-8">
     {% for item in questions %}

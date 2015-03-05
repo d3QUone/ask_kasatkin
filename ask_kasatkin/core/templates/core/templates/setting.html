@@ -1,44 +1,30 @@
 {% extends "core/templates/base.html" %}
 {% load staticfiles %}
-
-{% block title %}Ask-Kasatkin Registration Page{% endblock title %}
-
-{% block header %}
-    <div class="container-fluid">
-    {% if user.is_authenticated %}
-        <div class="col-xs-3">
-            <img class="img-rounded" style="height: 35px;" src="{% static 'core' %}/{{ avatar }}"><br>
-        </div>
-        <div class="col-xs-9">
-            {{ nickname }}
-            <br>
-            <a href="{% url 'core:settings' %}">Settings</a>
-            &nbsp;
-            <a href="{% url 'core:logout' %}">Log out</a>
-        </div>
-    {% else %}
-        <a href="{% url 'core:register' %}" style="text-decoration: underline;" class="btn btn-primary">Register</a>
-        &nbsp;
-        <a href="{% url 'core:login' %}" style="text-decoration: underline;" class="btn btn-primary">Log in</a>
-    {% endif %}
-    </div>
-{% endblock header%}
-
-<!-- vertical registration form -->
+{% block title %}Ask-Kasatkin Settings{% endblock title %}
 {% block content %}
     <div class="col-xs-2">
     </div>
     <div class="col-xs-6">
     {% if user.is_authenticated %}
-        <h4>Settings: {{ nickname }}</h4><br>
-        {% if error %}
-            <div id="registration_error" class="alert alert-danger" role="alert">
-                <strong>{{ error.title }}</strong>
-                <p>{{ error.text }}</p>
-            </div>
-        {% endif %}
         <form class="form-horizontal" enctype="multipart/form-data" method="POST" action="{% url 'core:validate_settings' %}" onclick="h()">
             {% csrf_token %}
+            <div class="form-group">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <h4>Settings: {{ personal.nickname }}</h4>
+                </div>
+            </div>
+            {% if error %}
+                <div class="form-group" id="setting_error">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                    <div class="alert alert-danger" role="alert">
+                        <strong>{{ error.title }}</strong>
+                        <p>{{ error.text }}</p>
+                    </div>
+                    </div>
+                </div>
+            {% endif %}
             <div class="form-group">
                 <label for="input_login" class="col-sm-2 control-label">Login</label>
                 <div class="col-sm-10">
@@ -48,23 +34,28 @@
             <div class="form-group">
                 <label for="input_nickname" class="col-sm-2 control-label">Nickname</label>
                 <div class="col-sm-10">
-                    <input class="form-control" name="input_nickname" placeholder="{{ nickname }}">
+                    <input class="form-control" name="input_nickname" placeholder="{{ personal.nickname }}">
                 </div>
             </div>
             <div class="form-group">
                 <label for="input_email" class="col-sm-2 control-label">Email</label>
                 <div class="col-sm-10">
-                    <input type="email" class="form-control" name="input_email" placeholder="{{ email }}">
+                    <input type="email" class="form-control" name="input_email" placeholder="{{ personal.email }}">
                 </div>
             </div>
             <div class="form-group">
                 <label for="avatar" class="col-sm-2 control-label">Avatar</label>
                 <div class="col-sm-10">
-                    <img class="img-rounded" style="height: 100px;" src="{% static 'core' %}/{{ avatar }}"><br>
+                    <img class="img-rounded" style="height: 100px;" src="{% static 'core' %}/{{ personal.avatar }}"><br>
                     <input type="file" name="avatar" style="margin: 2px;">
                 </div>
             </div>
-            <button type="submit" class="btn btn-default" style="margin-left: 40%;">Save</button>
+            <div class="form-group">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-default">Save</button>
+                </div>
+            </div>
         </form>
     {% else %}
         <div class="alert alert-danger" role="alert">
@@ -85,7 +76,7 @@
 {% block scripts %}
 <script>
     function h() {
-        document.getElementById("registration_error").hidden = true;
+        document.getElementById("setting_error").hidden = true;
     }
 </script>
 {% endblock scripts %}

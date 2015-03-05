@@ -1,27 +1,20 @@
 {% extends "core/templates/base.html" %}
 {% block title %}Ask-Kasatkin Registration Page{% endblock title %}
-
-{% block header %}
-    <div class="container-fluid">
-        <a href="{% url 'core:register' %}" style="text-decoration: underline;" class="btn btn-primary">Register</a>
-        &nbsp;
-        <a href="{% url 'core:login' %}" style="text-decoration: underline;" class="btn btn-primary">Log in</a>
-    </div>
-{% endblock header%}
-
-<!-- vertical registration form -->
 {% block content %}
     <div class="col-xs-2">
     </div>
     <div class="col-xs-6">
     <h4>Registration page. <small>Please fill all fields!</small></h4>
     {% if error %}
-        <div id="registration_error" class="alert alert-danger" role="alert">
+        <div id="back_end_error_message" class="alert alert-danger" role="alert">
             <strong>{{ error.title }}</strong>
             <p>{{ error.text }}</p>
         </div>
     {% endif %}
-    <form enctype="multipart/form-data" method="POST" action="{% url 'core:validate_register' %}">
+    <div id="jsalert" class="alert alert-danger" role="alert" hidden>
+        <strong>All fields are required</strong>
+    </div>
+    <form enctype="multipart/form-data" method="POST" action="{% url 'core:validate_register' %}" name="mf" onsubmit="return c()" onclick="h()">
         {% csrf_token %}
         <div class="form-group">
             <!--label for="input_login">Login</label-->
@@ -55,18 +48,24 @@
 
 
 {% block scripts %}
-<!--script>
+<script>
 function c(){
-    var t = "{% url 'core:validate_register' %}";
-
-    // check if all fields are filled:
-    var a = document.getElementsByName("input_login");
-    if (a.count > 0) {
-        alert("good");
-    }
-    else {
-        alert("bad");
+    var f = document.forms["mf"];
+    var a = f["input_login"].value;
+    var n = f["input_nickname"].value;
+    var d = f["input_email"].value;
+    var e1 = f["input_password"].value;
+    var e2 = f["input_password_rep"].value;
+    var g = f["avatar"].value; //  g == null || g == "" ||
+    if (a == null || a == "" || n == null || n == "" || d == null || d == "" || e1 == null || e1 == "" || e2 == null || e2 == "" || g == null || g == "" || e1 != e2) {
+        document.getElementById("back_end_error_message").hidden = true;
+        document.getElementById("jsalert").hidden = false;
+        return false;
     }
 }
-</script-->
+function h() {
+    document.getElementById("back_end_error_message").hidden = true;
+    document.getElementById("jsalert").hidden = true;
+}
+</script>
 {% endblock scripts %}

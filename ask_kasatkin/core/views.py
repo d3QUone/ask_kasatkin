@@ -7,10 +7,23 @@ from core.models import user_properties
 from django.http import HttpResponse
 from random import randint  # used in demo
 
-# -- gets new questions, etc...
+
+def get_user_data(request):
+    data = {}
+    if request.user.is_authenticated():
+        user_id = request.user.id
+        prop = user_properties.objects.get(user_id=user_id)
+        data["nickname"] = prop.nickname
+        data["avatar"] = "{0}.jpg".format(user_id)  # don't forget to update extensions
+    return data
+
+
+# -- renders new questions, pagination
 def index_page(request):
-    # ------- A STATIC DEMO -------
     data = get_static_data()
+    data["personal"] = get_user_data(request)  # processes all user's-stuff
+
+    # ------- A STATIC DEMO -------
     data["questions"] = [
         {
             "title": "how to make a pretty block with css?",
@@ -47,15 +60,6 @@ def index_page(request):
             "avatar": "demo_1335.jpg"
         }
     ]
-    # make sure the user is logged:
-    if request.user.is_authenticated():
-        # get ID, ask properties by ID
-        user_id = request.user.id
-        prop = user_properties.objects.get(user_id=user_id)
-        data["personal"] = {
-            "nickname": prop.nickname,
-            "avatar": str(user_id) + ".jpg"
-        }
     return render(request, "core/templates/index.html", data)
 
 
@@ -80,7 +84,7 @@ def validate_login(request):
                 login(request, user)
                 return index_page(request)
             else:
-                data["error"] = {"title": "No such user", "text": ""}
+                data["error"] = {"title": "No such user / wrong password", "text": ""}
     else:
         data["error"] = {"title": "Wrong request", "text": "You should use POST-requests only to login"}
     # returns error message
@@ -140,11 +144,11 @@ def validate_register(request):
                             props.user = user
                             props.nickname = nickname_
                             props.save()
-                            '''
+
                             # uncomment to return logged in user
                             user = authenticate(username=login_, password=password1_)
                             login(request, user)
-                            '''
+
                             return index_page(request)
                         except Exception as ex:
                             data["error"] = {"title": "Internal server error", "text": str(ex)}
@@ -158,6 +162,7 @@ def validate_register(request):
     else:
         data["error"] = {"title": "Wrong request", "text": "You should use POST-requests only to login"}
     # returns error message
+    data["personal"] = get_user_data(request)  # processes all user's-stuff
     return render(request, "core/templates/register.html", data)
 
 
@@ -169,23 +174,20 @@ def self_logout(request):
 
 def self_settings(request, error = None):
     data = get_static_data()
+    data["personal"] = get_user_data(request)  # processes all user's-stuff
     if error:
         data["error"] = error
-    if request.user.is_authenticated():
+    if request.user.is_authenticated(): # add email to other data
         user_id = request.user.id
-        data["nickname"] = user_properties.objects.get(user_id=user_id).nickname
-        data["email"] = User.objects.get(id=user_id).email
-        data["avatar"] = "{0}.jpg".format(user_id)  # don't forget to allow GIF, JPEG and save dat
+        data["personal"]["email"] = User.objects.get(id=user_id).email
     return render(request, "core/templates/setting.html", data)
 
 
 def update_settings(request):
-    data = get_static_data()
+    error = None
     if request.method == "POST":
         if request.user.is_authenticated():
             uid = request.user.id
-            error = None
-
             # update nickname if OK
             nickname_ = request.POST['input_nickname']
             if len(nickname_) > 0:
@@ -195,14 +197,12 @@ def update_settings(request):
                     props.save()
                 else:
                     error = {"title": "Your nickname must be at least 5 chars long", "text": ""}
-
             # upload new ava if any
             try:
                 avatar_file = request.FILES['avatar']
                 save_avatar_by_id(avatar_file, uid)
             except:
                 pass
-
             # update email if OK
             email_ = request.POST['input_email']
             if len(email_) > 0:
@@ -212,20 +212,38 @@ def update_settings(request):
                     user.save()
                 else:
                     error = {"title": "Incorrect email", "text": "Please use a valid email"}
-            return self_settings(request, error=error)  # return the same page with new data
         else:
-            data["error"] = {"title": "Auth error", "text": "Login and try once more please"}
-    return render(request, "core/templates/setting.html", data)
+            error = {"title": "Auth error", "text": "Login and try once more please"}
+    return self_settings(request, error=error)  # return the same page with new data
 
 
 # show add-new-question page
-def new_question(request):
-    return HttpResponse("show add new question form")
+def new_question(request, error=None):
+    data = get_static_data()
+    data["personal"] = get_user_data(request)  # processes all user's-stuff
+    data["error"] = error
+    return render(request, "core/templates/add_question.html", data)
 
 
 # upload data and add question
 def add_new_question(request):
-    return HttpResponse("recieve and process data")
+    error = None
+    if request.method == "POST":
+        title = request.POST["title"]
+        text = request.POST["text"]
+        tags = request.POST["tags"].split(",")
+        if len(title) < 10:
+            error = {"title": "Too short title", "text": "Use at least 10 symbols in the title"}
+        elif len(text) < 10:
+            error = {"title": "Too short question", "text": "Describe your problem in a proper way please"}
+        elif len(tags) > 3:
+            error = {"title": "You can use only 3 tags", "text": "{0} tags were provided in new question".format(len(tags))}
+        else:
+            # - save to DB
+            # - - think where to redirect back
+            error = {"title": "Saved-gap", "text": "this method isn't complete yet :)"}
+
+    return new_question(request, error=error)
 
 
 # future mock up
@@ -233,7 +251,7 @@ def search(request):
     return HttpResponse("JSON result ... ")
 
 
-# returns popular tags from file ? cache
+# returns popular tags from file ? cache, will be dynamic in future updates
 def get_static_data():
     res = []
     append = res.append

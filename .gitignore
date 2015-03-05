@@ -2,3 +2,4 @@ screenshots
 .idea
 ask_kasatkin/core/static/core
 avatars
+*.pyc

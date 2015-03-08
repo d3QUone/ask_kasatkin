@@ -1,3 +1,8 @@
 # do from this folder (folder for manage.py) to run django app, using wsgi
 
 uwsgi --http :8000 --module ask_kasatkin.wsgi
+
+
+# gunicorn, without nginx yet 
+
+gunicorn ask_kasatkin.wsgi:application --bind 185.22.61.117:9000

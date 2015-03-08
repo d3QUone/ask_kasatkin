@@ -1,0 +1,3 @@
+# do from this folder (folder for manage.py) to run django app, using wsgi
+
+uwsgi --http :8000 --module ask_kasatkin.wsgi

@@ -43,8 +43,12 @@ function c(){
     }
 }
 function h() {
-    document.getElementById("back_end_error_message").hidden = true;
-    document.getElementById("jsalert").hidden = true;
+    try {
+        document.getElementById("back_end_error_message").hidden = true;
+        document.getElementById("jsalert").hidden = true;
+    } catch(e) {
+
+    }
 }
 </script>
 {% endblock scripts %}

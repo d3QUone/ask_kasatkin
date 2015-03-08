@@ -56,7 +56,11 @@
 {% block scripts %}
 <script>
     function h() {
-        document.getElementById("add_error").hidden = true;
+        try {
+            document.getElementById("add_error").hidden = true;
+        } catch(e) {
+            // no element
+        }
     }
 </script>
 {% endblock scripts %}

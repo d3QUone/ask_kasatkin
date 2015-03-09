@@ -3,6 +3,6 @@
 uwsgi --http :8000 --module ask_kasatkin.wsgi
 
 
-# gunicorn, without nginx yet 
+# gunicorn, connect to concrete port used in Nginx 
 
-gunicorn ask_kasatkin.wsgi:application --bind 185.22.61.117:9000
+gunicorn ask_kasatkin.wsgi:application --bind localhost:7000

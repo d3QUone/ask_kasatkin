@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 from core.views import index_page, show_login, validate_login, register, validate_register, \
-    self_settings, update_settings, self_logout, new_question, add_new_question, test, question_thread
+    self_settings, update_settings, self_logout, new_question, add_new_question, test, question_thread, add_new_answer
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -17,5 +17,6 @@ urlpatterns = patterns('',
     url(r'^save_question/$', add_new_question, name='save_question'),
     url(r'^logout/$', self_logout, name='logout'),
     url(r'^test/$', test),
-    url(r'^question/(?P<qid>\d+)/$', question_thread, name='question')
+    url(r'^question/(?P<qid>\d+)/$', question_thread, name='question'),
+    url(r'^add_new_answer/$', add_new_answer, name='add_new_answer'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

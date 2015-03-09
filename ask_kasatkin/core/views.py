@@ -72,7 +72,7 @@ def prepare_question(question_id):
             "question_id": 1
         }
     ]
-    if question_id > len(data) + 1:
+    if question_id > len(data):
         return data[len(data)-1]
     else:
         return data[question_id-1]
@@ -125,7 +125,7 @@ def index_page(request):
 
 
 # shows a concrete thread: question + answers, allows logged in users add answers, vote
-def question_thread(request, qid=0):
+def question_thread(request, qid = 0, page = 0):
     data = get_static_data()
     data["personal"] = get_user_data(request)
 
@@ -140,7 +140,6 @@ def question_thread(request, qid=0):
         data["question"] = prepare_question(qid)
         data["answers"] = [
             {
-                "title": "that's false",
                 "text": "you better read reference on your theme man ;)",
                 "rating": 3,
                 "selected": True,
@@ -149,8 +148,7 @@ def question_thread(request, qid=0):
                 "id": 1
             },
             {
-                "title": "that's false",
-                "text": "you better read reference on your theme man ;)",
+                "text": "sorry I can't help you with this ,,ao1-0 soiw0mqw --m9  dso pshh apo d",
                 "rating": -5,
                 "selected": False,
                 "author": "Dummy",
@@ -162,7 +160,17 @@ def question_thread(request, qid=0):
         # load answers
 
     return render(request, "question_thread.html", data)
-    #return HttpResponse(qid)
+
+
+
+def add_new_answer(request):
+    # process...
+
+
+    # show the same page
+    x = 0; y = 0
+    return question_thread(request, 0, 0)
+
 
 
 # render login page - OK

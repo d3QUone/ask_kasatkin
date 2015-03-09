@@ -15,5 +15,5 @@ urlpatterns = patterns('',
     url(r'^add/$', new_question, name='create_question'),  # do this in front-end later
     url(r'^save_question/$', add_new_question, name='save_question'),
     url(r'^logout/$', self_logout, name='logout'),
-    url(r'^test/$', test),
+    url(r'^test/', test),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

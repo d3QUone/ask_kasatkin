@@ -16,6 +16,10 @@ server {
         }
 }
 
+upstream backend {
+	server 127.0.0.1:7000; # gunicorn's port
+}
+
 server {
 	# 'ask_kasatkin' - technoparks 1st project (django)
 
@@ -27,15 +31,15 @@ server {
 	proxy_set_header X-Real-IP $remote_addr;
 	
 	location / {
-		proxy_pass http://127.0.0.1:7000; # gunicorn’s port
+		proxy_pass http://backend;
 	}
 	location /static {
 		expires 10d;
 	}
 	location /templates {
-		expires 10d;
+		#expires 10d;
 	}
 	location /uploads {
-		expires 5d;
+		#expires 5d;
 	}
 }

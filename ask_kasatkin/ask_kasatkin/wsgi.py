@@ -12,3 +12,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ask_kasatkin.settings")
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
+
+# -- run it with current configs --
+# gunicorn ask_kasatkin.wsgi:application --bind localhost:7000 --daemon

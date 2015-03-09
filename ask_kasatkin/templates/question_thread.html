@@ -24,13 +24,12 @@
             </div>
         </div>
     </div>
-    <br>
-    <strong>{{ question.answers }} answers</strong>
-    <br>
 
     <div class="row">
         <div class="col-xs-1"></div>
         <div class="col-xs-11">
+
+        <p><strong>{{ question.answers }} answers</strong></p>
 
         <!-- 30 answers on a page, do in backend 'offset' = page*30, 'count'=30 -->
         {% for item in answers %}

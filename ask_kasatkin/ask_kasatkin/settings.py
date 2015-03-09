@@ -49,6 +49,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+
 ALLOWED_HOSTS = (
     '127.0.0.1',
     'localhost',
@@ -91,4 +92,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/Users/vladimir/Desktop/ask_kasatkin/ask_kasatkin/core/static/core'
+
+STATICFILES_DIRS = (
+
+
+)

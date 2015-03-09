@@ -8,6 +8,18 @@ from django.http import HttpResponse
 from random import randint  # used in demo
 
 
+# move all templates from 'core/templates/...' to 'templates/...'
+
+
+# -- UNFINISHED --
+# test method, HOME TASK 4
+def test(request):
+    if request.method == "POST":
+        return str(request.POST.keys())
+    elif request.method == "GET":
+        return str(request.GET)
+
+
 def get_user_data(request):
     data = {}
     if request.user.is_authenticated():
@@ -106,7 +118,8 @@ def validate_new_email(email):
 
 def save_avatar_by_id(f, user_id):
     # -- nex step -- get file extension with JS on frontend, save by correct extension
-    with open('core/static/core/{0}.jpg'.format(user_id), 'wb+') as destination:
+    # 'core/static/core/{0}.jpg' ---> 'uploads/{0}.jpg'
+    with open('uploads/{0}.jpg'.format(user_id), 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
 

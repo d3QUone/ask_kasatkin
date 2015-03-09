@@ -54,7 +54,6 @@
 
 
         <!-- + add answer form on any pagination-current-page-index -->
-        <hr>
         <form class="form-horizontal" method="POST" action="{% url 'core:add_new_answer' %}" onclick="h()">
             {% csrf_token %}
             {% if error %}
@@ -66,7 +65,7 @@
                 </div>
             {% endif %}
             <div class="form-group">
-                <textarea class="form-control" name="text" rows="10" style="max-width: 100%;"></textarea>
+                <textarea class="form-control" name="text" rows="5" style="max-width: 100%;"></textarea>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-default">Answer</button>

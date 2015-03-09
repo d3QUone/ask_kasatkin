@@ -72,10 +72,10 @@ def prepare_question(question_id):
             "question_id": 1
         }
     ]
-    if question_id > len(data):
+    if int(question_id) > len(data):
         return data[len(data)-1]
     else:
-        return data[question_id-1]
+        return data[int(question_id)-1]
 
 
 
@@ -125,7 +125,7 @@ def index_page(request):
 
 
 # shows a concrete thread: question + answers, allows logged in users add answers, vote
-def question_thread(request, qid = 0, page = 0):
+def question_thread(request, qid = 0):
     data = get_static_data()
     data["personal"] = get_user_data(request)
 
@@ -168,8 +168,7 @@ def add_new_answer(request):
 
 
     # show the same page
-    x = 0; y = 0
-    return question_thread(request, 0, 0)
+    return question_thread(request, qid=0)
 
 
 

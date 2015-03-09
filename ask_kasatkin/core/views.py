@@ -77,7 +77,7 @@ def index_page(request):
 
 # render login page - OK
 def show_login(request):
-    return render(request, "core/templates/login.html", get_static_data())
+    return render(request, "login.html", get_static_data())
 
 
 # check input values + return main page back
@@ -100,12 +100,12 @@ def validate_login(request):
     else:
         data["error"] = {"title": "Wrong request", "text": "You should use POST-requests only to login"}
     # returns error message
-    return render(request, "core/templates/login.html", data)
+    return render(request, "login.html", data)
 
 
 # render registration page - OK
 def register(request):
-    return render(request, "core/templates/register.html", get_static_data())
+    return render(request, "register.html", get_static_data())
 
 
 # validation used in registration
@@ -176,7 +176,7 @@ def validate_register(request):
         data["error"] = {"title": "Wrong request", "text": "You should use POST-requests only to login"}
     # returns error message
     data["personal"] = get_user_data(request)  # processes all user's-stuff
-    return render(request, "core/templates/register.html", data)
+    return render(request, "register.html", data)
 
 
 # shown only for logged users - OK
@@ -193,7 +193,7 @@ def self_settings(request, error = None):
     if request.user.is_authenticated(): # add email to other data
         user_id = request.user.id
         data["personal"]["email"] = User.objects.get(id=user_id).email
-    return render(request, "core/templates/setting.html", data)
+    return render(request, "setting.html", data)
 
 
 def update_settings(request):
@@ -235,7 +235,7 @@ def new_question(request, error=None):
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
     data["error"] = error
-    return render(request, "core/templates/add_question.html", data)
+    return render(request, "add_question.html", data)
 
 
 # upload data and add question

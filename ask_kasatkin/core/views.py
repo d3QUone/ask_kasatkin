@@ -14,14 +14,14 @@ from random import randint  # used in demo
 # -- UNFINISHED --
 # test method, HOME TASK 4
 def test(request):
-    out = "Hellow Wold<br>\n"
+    out = "Hello Wold<hr>\n"
     if request.method == "GET":
         for key in request.GET:
-            out += "{0}: {1}".format(key, request.GET[key])
+            out += "<strong>{0}:</strong> {1}<br>\n".format(key, request.GET[key])
     elif request.method == "POST":
         for key in request.POST:
-            out += "{0}: {1}".format(key, request.POST[key])
-    return out
+            out += "<strong>{0}:</strong> {1}<br>\n".format(key, request.POST[key])
+    return HttpResponse(out)
 
 
 def get_user_data(request):

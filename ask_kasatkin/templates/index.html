@@ -22,7 +22,7 @@
                     {% endfor %}
                 {% endif %}
                 <strong>Asked:</strong> {{ item.author }} &nbsp;&nbsp;
-                <a href="{{ item.link }}"><strong>Answer ({{ item.answers }})</strong></a>
+                <a href="{%  url 'core:question' item.question_id %}"><strong>Answer ({{ item.answers }})</strong></a>
                 </div>
             </div>
         </div>

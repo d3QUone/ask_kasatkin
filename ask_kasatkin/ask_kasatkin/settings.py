@@ -35,7 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    #'django.contrib.staticfiles',
     'core',
 )
 
@@ -92,7 +92,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_URL = "/static/"
+#STATIC_URL = "/static/"
 
 TEMPLATE_DIRS = (
     '/root/ask_kasatkin/ask_kasatkin/templates', # server dir

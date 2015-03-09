@@ -34,6 +34,51 @@ def get_user_data(request):
     return data
 
 
+def prepare_question(question_id):
+    # static demo as usual
+    data = [
+        {
+            "title": "how to make a pretty block with css?",
+            "text": "few text now to test",  # first 400 chars e.g
+            "rating": -1,
+            "answers": 1,  # contributed answers
+            "tags": ["CSS3", "HTML5"],
+
+            "author": "CSS_KILLER",
+            "avatar": "demo_CSS_KILLER.jpg",  # img = author_ID + '.jpg'
+            "question_id": 3
+        },
+        {
+            "title": "what's wrong with my django-app urls?",
+            "text": "When you use a ModelForm, the call to is_valid() will perform these validation steps for all the fields that are included on the form. See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[:400] + "...",  # first 400 chars e.g
+            "rating": 3,
+            "answers": 2,  # contributed answers
+            "tags": ["Python", "Django", "MySQL"],  # 3 tags - MAX
+
+            "author": "Vladimir",
+            "avatar": "demo_Vladimir.jpg",
+            "question_id": 2
+        },
+        {
+            "title": "long-long title test | " * 7,
+            "text": "See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[:400] + "...",  # first 400 chars e.g
+            "rating": 341550,
+            "answers": 200124,  # contributed answers
+            "tags": ["Long tags are rather cool but not in Bootstrap :)", "Testing tempate with big footer",
+                     "noSQL is here"],  # 3 tags - MAX
+
+            "author": "1335",
+            "avatar": "demo_1335.jpg",
+            "question_id": 1
+        }
+    ]
+    if question_id > len(data) + 1:
+        return data[len(data)-1]
+    else:
+        return data[question_id-1]
+
+
+
 # -- renders new questions, pagination
 def index_page(request):
     data = get_static_data()
@@ -80,14 +125,44 @@ def index_page(request):
 
 
 # shows a concrete thread: question + answers, allows logged in users add answers, vote
-def question(request, qid):
-    #data = get_static_data()
-    #data["personal"] = get_user_data(request)
+def question_thread(request, qid=0):
+    data = get_static_data()
+    data["personal"] = get_user_data(request)
 
+    # if 'qid' == 0 (means no id) return prepared page with helpful links on usage!
+    # - e.g. how to register / add question / ...
+    if qid == 0:
+        data["question"] = {
+            "title": "Use another ID :)"
+        }
+    else:
+        # load question
+        data["question"] = prepare_question(qid)
+        data["answers"] = [
+            {
+                "title": "that's false",
+                "text": "you better read reference on your theme man ;)",
+                "rating": 3,
+                "selected": True,
+                "author": "CSS_KILLER",
+                "avatar": "demo_CSS_KILLER.jpg",
+                "id": 1
+            },
+            {
+                "title": "that's false",
+                "text": "you better read reference on your theme man ;)",
+                "rating": -5,
+                "selected": False,
+                "author": "Dummy",
+                "avatar": "demo_Dummy.jpg",
+                "id": 3
+            }
+        ]
 
+        # load answers
 
-    #return render(request, "question.html", data)
-    return HttpResponse(qid)
+    return render(request, "question_thread.html", data)
+    #return HttpResponse(qid)
 
 
 # render login page - OK
@@ -275,6 +350,8 @@ def add_new_question(request):
 
 
 # future mock up
+# !!! same template to search by tag OR by name
+# even everything the same... different sources of data only
 def search(request):
     return HttpResponse("JSON result ... ")
 

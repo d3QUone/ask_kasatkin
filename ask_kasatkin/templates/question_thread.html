@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Ask-Kasatkin Main Page{% endblock title %}
+{% block content %}
+    <div class="col-xs-8">
+
+    <div class="row" style="box-shadow: 0 0 1px black; padding: 3px 3px 3px 3px;">
+        <div class="col-xs-2" style="margin-bottom: 3px; padding-left: 4%;">
+            <img class="img-rounded" style="height: 80px; width: 80px; margin-top: 3px;" src="../uploads/{{ question.avatar }}"><br>
+            <strong>Rating: {{ question.rating }}</strong><br>
+            <!-- use JQuery to like -->
+            <a href="" class="btn btn-success btn-sm" style="width: 30px;">+</a>
+            <a href="" class="btn btn-danger btn-sm" style="width: 30px;">-</a>
+        </div>
+        <div class="col-xs-10" style="position: relative;">
+            <p><a href="{%  url 'core:question' question.question_id %}" style="text-decoration: underline;"><strong>{{ question.title }}</strong></a></p>
+            <p>{{ question.text }}</p>
+            <div style="position: relative; bottom: 3px;">
+                {%  if question.tags %}
+                    <strong>Tags: </strong>
+                    {% for tag in question.tags %}
+                        <a href="../search_by_tag_method?tag={{ tag }}" style="text-decoration: underline;">{{ tag }}</a>&nbsp;
+                    {% endfor %}
+                {% endif %}
+                <strong>Asked:</strong> {{ item.author }} &nbsp;&nbsp;
+                <a href="{{ item.link }}"><strong>Answer ({{ item.answers }})</strong></a>
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
+
+    <div class="col-xs-1"></div>
+    <div class="col-xs-7">
+    {% for item in answers %}
+        <div class="row" style="box-shadow: 0 0 1px black; padding: 3px 3px 3px 3px;">
+            <div class="col-xs-2" style="margin-bottom: 3px; padding-left: 4%;">
+                <img class="img-rounded" style="height: 80px; width: 80px; margin-top: 3px;" src="../uploads/{{ item.avatar }}"><br>
+                <strong>Rating: {{ item.rating }}</strong><br>
+                <!-- use JQuery to like -->
+                <a href="" class="btn btn-success btn-sm" style="width: 30px;">+</a>
+                <a href="" class="btn btn-danger btn-sm" style="width: 30px;">-</a>
+            </div>
+            <div class="col-xs-10" style="position: relative;">
+                <p><a href="{%  url 'core:question' item.question_id %}" style="text-decoration: underline;"><strong>{{ item.title }}</strong></a></p>
+                <p>{{ item.text }}</p>
+                <div style="position: relative; bottom: 3px;">
+                {%  if item.tags %}
+                    <strong>Tags: </strong>
+                    {% for tag in item.tags %}
+                        <a href="../search_by_tag_method?tag={{ tag }}" style="text-decoration: underline;">{{ tag }}</a>&nbsp;
+                    {% endfor %}
+                {% endif %}
+                <strong>Asked:</strong> {{ item.author }} &nbsp;&nbsp;
+                <a href="{{ item.link }}"><strong>Answer ({{ item.answers }})</strong></a>
+                </div>
+            </div>
+        </div>
+        <br>
+    {% endfor %}
+    </div>
+
+    <!-- + add answer form -->
+{% endblock content %}
+
+{% block pagination %}
+{% endblock pagination %}

@@ -35,7 +35,6 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    #'django.contrib.staticfiles',
     'core',
 )
 
@@ -48,8 +47,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
-
-#TEMPLATE_CONTEXT_PROCESSORS = ()
 
 # nginx care
 ALLOWED_HOSTS = (

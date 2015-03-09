@@ -72,7 +72,7 @@ def index_page(request):
             "avatar": "demo_1335.jpg"
         }
     ]
-    return render(request, "core/templates/index.html", data)
+    return render(request, "index.html", data)
 
 
 # render login page - OK

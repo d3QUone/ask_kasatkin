@@ -1,0 +1,13 @@
+CONFIG = {
+	'mode': 'wsgi',
+	'working_dir': '/root/ask_kasatkin/ask_kasatkin',
+	'user': 'my_user',
+	'group': 'my_user',
+	'args': (
+		'--bind=185.22.61.117:8081',
+		'--workers=3',
+		'--timeout=60',
+		'_helloworld:application',
+	),
+}
+

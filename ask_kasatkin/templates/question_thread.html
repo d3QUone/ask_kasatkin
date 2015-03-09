@@ -4,7 +4,7 @@
     <div class="col-xs-8">
     <div class="row" style="box-shadow: 0 0 1px black; padding: 3px 3px 3px 3px;">
         <div class="col-xs-2" style="margin-bottom: 3px; padding-left: 4%;">
-            <img class="img-rounded" style="height: 80px; width: 80px; margin-top: 3px;" src="../uploads/{{ question.avatar }}"><br>
+            <img class="img-rounded" style="height: 80px; width: 80px; margin-top: 3px;" src="{{ MEDIA_URL }}/{{ question.avatar }}"><br>
             <strong>Rating: {{ question.rating }}</strong><br>
             <!-- use JQuery to like -->
             <a href="" class="btn btn-success btn-sm" style="width: 30px;">+</a>
@@ -21,7 +21,7 @@
                     {% endfor %}
                 {% endif %}
                 <strong>Asked:</strong> {{ item.author }} &nbsp;&nbsp;
-                <a href="{{ item.link }}"><strong>Answer ({{ item.answers }})</strong></a>
+                <strong>Answer ({{ item.answers }})</strong>
             </div>
         </div>
     </div>
@@ -33,7 +33,7 @@
     {% for item in answers %}
         <div class="row" style="box-shadow: 0 0 1px black; padding: 3px 3px 3px 3px;">
             <div class="col-xs-2" style="margin-bottom: 3px; padding-left: 4%;">
-                <img class="img-rounded" style="height: 80px; width: 80px; margin-top: 3px;" src="../uploads/{{ item.avatar }}"><br>
+                <img class="img-rounded" style="height: 80px; width: 80px; margin-top: 3px;" src="{{ MEDIA_URL }}/{{ item.avatar }}"><br>
                 <strong>Rating: {{ item.rating }}</strong><br>
                 <!-- use JQuery to like -->
                 <a href="" class="btn btn-success btn-sm" style="width: 30px;">+</a>

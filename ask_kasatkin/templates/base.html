@@ -17,7 +17,7 @@
                     <a href="{% url 'core:home' %}"><h4>Ask-Kasatkin<!--small>ответы на все вопросы</small--></h4></a>
                 </div>
                 <div class="col-xs-6" style="margin-top: 8px;">
-                    <form method="GET" action="/search">
+                    <form method="GET" action="../search">
                         <input name="request" type="search" class="form-control" placeholder="Find something">
                     </form>
                 </div>
@@ -33,7 +33,7 @@
                     <div class="container-fluid">
                     {% if user.is_authenticated %}
                         <div class="col-xs-3">
-                            <img class="img-rounded" style="height: 35px;" src="uploads/{{ personal.avatar }}"><br>
+                            <img class="img-rounded" style="height: 35px;" src="../uploads/{{ personal.avatar }}"><br>
                         </div>
                         <div class="col-xs-9">
                             {{ personal.nickname }}
@@ -62,7 +62,7 @@
             <!-- RIGHT COLUMN: (tags + best members), the same for all cases -->
             <!-- + all tags are links to search-by-tag -->
             <p><h4>Popular Tags:</h4></p>
-            {% for tag in popular_tags %}<a href="/tag/{{ tag.text }}"><span class="{{ tag.label }}">{{ tag.text }}</span></a>
+            {% for tag in popular_tags %}<a href="../tag/{{ tag.text }}"><span class="{{ tag.label }}">{{ tag.text }}</span></a>
             {% endfor %}
             <br>
             <hr>

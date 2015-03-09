@@ -14,7 +14,7 @@ from random import randint  # used in demo
 # -- UNFINISHED --
 # test method, HOME TASK 4
 def test(request):
-    out = "Hello Wold<hr>\n"
+    out = "Hello World<hr>\n"
     if request.method == "GET":
         for key in request.GET:
             out += "<strong>{0}:</strong> {1}<br>\n".format(key, request.GET[key])
@@ -43,29 +43,28 @@ def index_page(request):
     data["questions"] = [
         {
             "title": "how to make a pretty block with css?",
-            "link": "link_to_open_the_question_thread_by_ID_i_think",
             "text": "few text now to test",  # first 400 chars e.g
             "rating": -1,
             "answers": 1,  # contributed answers
             "tags": ["CSS3", "HTML5"],
 
             "author": "CSS_KILLER",
-            "avatar": "demo_CSS_KILLER.jpg"  # img = author_ID + '.jpg'
+            "avatar": "demo_CSS_KILLER.jpg",  # img = author_ID + '.jpg'
+            "question_id": 3
         },
         {
             "title": "what's wrong with my django-app urls?",
-            "link": "link_to_open_the_question_thread_by_ID_i_think",
             "text": "When you use a ModelForm, the call to is_valid() will perform these validation steps for all the fields that are included on the form. See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[:400] + "...",  # first 400 chars e.g
             "rating": 3,
             "answers": 2,  # contributed answers
             "tags": ["Python", "Django", "MySQL"],  # 3 tags - MAX
 
             "author": "Vladimir",
-            "avatar": "demo_Vladimir.jpg"
+            "avatar": "demo_Vladimir.jpg",
+            "question_id": 2
         },
         {
             "title": "long-long title test | " * 7,
-            "link": "link_to_open_the_question_thread_by_ID_i_think",
             "text": "See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[:400] + "...",  # first 400 chars e.g
             "rating": 341550,
             "answers": 200124,  # contributed answers
@@ -73,10 +72,22 @@ def index_page(request):
                      "noSQL is here"],  # 3 tags - MAX
 
             "author": "1335",
-            "avatar": "demo_1335.jpg"
+            "avatar": "demo_1335.jpg",
+            "question_id": 1
         }
     ]
     return render(request, "index.html", data)
+
+
+# shows a concrete thread: question + answers, allows logged in users add answers, vote
+def question(request, qid):
+    #data = get_static_data()
+    #data["personal"] = get_user_data(request)
+
+
+
+    #return render(request, "question.html", data)
+    return HttpResponse(qid)
 
 
 # render login page - OK

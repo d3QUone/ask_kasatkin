@@ -12,7 +12,7 @@
                 <a href="" class="btn btn-danger btn-sm" style="width: 30px;">-</a>
             </div>
             <div class="col-xs-10" style="position: relative;">
-                <p><a href="{{ item.link }}" style="text-decoration: underline;"><strong>{{ item.title }}</strong></a></p>
+                <p><a href="{{ url 'core:question' item.question_id }}" style="text-decoration: underline;"><strong>{{ item.title }}</strong></a></p>
                 <p>{{ item.text }}</p>
                 <div style="position: relative; bottom: 3px;">
                 {%  if item.tags %}

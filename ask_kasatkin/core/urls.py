@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, url
-from core.views import index_page, show_login, validate_login, register, validate_register, self_settings, update_settings, self_logout, new_question, add_new_question, test
+from core.views import index_page, show_login, validate_login, register, validate_register, \
+    self_settings, update_settings, self_logout, new_question, add_new_question, test, question
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -16,4 +17,5 @@ urlpatterns = patterns('',
     url(r'^save_question/$', add_new_question, name='save_question'),
     url(r'^logout/$', self_logout, name='logout'),
     url(r'^test/$', test),
+    url(r'^question/(?P<qid>\d+)/$', question, name='question')
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

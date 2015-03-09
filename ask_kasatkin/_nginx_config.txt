@@ -1,20 +1,15 @@
-# used for 2 projects
-
 server {
 	# 'vksmm'-project config (flask)
 
 	listen 185.22.61.117:7070;
-	# server_name vksmm.info www.vksmm.info # uncomment after DNS-update 
-
 	root /root/vksmm;	
 
         large_client_header_buffers 4 32k;
-	
 	proxy_set_header Host $host;
 	proxy_set_header X-Real-IP $remote_addr;
 
         location / {
-                proxy_pass http://127.0.0.1:7070;
+                proxy_pass http://127.0.0.1:7070; # gunicorn’s port
         }
         location /static {
 		expires 10d;
@@ -25,8 +20,15 @@ server {
 	# 'ask_kasatkin' - technoparks 1st project (django)
 
 	listen 185.22.61.117:7000;
-	root /root/ask_kasatkin;
+	root /root/ask_kasatkin/ask_kasatkin;
 
+	large_client_header_buffers 4 32k;
+	proxy_set_header Host $host;
+	proxy_set_header X-Real-IP $remote_addr;
+	
+	location / {
+		proxy_pass http://127.0.0.1:7000; # gunicorn’s port
+	}
 	location /static {
 		expires 10d;
 	}

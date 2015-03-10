@@ -2,18 +2,20 @@ server {
 	# 'vksmm'-project config (flask)
 
 	listen 185.22.61.117:7070;
-	root /root/vksmm;	
-
-        large_client_header_buffers 4 32k;
+	server_name www.vksmm.info vksmm.info;
+	root /root/vksmm;
+	
+	large_client_header_buffers 4 32k;
+	
 	proxy_set_header Host $host;
 	proxy_set_header X-Real-IP $remote_addr;
 
-        location / {
-                proxy_pass http://127.0.0.1:7070; # gunicorn’s port
-        }
-        location /static {
+	location / {        	
+		proxy_pass http://127.0.0.1:7070;
+	}
+	location /static {
 		expires 10d;
-        }
+	}
 }
 
 upstream backend {
@@ -33,13 +35,23 @@ server {
 	location / {
 		proxy_pass http://backend;
 	}
-	location /static {
-		expires 10d;
+
+	location ~* \.(ico|js|css|html)$ {
+		# add gziping ....
+		
+		gzip on;
+		gzip_disable "msie6";
+		gzip_types text/css text/html application/x-javascript text/javascript;
+
+		expires 5d;
+		alias /root/ask_kasatkin/ask_kasatkin/static;
 	}
+	
 	location /templates {
 		#expires 10d;
 	}
-	location /uploads {
-		#expires 5d;
+	
+	location ^~ /uploads {
+		expires 5d;
 	}
 }

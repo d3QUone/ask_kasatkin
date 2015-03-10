@@ -19,4 +19,4 @@ urlpatterns = patterns('',
     url(r'^test/$', test),
     url(r'^question/(?P<qid>\d+)/$', question_thread, name='question'),
     url(r'^add_new_answer/$', add_new_answer, name='add_new_answer'),
-) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

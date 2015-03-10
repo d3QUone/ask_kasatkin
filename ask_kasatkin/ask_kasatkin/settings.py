@@ -96,4 +96,8 @@ TEMPLATE_DIRS = (
 )
 
 MEDIA_ROOT = '/root/ask_kasatkin/ask_kasatkin/uploads'
-MEDIA_URL = '/uploads/'
+MEDIA_URL = '/uploads'
+
+
+STATIC_ROOT = '/root/ask_kasatkin/ask_kasatkin/static'
+STATIC_URL = '/static'

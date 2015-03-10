@@ -11,8 +11,12 @@ from random import randint  # used in demo
 # move all templates from 'core/templates/...' to 'templates/...'
 
 
+# reset csrt checkup
+from django.views.decorators.csrf import csrf_exempt
+
 # -- UNFINISHED --
 # test method, HOME TASK 4
+@csrf_exempt
 def test(request):
     out = "Hello World<hr>\n"
     if request.method == "GET":

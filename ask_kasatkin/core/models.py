@@ -49,9 +49,21 @@ class the_tag(models.Model):
 class store_tag(models.Model):
     tag = models.ForeignKey(the_tag)
     question = models.ForeignKey(the_question)
+    name = models.CharField(max_length=100)
 
 
-#       add class to store
-#      votes of the members
-#       /               \
-# to questions      to answers
+# save for Questions
+class likes_questions(models.Model):
+    user_id = models.ForeignKey(User)
+    question_id = models.ForeignKey(the_question)
+    state = 0  # default - no vote. vars: -1, 0, 1
+
+
+# save for Answers
+class likes_answers(models.Model):
+    user_id = models.ForeignKey(User)
+    answer_id = models.ForeignKey(the_answer)
+    state = 0
+
+# render likes:
+#

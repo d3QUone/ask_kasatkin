@@ -2,19 +2,13 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from core.models import user_properties
+from core.models import user_properties, the_question, the_answer, the_tag, store_tag, likes_questions, likes_answers
 
 from django.http import HttpResponse
 from random import randint  # used in demo
+from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup
 
 
-# move all templates from 'core/templates/...' to 'templates/...'
-
-
-# reset csrt checkup
-from django.views.decorators.csrf import csrf_exempt
-
-# -- UNFINISHED --
 # test method, HOME TASK 4
 @csrf_exempt
 def test(request):
@@ -356,6 +350,21 @@ def add_new_question(request):
             # - save to DB
             # - - think where to redirect back
             error = {"title": "Saved-gap", "text": "this method isn't complete yet :)"}
+
+            quest = the_question()
+            quest.title = title[:250] # max 250 chars
+            quest.text = text
+            quest.author = request.user
+            quest.save()
+
+            for t in tags[:3]:
+                tag = the_tag()
+                tag.name = str(t).lower()  # any lower?
+                tag.save()
+
+                # all tags stores in lower case
+                #parent_tag = store_tag.objects.get(name=)
+
 
     return new_question(request, error=error)
 

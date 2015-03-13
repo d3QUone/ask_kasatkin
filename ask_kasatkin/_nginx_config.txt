@@ -1,12 +1,12 @@
 server {
 	# 'vksmm'-project config (flask)
 
-	listen 185.22.61.117:7070;
+	listen 185.22.61.117;
 	server_name www.vksmm.info vksmm.info;
+
 	root /root/vksmm;
 	
 	large_client_header_buffers 4 32k;
-	
 	proxy_set_header Host $host;
 	proxy_set_header X-Real-IP $remote_addr;
 

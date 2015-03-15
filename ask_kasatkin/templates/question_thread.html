@@ -28,8 +28,12 @@
     <div class="row">
         <div class="col-xs-1"></div>
         <div class="col-xs-11">
-
-        <p><strong>{{ question.answers }} answers</strong></p>
+            <!-- ANSWERS -->
+            <div class="row">
+                <div style="margin-top: 15px; margin-bottom: 15px;">
+                    <h4>{{ question.answers }} Answers</h4>
+                </div>
+            </div>
 
         <!-- 30 answers on a page, do in backend 'offset' = page*30, 'count'=30 -->
         {% for item in answers %}
@@ -41,11 +45,30 @@
                     <a href="" class="btn btn-success btn-sm" style="width: 30px;">+</a>
                     <a href="" class="btn btn-danger btn-sm" style="width: 30px;">-</a>
                 </div>
-                <div class="col-xs-10" style="position: relative;">
+                <div class="col-xs-10" style="position: relative; height: 100%;">
                     <p>{{ item.text }}</p>
                     <div style="position: relative; bottom: 3px;">
                         <strong>Author:</strong> {{ item.author }}
                     </div>
+                    {% if user.is_authenticated %}
+                        <!-- this must be showing/working only for the author -->
+                        <form method="post" action="/correct_answer">
+                            <div class="checkbox">
+                                <label>
+                                    {% if item.selected %}
+                                        <p class="bg-success"><input type="checkbox" checked="checked">Correct!</p>
+                                    {% else %}
+                                        <input type="checkbox">Correct?
+                                    {% endif %}
+                                </label>
+                              </div>
+                        </form>
+                    {% else %}
+                        <!-- draw a badge here -->
+                        {% if item.selected %}
+                            <p class="bg-success">Correct!</p>
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
             <br>
@@ -53,23 +76,28 @@
 
 
         <!-- + add answer form on any pagination-current-page-index -->
-        <form class="form-horizontal" method="POST" action="{% url 'core:add_new_answer' %}" onclick="h()">
-            {% csrf_token %}
-            {% if error %}
-                <div class="form-group" id="add_error">
-                    <div class="alert alert-danger" role="alert">
-                        <strong>{{ error.title }}</strong>
-                        <p>{{ error.text }}</p>
-                    </div>
+            <div class="row">
+                <div style="margin-bottom: 5px;">
+                    <h4>Add answer:</h4>
                 </div>
-            {% endif %}
-            <div class="form-group">
-                <textarea class="form-control" name="text" rows="5" style="max-width: 100%;"></textarea>
             </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-default">Answer</button>
-            </div>
-        </form>
+            <form class="form-horizontal" method="POST" action="{% url 'core:add_new_answer' %}" onclick="h()">
+                {% csrf_token %}
+                {% if error %}
+                    <div class="form-group" id="add_error">
+                        <div class="alert alert-danger" role="alert">
+                            <strong>{{ error.title }}</strong>
+                            <p>{{ error.text }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <textarea class="form-control" name="text" rows="5" style="max-width: 100%;"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default">Answer</button>
+                </div>
+            </form>
         </div>
     </div>
     </div> <!-- <main column -->

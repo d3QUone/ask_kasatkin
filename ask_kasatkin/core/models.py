@@ -17,7 +17,7 @@ class the_question(models.Model):
     the_answer_was_chosen = models.IntegerField(default=0) # when author chooses an answer set 1
     author = models.ForeignKey(User)
 
-    date = models.IntegerField(default=0)
+    date = models.BigIntegerField(default=0)
     def save(self, *args, **kwargs):
         if not self.id:
             self.date = int(time.time())
@@ -31,7 +31,7 @@ class the_answer(models.Model):
     author = models.ForeignKey(User)
     contributed_to = models.ForeignKey(the_question) # which question to answer
 
-    date = models.IntegerField(default=0)
+    date = models.BigIntegerField(default=0)
     def save(self, *args, **kwargs):
         if not self.id:
             self.date = int(time.time())

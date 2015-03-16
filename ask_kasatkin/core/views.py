@@ -1,3 +1,10 @@
+# encoding: utf8
+
+# make UTF 8 global!
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -6,11 +13,6 @@ from core.models import user_properties, the_question, the_answer, the_tag, stor
 from django.http import HttpResponse
 from random import randint  # used in demo
 from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup
-
-# make UTF 8 global!
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 
 # test method, HOME TASK 4
@@ -48,7 +50,7 @@ def index_page(request, offset = 0):
     buffer = []
     append = buffer.append
 
-    Question_Data = the_question.objects.all().order_by('date')[offset*30:(offset+1)*30]
+    Question_Data = the_question.objects.all().order_by('-date')[offset*30:(offset+1)*30]
     for item in Question_Data:
         append({
             "title": str(item.title),
@@ -162,7 +164,6 @@ def prepare_question(question_id):
     data["rating"] = question.rating
     data["author"] = question.author
     data["question_id"] = question_id
-
     return data
 
 

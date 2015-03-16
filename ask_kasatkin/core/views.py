@@ -86,15 +86,15 @@ def index_page(request):
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
 
+    '''
     # get offset , count = 30...
-
     buffer = []
     append = buffer.append
 
-    Question_Data = the_question.objects.get();
+    Question_Data = the_question.objects.all()
 
-    count = 0
-    for data in Question_Data and count < 30:
+    count = 0 # count < 30 // filter it
+    for data in Question_Data:
         append({
             "title": data.title,
             "text": data.text,
@@ -110,9 +110,9 @@ def index_page(request):
         count += 1
 
     data["questions"] = buffer
+    '''
 
     # ------- A STATIC DEMO -------
-    '''
     data["questions"] = [
         {
             "title": "how to make a pretty block with css?",
@@ -149,7 +149,7 @@ def index_page(request):
             "question_id": 1
         }
     ]
-    '''
+
     return render(request, "index.html", data)
 
 

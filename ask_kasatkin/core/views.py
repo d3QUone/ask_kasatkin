@@ -174,7 +174,7 @@ def prepare_question(question_id):
 
 
 # shows a concrete thread: question + answers, allows logged in users add answers, vote
-def question_thread(request, qid = 0):
+def question_thread(request, qid = 0, error = None):
     data = get_static_data()
     data["personal"] = get_user_data(request)
 
@@ -208,6 +208,7 @@ def question_thread(request, qid = 0):
 
         # load answers
 
+    data["error"] = error
     return render(request, "question_thread.html", data)
 
 
@@ -372,7 +373,7 @@ def update_settings(request):
 ##### QUESTIONS ######
 
 # show add-new-question page
-def new_question(request, error=None):
+def new_question(request, error = None):
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
     data["error"] = error
@@ -381,7 +382,6 @@ def new_question(request, error=None):
 
 # upload data and add question
 def add_new_question(request):
-    error = None
     if request.method == "POST":
         title = request.POST["title"]
         text = request.POST["text"]
@@ -420,11 +420,23 @@ def add_new_question(request):
 
 
 def add_new_answer(request):
-    # process...
+    redirect_id = 0
+    error = None
+    if request.method == 'POST':
+        redirect_id = request.POST["redirect_id"]
+        text = request.POST["text"]
 
+        if len(text) > 10:
+            ans = the_answer()
+            ans.text = text
+            ans.author = request.user
+            ans.contributed_to = redirect_id
+            ans.save()
+        else:
+            error = {"title": "Too short answer", "text": "Describe your idea in a proper way please"}
 
-    # show the same page
-    return question_thread(request, qid=0)
+    # how to show the same page????
+    return question_thread(request, qid=redirect_id, error=error)
 
 
 ##### SEARCH #####

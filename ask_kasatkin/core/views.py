@@ -439,9 +439,10 @@ def add_new_question(request):
                 # all tags stores in lower case
                 #parent_tag = store_tag.objects.get(name=)
             '''
-            #error = {"title": "Saved OK", "text": ""}
-
-    # - - think where to redirect back
+            # returns new (clear) thread
+            return question_thread(request, qid=quest.id)
+    else:
+        error = {"title": "Only POST-requests are allowed", "text": ""}
     return new_question(request, error=error)
 
 

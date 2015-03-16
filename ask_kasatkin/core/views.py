@@ -409,6 +409,7 @@ def new_question(request, error = None):
 
 # upload data and add question
 def add_new_question(request):
+    error = None
     if request.method == "POST":
         title = request.POST["title"]
         text = request.POST["text"]

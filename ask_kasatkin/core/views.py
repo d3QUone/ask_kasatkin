@@ -186,18 +186,25 @@ def question_thread(request, qid = 0, error = None):
 
         data["question"] = prepare_question(qid) # load question
 
-        question = the_question.objects.get(id=qid)
+        try:
+            question = the_question.objects.get(id=qid)
+            answers = the_answer.objects.filter(contributed_to=question)
 
-        answers = the_answer.objects.get(contributed_to=question)
+            buf = []
+            append = buf.append
+            for a in answers:
+                append({
+                    "text": a.text,
+                    "rating": a.rating,
+                    "selected": a.is_marked_as_true,
+                    "author": a.author,
+                    "avatar": "{0}.jpg".format(a.author.id),
+                    "id": a.id
+                })
 
-        data["answers"] = [{
-                               "text": a.text,
-                               "rating": a.rating,
-                                "selected": a.is_marked_as_true,
-                                "author": a.author,
-                                "avatar": a.author.id,
-                                "id": a.id
-                           } for a in answers]
+            data["answers"] = buf
+        except:
+            data["answers"] = []
 
         '''
         # STATIC DEMO as usual

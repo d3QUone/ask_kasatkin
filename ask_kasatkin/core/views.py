@@ -47,25 +47,28 @@ def index_page(request, offset = 0):
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
 
-    buffer = []
-    append = buffer.append
+    Q_buffer = []
+    append = Q_buffer.append
 
     Question_Data = the_question.objects.all().order_by('-date')[offset*30:(offset+1)*30]
     for item in Question_Data:
+
+        #ans_count = the_answer.objects.get(contributed_to=item).count()
+
         append({
-            "title": str(item.title),
-            "text": str(item.text),
-            "rating": str(item.rating),
-            #"answers": data.answers # <--- count related answers (the_answer)
-            #"tags": -- count related (tags)
+            "title": item.title,
+            "text": item.text,
+            "rating": item.rating,
+            #"answers": ans_count, # <--- count related answers (the_answer)
+            #"tags": item. , #-- get related (tags)
 
-            "author": str(item.author),
-            #"avatar":  ... # related (User)
+            "author": item.author,
+            "avatar": "{0}.jpg".format(item.author.id),
 
-            "question_id": str(item.id)
+            "question_id": item.id
         })
 
-    data["questions"] = buffer
+    data["questions"] = Q_buffer
 
     '''
     # ------- A STATIC DEMO -------
@@ -162,7 +165,10 @@ def prepare_question(question_id):
     data["title"] = question.title
     data["text"] = question.text
     data["rating"] = question.rating
+
     data["author"] = question.author
+    data["avatar"] = "{0}.jpg".format(question.author.id)
+
     data["question_id"] = question_id
     return data
 
@@ -183,7 +189,7 @@ def question_thread(request, qid = 0):
         data["question"] = prepare_question(qid)
         data["answers"] = [
             {
-                "text": "you better read reference on your theme man ;)",
+                "text": "you better read reference on your theme man ;)... testing a <strong>leak</strong> inside STATIC-answer body....\n :) :) :)",
                 "rating": 3,
                 "selected": True,
                 "author": "CSS_KILLER",
@@ -396,6 +402,8 @@ def add_new_question(request):
             quest.author = request.user
             quest.save()
 
+            '''
+            # not related now...
             for t in tags[:3]:
                 tag = the_tag()
                 tag.name = str(t).lower()  # any lower?
@@ -403,6 +411,7 @@ def add_new_question(request):
 
                 # all tags stores in lower case
                 #parent_tag = store_tag.objects.get(name=)
+            '''
 
             error = {"title": "Saved OK", "text": ""}
 

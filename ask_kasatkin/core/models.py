@@ -49,7 +49,7 @@ class the_tag(models.Model):
 class store_tag(models.Model):
     tag = models.ForeignKey(the_tag)
     question = models.ForeignKey(the_question)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100) # name -> the_tag???
 
 
 # save for Questions

@@ -427,10 +427,12 @@ def add_new_answer(request):
         text = request.POST["text"]
 
         if len(text) > 10:
+            ques = the_question.objects.get(id=redirect_id)
+
             ans = the_answer()
             ans.text = text
             ans.author = request.user
-            ans.contributed_to = redirect_id
+            ans.contributed_to = ques
             ans.save()
         else:
             error = {"title": "Too short answer", "text": "Describe your idea in a proper way please"}

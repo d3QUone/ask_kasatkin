@@ -22,6 +22,8 @@ def test(request):
     return HttpResponse(out)
 
 
+##### USER PERSONAL DATA (FOR LOGGED IN), main method #####
+
 def get_user_data(request):
     data = {}
     if request.user.is_authenticated():
@@ -31,6 +33,8 @@ def get_user_data(request):
         data["avatar"] = "{0}.jpg".format(user_id)  # don't forget to update extensions
     return data
 
+
+#####
 
 def prepare_question(question_id):
     # static demo as usual
@@ -83,6 +87,11 @@ def index_page(request):
     data["personal"] = get_user_data(request)  # processes all user's-stuff
 
     # ------- A STATIC DEMO -------
+
+    # get offset , count = 30...
+    data["questions"] = the_question.objects.get();
+
+    '''
     data["questions"] = [
         {
             "title": "how to make a pretty block with css?",
@@ -119,6 +128,7 @@ def index_page(request):
             "question_id": 1
         }
     ]
+    '''
     return render(request, "index.html", data)
 
 
@@ -160,15 +170,7 @@ def question_thread(request, qid = 0):
     return render(request, "question_thread.html", data)
 
 
-
-def add_new_answer(request):
-    # process...
-
-
-    # show the same page
-    return question_thread(request, qid=0)
-
-
+##### USER METHODS #####
 
 # render login page - OK
 def show_login(request):
@@ -325,6 +327,9 @@ def update_settings(request):
     return self_settings(request, error=error)  # return the same page with new data
 
 
+
+##### QUESTIONS ######
+
 # show add-new-question page
 def new_question(request, error=None):
     data = get_static_data()
@@ -349,7 +354,6 @@ def add_new_question(request):
         else:
             # - save to DB
             # - - think where to redirect back
-            error = {"title": "Saved-gap", "text": "this method isn't complete yet :)"}
 
             quest = the_question()
             quest.title = title[:250] # max 250 chars
@@ -365,16 +369,30 @@ def add_new_question(request):
                 # all tags stores in lower case
                 #parent_tag = store_tag.objects.get(name=)
 
+            error = {"title": "Saved OK", "text": ""}
 
     return new_question(request, error=error)
 
 
-# future mock up
+
+def add_new_answer(request):
+    # process...
+
+
+    # show the same page
+    return question_thread(request, qid=0)
+
+
+##### SEARCH #####
+
 # !!! same template to search by tag OR by name
 # even everything the same... different sources of data only
 def search(request):
     return HttpResponse("JSON result ... ")
 
+
+
+##### STATIC DATA #####
 
 # returns popular tags from file ? cache, will be dynamic in future updates
 def get_static_data():

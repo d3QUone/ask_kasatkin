@@ -47,19 +47,17 @@ def index_page(request, offset = 0):
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
 
-    Q_buffer = []
-    append = Q_buffer.append
+    buf = []
+    append = buf.append
 
-    Question_Data = the_question.objects.all().order_by('-date')[offset*30:(offset+1)*30]
-    for item in Question_Data:
-
-        #ans_count = the_answer.objects.get(contributed_to=item).count()
-
+    all_questions = the_question.objects.all().order_by('-date')[offset*30:(offset+1)*30]
+    for item in all_questions:
+        answers_amount = the_answer.objects.filter(contributed_to=item).count()
         append({
             "title": item.title,
             "text": item.text,
             "rating": item.rating,
-            #"answers": ans_count, # <--- count related answers (the_answer)
+            "answers": answers_amount,
             #"tags": item. , #-- get related (tags)
 
             "author": item.author,
@@ -68,7 +66,7 @@ def index_page(request, offset = 0):
             "question_id": item.id
         })
 
-    data["questions"] = Q_buffer
+    data["questions"] = buf
 
     '''
     # ------- A STATIC DEMO -------
@@ -113,12 +111,11 @@ def index_page(request, offset = 0):
 
 
 
-
-#####
+##### QUESTION THREAD #####
 
 def prepare_question(question_id):
-    # static demo as usual
     '''
+    # static demo as usual
     data = [
         {
             "title": "how to make a pretty block with css?",
@@ -159,12 +156,14 @@ def prepare_question(question_id):
 
     # load data from DB
     question = the_question.objects.get(id=question_id)
+    answers_amount = the_answer.objects.filter(contributed_to=question).count()
 
     # prepare
     data = {}
     data["title"] = question.title
     data["text"] = question.text
     data["rating"] = question.rating
+    data["answers"] = answers_amount
 
     data["author"] = question.author
     data["avatar"] = "{0}.jpg".format(question.author.id)
@@ -183,8 +182,12 @@ def question_thread(request, qid = 0, error = None):
         data = get_static_data()
         data["error"] = error
         data["personal"] = get_user_data(request)
+        data["question"] = prepare_question(qid)
 
-        data["question"] = prepare_question(qid) # load question
+        if data["question"]["author"] == request.user:
+            data["owner"] = True
+        else:
+            data["owner"] = False
 
         try:
             question = the_question.objects.get(id=qid)
@@ -227,8 +230,8 @@ def question_thread(request, qid = 0, error = None):
             }
         ]
         '''
-
         return render(request, "question_thread.html", data)
+
 
 
 ##### USER METHODS #####

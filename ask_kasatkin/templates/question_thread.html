@@ -50,7 +50,9 @@
                     <div style="position: relative; bottom: 3px;">
                         <strong>Author:</strong> {{ item.author }}
                     </div>
-                    {% if user.is_authenticated %}
+
+                    <!-- only author can vote! -->
+                    {% if owner %}
                         <!-- this must be showing/working only for the author -->
                         <form method="post" action="/correct_answer">
                             <div class="checkbox">

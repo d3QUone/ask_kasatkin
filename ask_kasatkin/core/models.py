@@ -2,7 +2,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-import datetime
+import time  # cause timestamps are better :)
 
 class user_properties(models.Model):
     user = models.ForeignKey(User)
@@ -17,11 +17,10 @@ class the_question(models.Model):
     the_answer_was_chosen = models.IntegerField(default=0) # when author chooses an answer set 1
     author = models.ForeignKey(User)
 
-    date = models.DateTimeField(editable=False)
+    date = models.IntegerField(default=0)
     def save(self, *args, **kwargs):
-        ''' On save, update timestamps '''
         if not self.id:
-            self.date = datetime.datetime.today()
+            self.date = int(time.time())
         return super(the_question, self).save(*args, **kwargs)
 
 
@@ -32,11 +31,10 @@ class the_answer(models.Model):
     author = models.ForeignKey(User)
     contributed_to = models.ForeignKey(the_question) # which question to answer
 
-    date = models.DateTimeField(editable=False)
+    date = models.IntegerField(default=0)
     def save(self, *args, **kwargs):
-        ''' On save, update timestamps '''
         if not self.id:
-            self.date = datetime.datetime.today()
+            self.date = int(time.time())
         return super(the_answer, self).save(*args, **kwargs)
 
 

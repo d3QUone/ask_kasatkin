@@ -1,4 +1,3 @@
-# coding:utf8
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -7,6 +6,11 @@ from core.models import user_properties, the_question, the_answer, the_tag, stor
 from django.http import HttpResponse
 from random import randint  # used in demo
 from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup
+
+# make UTF 8 global!
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 
 # test method, HOME TASK 4
@@ -34,52 +38,7 @@ def get_user_data(request):
     return data
 
 
-#####
-
-def prepare_question(question_id):
-    # static demo as usual
-    data = [
-        {
-            "title": "how to make a pretty block with css?",
-            "text": "few text now to test",  # first 400 chars e.g
-            "rating": -1,
-            "answers": 1,  # contributed answers
-            "tags": ["CSS3", "HTML5"],
-
-            "author": "CSS_KILLER",
-            "avatar": "demo_CSS_KILLER.jpg",  # img = author_ID + '.jpg'
-            "question_id": 3
-        },
-        {
-            "title": "what's wrong with my django-app urls?",
-            "text": "When you use a ModelForm, the call to is_valid() will perform these validation steps for all the fields that are included on the form. See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[:400] + "...",  # first 400 chars e.g
-            "rating": 3,
-            "answers": 2,  # contributed answers
-            "tags": ["Python", "Django", "MySQL"],  # 3 tags - MAX
-
-            "author": "Vladimir",
-            "avatar": "demo_Vladimir.jpg",
-            "question_id": 2
-        },
-        {
-            "title": "long-long title test | " * 7,
-            "text": "See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[:400] + "...",  # first 400 chars e.g
-            "rating": 341550,
-            "answers": 200124,  # contributed answers
-            "tags": ["Long tags are rather cool but not in Bootstrap :)", "Testing tempate with big footer",
-                     "noSQL is here"],  # 3 tags - MAX
-
-            "author": "1335",
-            "avatar": "demo_1335.jpg",
-            "question_id": 1
-        }
-    ]
-    if int(question_id) > len(data):
-        return data[len(data)-1]
-    else:
-        return data[int(question_id)-1]
-
-
+##### MAIN PAGE #####
 
 # -- renders new questions, pagination
 def index_page(request, offset = 0):
@@ -91,7 +50,6 @@ def index_page(request, offset = 0):
 
     Question_Data = the_question.objects.all().order_by('date')[offset*30:(offset+1)*30]
     for item in Question_Data:
-
         append({
             "title": str(item.title),
             "text": str(item.text),
@@ -106,6 +64,7 @@ def index_page(request, offset = 0):
         })
 
     data["questions"] = buffer
+
     '''
     # ------- A STATIC DEMO -------
     data["questions"] = [
@@ -146,6 +105,65 @@ def index_page(request, offset = 0):
     ]
     '''
     return render(request, "index.html", data)
+
+
+
+
+#####
+
+def prepare_question(question_id):
+    # static demo as usual
+    '''
+    data = [
+        {
+            "title": "how to make a pretty block with css?",
+            "text": "few text now to test",  # first 400 chars e.g
+            "rating": -1,
+            "answers": 1,  # contributed answers
+            "tags": ["CSS3", "HTML5"],
+
+            "author": "CSS_KILLER",
+            "avatar": "demo_CSS_KILLER.jpg",  # img = author_ID + '.jpg'
+            "question_id": 3
+        },
+        {
+            "title": "what's wrong with my django-app urls?",
+            "text": "When you use a ModelForm, the call to is_valid() will perform these validation steps for all the fields that are included on the form. See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[:400] + "...",  # first 400 chars e.g
+            "rating": 3,
+            "answers": 2,  # contributed answers
+            "tags": ["Python", "Django", "MySQL"],  # 3 tags - MAX
+
+            "author": "Vladimir",
+            "avatar": "demo_Vladimir.jpg",
+            "question_id": 2
+        },
+        {
+            "title": "long-long title test | " * 7,
+            "text": "See the ModelForm documentation for more information. You should only need to call a model’s full_clean() method if you plan to handle validation errors yourself, or if you have excluded fields from the ModelForm that require validation."[:400] + "...",  # first 400 chars e.g
+            "rating": 341550,
+            "answers": 200124,  # contributed answers
+            "tags": ["Long tags are rather cool but not in Bootstrap :)", "Testing tempate with big footer",
+                     "noSQL is here"],  # 3 tags - MAX
+
+            "author": "1335",
+            "avatar": "demo_1335.jpg",
+            "question_id": 1
+        }
+    ]
+    '''
+
+    # load data from DB
+    question = the_question.objects.get(id=question_id)
+
+    # prepare
+    data = {}
+    data["title"] = question.title
+    data["text"] = question.text
+    data["rating"] = question.rating
+    data["author"] = question.author
+    data["question_id"] = question_id
+
+    return data
 
 
 # shows a concrete thread: question + answers, allows logged in users add answers, vote

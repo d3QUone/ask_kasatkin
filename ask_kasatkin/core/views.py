@@ -89,19 +89,20 @@ def index_page(request, offset = 0):
     buffer = []
     append = buffer.append
 
-    Question_Data = the_question.objects.all()[offset*30:(offset+1)*30]
-    for data in Question_Data:
+    Question_Data = the_question.objects.all().order_by('date')[offset*30:(offset+1)*30]
+    for item in Question_Data:
+
         append({
-            "title": data.title,
-            "text": data.text,
-            "rating": data.rating,
+            "title": str(item.title),
+            "text": str(item.text),
+            "rating": str(item.rating),
             #"answers": data.answers # <--- count related answers (the_answer)
             #"tags": -- count related (tags)
 
-            "author": data.author,
+            "author": str(item.author),
             #"avatar":  ... # related (User)
 
-            "question_id": data.id
+            "question_id": str(item.id)
         })
 
     data["questions"] = buffer

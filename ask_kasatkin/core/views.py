@@ -175,18 +175,32 @@ def prepare_question(question_id):
 
 # shows a concrete thread: question + answers, allows logged in users add answers, vote
 def question_thread(request, qid = 0, error = None):
-    data = get_static_data()
-    data["personal"] = get_user_data(request)
-
-    # if 'qid' == 0 (means no id) return prepared page with helpful links on usage!
-    # - e.g. how to register / add question / ...
+    # if 'qid' == 0 (means no id) return prepared page with helpful links on usage ???
+    # e.g. how to register / add question / ???...
     if qid == 0:
-        data["question"] = {
-            "title": "Use another ID :)"
-        }
+        return index_page(request)
     else:
-        # load question
-        data["question"] = prepare_question(qid)
+        data = get_static_data()
+        data["error"] = error
+        data["personal"] = get_user_data(request)
+
+        data["question"] = prepare_question(qid) # load question
+
+        question = the_question.objects.get(id=qid)
+
+        answers = the_answer.objects.get(contributed_to=question)
+
+        data["answers"] = [{
+                               "text": a.text,
+                               "rating": a.rating,
+                                "selected": a.is_marked_as_true,
+                                "author": a.author,
+                                "avatar": a.author.id,
+                                "id": a.id
+                           } for a in answers]
+
+        '''
+        # STATIC DEMO as usual
         data["answers"] = [
             {
                 "text": "you better read reference on your theme man ;)... testing a <strong>leak</strong> inside STATIC-answer body....\n :) :) :)",
@@ -205,11 +219,9 @@ def question_thread(request, qid = 0, error = None):
                 "id": 3
             }
         ]
+        '''
 
-        # load answers
-
-    data["error"] = error
-    return render(request, "question_thread.html", data)
+        return render(request, "question_thread.html", data)
 
 
 ##### USER METHODS #####
@@ -253,6 +265,7 @@ def validate_new_email(email):
         return True
     else:
         return False
+
 
 
 def save_avatar_by_id(f, user_id):
@@ -318,10 +331,12 @@ def validate_register(request):
     return render(request, "register.html", data)
 
 
+
 # shown only for logged users - OK
 def self_logout(request):
     logout(request)
     return index_page(request)
+
 
 
 def self_settings(request, error = None):
@@ -333,6 +348,7 @@ def self_settings(request, error = None):
         user_id = request.user.id
         data["personal"]["email"] = User.objects.get(id=user_id).email
     return render(request, "setting.html", data)
+
 
 
 def update_settings(request):
@@ -380,6 +396,7 @@ def new_question(request, error = None):
     return render(request, "add_question.html", data)
 
 
+
 # upload data and add question
 def add_new_question(request):
     if request.method == "POST":
@@ -394,7 +411,6 @@ def add_new_question(request):
             error = {"title": "You can use only 3 tags", "text": "{0} tags were provided in new question".format(len(tags))}
         else:
             # - save to DB
-            # - - think where to redirect back
 
             quest = the_question()
             quest.title = title[:250] # max 250 chars
@@ -412,9 +428,9 @@ def add_new_question(request):
                 # all tags stores in lower case
                 #parent_tag = store_tag.objects.get(name=)
             '''
+            #error = {"title": "Saved OK", "text": ""}
 
-            error = {"title": "Saved OK", "text": ""}
-
+    # - - think where to redirect back
     return new_question(request, error=error)
 
 
@@ -439,6 +455,7 @@ def add_new_answer(request):
 
     # how to show the same page????
     return question_thread(request, qid=redirect_id, error=error)
+
 
 
 ##### SEARCH #####

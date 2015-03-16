@@ -86,11 +86,32 @@ def index_page(request):
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
 
-    # ------- A STATIC DEMO -------
-
     # get offset , count = 30...
-    data["questions"] = the_question.objects.get();
 
+    buffer = []
+    append = buffer.append
+
+    Question_Data = the_question.objects.get();
+
+    count = 0
+    for data in Question_Data and count < 30:
+        append({
+            "title": data.title,
+            "text": data.text,
+            "rating": data.rating,
+            #"answers": data.answers # <--- count related answers (the_answer)
+            #"tags": -- count related (tags)
+
+            "author": data.author,
+            #"avatar":  ... # related (User)
+
+            "question_id": data.id
+        })
+        count += 1
+
+    data["questions"] = buffer
+
+    # ------- A STATIC DEMO -------
     '''
     data["questions"] = [
         {

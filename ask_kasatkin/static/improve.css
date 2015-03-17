@@ -1,0 +1,49 @@
+/* navbar improves */
+.navbar__low {
+    margin-top: 4px;
+}
+
+.navbar__high {
+    margin-top: 8px;
+}
+
+.navbar__avatar {
+    height: 35px;
+    width: 35px;
+}
+
+.underline__link {
+    text-decoration: underline;
+}
+
+
+/* question block */
+.question__block {
+    box-shadow: 0 0 1px black;
+    padding: 3px 3px 3px 3px;
+}
+
+.question__left {
+    margin-bottom: 3px;
+    padding-left: 4%;
+}
+
+.question__right {
+    position: relative;
+}
+
+.question__avatar {
+    height: 80px;
+    width: 80px;
+    margin-top: 3px;
+}
+
+.question__vote {
+    width: 30px;
+}
+
+.question__tags {
+    position: relative;
+    bottom: 3px;
+}
+

@@ -3,22 +3,22 @@
 {% block content %}
     <div class="col-xs-8">
     {% for item in questions %}
-        <div class="row" style="box-shadow: 0 0 1px black; padding: 3px 3px 3px 3px;">
-            <div class="col-xs-2" style="margin-bottom: 3px; padding-left: 4%;">
-                <img class="img-rounded" style="height: 80px; width: 80px; margin-top: 3px;" src="{{ MEDIA_URL }}{{ item.avatar }}"><br>
+        <div class="row question__block">
+            <div class="col-xs-2 question__left">
+                <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.avatar }}"><br>
                 <strong>Rating: {{ item.rating }}</strong><br>
-                <!-- use JQuery to like -->
-                <a href="" class="btn btn-success btn-sm" style="width: 30px;">+</a>
-                <a href="" class="btn btn-danger btn-sm" style="width: 30px;">-</a>
+                <!-- use JQuery (AJAX) to like -->
+                <a href="" class="btn btn-success btn-sm question__vote">+</a>
+                <a href="" class="btn btn-danger btn-sm question__vote">-</a>
             </div>
-            <div class="col-xs-10" style="position: relative;">
-                <p><a href="{%  url 'core:question' item.question_id %}" style="text-decoration: underline;"><strong>{{ item.title }}</strong></a></p>
+            <div class="col-xs-10 question__right">
+                <p><a href="{%  url 'core:question' item.question_id %}" class="underline__link"><strong>{{ item.title }}</strong></a></p>
                 <p>{{ item.text }}</p>
-                <div style="position: relative; bottom: 3px;">
+                <div class="question__tags">
                 {%  if item.tags %}
                     <strong>Tags: </strong>
                     {% for tag in item.tags %}
-                        <a href="../search_by_tag_method?tag={{ tag }}" style="text-decoration: underline;">{{ tag }}</a>&nbsp;
+                        <a href="/search_by_tag_method?tag={{ tag }}" class="underline__link">{{ tag }}</a>&nbsp;
                     {% endfor %}
                 {% endif %}
                 <strong>Asked:</strong> {{ item.author }} &nbsp;&nbsp;

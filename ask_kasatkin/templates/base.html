@@ -6,6 +6,7 @@
 <meta name="keywords" content="stackoverflow, python, django, ask, kasatkin, techopark, mail.ru, mail.ru group, mailru, mailru group, технопарк, мэйл.ру, мэйл.ру груп">
 <title>{% block title %}{% endblock title %}</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="/static/improve.css">
 </head>
 <body>
 <div class="container">
@@ -13,15 +14,15 @@
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="col-xs-2" style="margin-top: 4px;">
+                <div class="col-xs-2 navbar__low">
                     <a href="{% url 'core:home' %}"><h4>Ask-Kasatkin<!--small>ответы на все вопросы</small--></h4></a>
                 </div>
-                <div class="col-xs-6" style="margin-top: 8px;">
-                    <form method="GET" action="../search">
+                <div class="col-xs-6 navbar__high">
+                    <form method="GET" action="/search">
                         <input name="request" type="search" class="form-control" placeholder="Find something">
                     </form>
                 </div>
-                <div class="col-xs-1" style="margin-top: 8px;">
+                <div class="col-xs-1 navbar__high">
                     <!-- add redirecting to the last page after login? -->
                     {% if user.is_authenticated %}
                         <a href="{% url 'core:create_question' %}" class="btn btn-success">Ask</a>
@@ -29,11 +30,11 @@
                         <a href="{% url 'core:login' %}" class="btn btn-success">Ask</a>
                     {% endif %}
                 </div>
-                <div class="col-xs-3" style="margin-top: 8px;">
+                <div class="col-xs-3 navbar__high">
                     <div class="container-fluid">
                     {% if user.is_authenticated %}
                         <div class="col-xs-3">
-                            <img class="img-rounded" style="height: 35px; width: 35px;" src="{{ MEDIA_URL }}{{ personal.avatar }}"><br>
+                            <img class="img-rounded navbar__avatar" src="{{ MEDIA_URL }}{{ personal.avatar }}"><br>
                         </div>
                         <div class="col-xs-9">
                             {{ personal.nickname }}
@@ -43,9 +44,9 @@
                             <a href="{% url 'core:logout' %}">Log out</a>
                         </div>
                     {% else %}
-                        <a href="{% url 'core:register' %}" style="text-decoration: underline;" class="btn btn-primary">Register</a>
+                        <a href="{% url 'core:register' %}" class="btn btn-primary underline__link">Register</a>
                         &nbsp;
-                        <a href="{% url 'core:login' %}" style="text-decoration: underline;" class="btn btn-primary">Log in</a>
+                        <a href="{% url 'core:login' %}"class="btn btn-primary underline__link">Log in</a>
                     {% endif %}
                     </div>
                 </div>
@@ -62,7 +63,7 @@
             <!-- RIGHT COLUMN: (tags + best members), the same for all cases -->
             <!-- + all tags are links to search-by-tag -->
             <p><h4>Popular Tags:</h4></p>
-            {% for tag in popular_tags %}<a href="../tag/{{ tag.text }}"><span class="{{ tag.label }}">{{ tag.text }}</span></a>
+            {% for tag in popular_tags %}<a href="/tag/{{ tag.text }}"><span class="{{ tag.label }}">{{ tag.text }}</span></a>
             {% endfor %}
             <br>
             <hr>

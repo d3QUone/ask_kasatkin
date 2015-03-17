@@ -8,7 +8,7 @@ sys.setdefaultencoding('utf8')
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from core.models import user_properties, the_question, the_answer, store_tag, tag_name, likes_questions, likes_answers
+from core.models import user_properties, the_question, the_answer, store_tag, tag_name
 
 from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
 
@@ -420,7 +420,7 @@ def add_new_question(request):
     if request.method == "POST":
         title = request.POST["title"]
         text = request.POST["text"]
-        tags = request.POST["tags"].split(",")
+        tags = request.POST["tags"].replace(" ", "").split(",")
         if len(title) < 10:
             error = {"title": "Too short title", "text": "Use at least 10 symbols in the title"}
         elif len(text) < 10:

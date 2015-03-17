@@ -8,11 +8,12 @@ sys.setdefaultencoding('utf8')
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from core.models import user_properties, the_question, the_answer, the_tag, store_tag, likes_questions, likes_answers
+from core.models import user_properties, the_question, the_answer, store_tag, tag_name, likes_questions, likes_answers
 
-from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
+
 from random import randint  # used in demo
-from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup
+from django.http import HttpResponse
 
 
 # test method, HOME TASK 4
@@ -53,16 +54,19 @@ def index_page(request, offset = 0):
     all_questions = the_question.objects.all().order_by('-date')[offset*30:(offset+1)*30]
     for item in all_questions:
         answers_amount = the_answer.objects.filter(contributed_to=item).count()
+
+        related_tags = store_tag.objects.filter(question=item)
+        tags = [s_tag.tag.name for s_tag in related_tags]
+
         append({
             "title": item.title,
             "text": item.text,
             "rating": item.rating,
             "answers": answers_amount,
-            #"tags": item. , #-- get related (tags)
+            "tags": tags,
 
             "author": item.author,
             "avatar": "{0}.jpg".format(item.author.id),
-
             "question_id": item.id
         })
 
@@ -158,16 +162,19 @@ def prepare_question(question_id):
     question = the_question.objects.get(id=question_id)
     answers_amount = the_answer.objects.filter(contributed_to=question).count()
 
+    related_tags = store_tag.objects.filter(question=question)
+    tags = [s_tag.tag.name for s_tag in related_tags]
+
     # prepare
     data = {}
     data["title"] = question.title
     data["text"] = question.text
     data["rating"] = question.rating
     data["answers"] = answers_amount
+    data["tags"] = tags
 
     data["author"] = question.author
     data["avatar"] = "{0}.jpg".format(question.author.id)
-
     data["question_id"] = question_id
     return data
 

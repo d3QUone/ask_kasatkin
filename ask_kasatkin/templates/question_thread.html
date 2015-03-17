@@ -2,22 +2,22 @@
 {% block title %}Ask-Kasatkin Main Page{% endblock title %}
 {% block content %}
     <div class="col-xs-8">
-    <div class="row" style="box-shadow: 0 0 1px black; padding: 3px 3px 3px 3px;">
-        <div class="col-xs-2" style="margin-bottom: 3px; padding-left: 4%;">
-            <img class="img-rounded" style="height: 80px; width: 80px; margin-top: 3px;" src="{{ MEDIA_URL }}{{ question.avatar }}"><br>
+    <div class="row question__block">
+        <div class="col-xs-2 question__left">
+            <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ question.avatar }}"><br>
             <strong>Rating: {{ question.rating }}</strong><br>
             <!-- use JQuery to like -->
-            <a href="" class="btn btn-success btn-sm" style="width: 30px;">+</a>
-            <a href="" class="btn btn-danger btn-sm" style="width: 30px;">-</a>
+            <a href="" class="btn btn-success btn-sm question__vote">+</a>
+            <a href="" class="btn btn-danger btn-sm question__vote">-</a>
         </div>
-        <div class="col-xs-10" style="position: relative;">
-            <p><a href="{%  url 'core:question' question.question_id %}" style="text-decoration: underline;"><strong>{{ question.title }}</strong></a></p>
+        <div class="col-xs-10 question__right">
+            <p><a href="{%  url 'core:question' question.question_id %}" class="underline__link"><strong>{{ question.title }}</strong></a></p>
             <p>{{ question.text }}</p>
-            <div style="position: relative; bottom: 3px;">
+            <div class="question__tags">
                 {%  if question.tags %}
                     <strong>Tags: </strong>
                     {% for tag in question.tags %}
-                        <a href="../search_by_tag_method?tag={{ tag }}" style="text-decoration: underline;">{{ tag }}</a>&nbsp;
+                        <a href="/search_by_tag_method?tag={{ tag }}" class="underline__link">{{ tag }}</a>&nbsp;
                     {% endfor %}
                 {% endif %}
                 <strong>Asked:</strong> {{ question.author }} &nbsp;&nbsp;
@@ -30,24 +30,24 @@
         <div class="col-xs-11">
             <!-- ANSWERS -->
             <div class="row">
-                <div style="margin-top: 15px; margin-bottom: 15px;">
+                <div class="answers__amount__header">
                     <h4>{{ question.answers }} Answers</h4>
                 </div>
             </div>
 
         <!-- 30 answers on a page, do in backend 'offset' = page*30, 'count'=30 -->
         {% for item in answers %}
-            <div class="row" style="box-shadow: 0 0 1px black; padding: 3px 3px 3px 3px;">
-                <div class="col-xs-2" style="margin-bottom: 3px; padding-left: 4%;">
-                    <img class="img-rounded" style="height: 80px; width: 80px; margin-top: 3px;" src="{{ MEDIA_URL }}{{ item.avatar }}"><br>
+            <div class="row question__block">
+                <div class="col-xs-2 question__left">
+                    <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.avatar }}"><br>
                     <strong>Rating: {{ item.rating }}</strong><br>
                     <!-- use JQuery to like -->
-                    <a href="" class="btn btn-success btn-sm" style="width: 30px;">+</a>
-                    <a href="" class="btn btn-danger btn-sm" style="width: 30px;">-</a>
+                    <a href="" class="btn btn-success btn-sm question__vote">+</a>
+                    <a href="" class="btn btn-danger btn-sm question__vote">-</a>
                 </div>
-                <div class="col-xs-10" style="position: relative; height: 100%;">
+                <div class="col-xs-10 question__right">
                     <p>{{ item.text }}</p>
-                    <div style="position: relative; bottom: 3px;">
+                    <div class="question__tags">
                         <strong>Author:</strong> {{ item.author }}
                     </div>
 
@@ -79,7 +79,7 @@
 
         <!-- + add answer form on any pagination-current-page-index -->
             <div class="row">
-                <div style="margin-bottom: 5px;">
+                <div class="add__answer__header">
                     <h4>Add answer:</h4>
                 </div>
             </div>
@@ -95,10 +95,10 @@
                 {% endif %}
                 <input type="hidden" name="redirect_id" value="{{ question.question_id }}">
                 <div class="form-group">
-                    <textarea class="form-control" name="text" rows="5" style="max-width: 100%;"></textarea>
+                    <textarea class="form-control add__answer__textarea" name="text" rows="5"></textarea>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-default">Answer</button>
+                    <button type="submit" class="btn btn-default underline__link">Answer</button>
                 </div>
             </form>
         </div>

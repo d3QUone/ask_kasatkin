@@ -45,8 +45,8 @@
             <div class="form-group">
                 <label for="avatar" class="col-sm-2 control-label">Avatar</label>
                 <div class="col-sm-10">
-                    <img class="img-rounded" style="height: 100px; width: 100px;" src="{{ MEDIA_URL }}{{ personal.avatar }}"><br>
-                    <input type="file" name="avatar" style="margin: 2px;">
+                    <img class="img-rounded current_avatar" src="{{ MEDIA_URL }}{{ personal.avatar }}"><br>
+                    <input type="file" name="avatar" class="load__avatar__field">
                 </div>
             </div>
             <div class="form-group">
@@ -62,10 +62,10 @@
             <p>You must be logged in to watch this page. Log in or create a new account to see this page:</p>
         </div>
 
-        <div class="container-fluid" style="margin-left: 30%;">
-            <a href="{% url 'core:register' %}" style="text-decoration: underline;" class="btn btn-primary">Register</a>
+        <div class="container-fluid action__block">
+            <a href="{% url 'core:register' %}" class="btn btn-primary underline__link">Register</a>
             &nbsp;
-            <a href="{% url 'core:login' %}" style="text-decoration: underline;" class="btn btn-primary">Log in</a>
+            <a href="{% url 'core:login' %}" class="btn btn-primary underline__link">Log in</a>
         </div>
     {% endif %}
     </div>

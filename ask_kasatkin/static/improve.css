@@ -28,10 +28,6 @@
     padding-left: 4%;
 }
 
-.question__right {
-    position: relative;
-}
-
 .question__avatar {
     height: 80px;
     width: 80px;
@@ -42,8 +38,42 @@
     width: 30px;
 }
 
+.question__right {
+    position: relative;
+}
+
 .question__tags {
     position: relative;
     bottom: 3px;
+}
+
+
+/* settings */
+.current_avatar {
+    height: 100px;
+    width: 100px;
+}
+
+.load__avatar__field {
+    margin: 2px;
+}
+
+.action__block {
+    margin-left: 30%;
+}
+
+
+/* question thread */
+.answers__amount__header {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.add__answer__header {
+    margin-bottom: 5px;
+}
+
+.add__answer__textarea {
+    max-width: 100%;
 }
 

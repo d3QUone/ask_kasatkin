@@ -23,9 +23,9 @@
         <div class="form-group">
             <input class="form-control" name="input_password" placeholder="Enter password" type="password" required>
         </div>
-        <input type="submit" class="btn btn-default" value="Log in!"/>
+        <input type="submit" class="btn btn-default underline__link" value="Log in!"/>
     </form>
-    <br><strong>Or:</strong>&nbsp;&nbsp;<a href="{% url 'core:register' %}" style="text-decoration: underline;">create new account</a>
+    <br><strong>Or:</strong>&nbsp;&nbsp;<a href="{% url 'core:register' %}" class="underline__link">create new account</a>
     </div>
 {% endblock content %}
 

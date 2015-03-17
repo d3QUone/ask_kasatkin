@@ -54,6 +54,8 @@ class store_tag(models.Model):
     question = models.ForeignKey(the_question)
 
 
+'''
+# don't create this tables while I'm not using them
 
 # save for Questions
 class likes_questions(models.Model):
@@ -67,6 +69,4 @@ class likes_answers(models.Model):
     user_id = models.ForeignKey(User)
     answer_id = models.ForeignKey(the_answer)
     state = 0
-
-# render likes:
-#
+'''

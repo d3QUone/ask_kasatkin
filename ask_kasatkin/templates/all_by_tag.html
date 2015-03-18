@@ -2,6 +2,7 @@
 {% block title %}Ask-Kasatkin Main Page{% endblock title %}
 {% block content %}
     <div class="col-xs-8">
+    {% if questions %}
         <div class="row action__block">
             <h4>All questions by tag <span class="underline__link">{{ tag }}</span>:</h4>
 			<br>
@@ -32,6 +33,11 @@
         </div>
         <br>
     {% endfor %}
+    {% else %}
+        <div class="row action__block">
+            <h4>Nothing found by tag <span class="underline__link">{{ tag }}</span>:</h4>
+        </div>
+    {% endif %}
     </div>
 {% endblock content %}
 

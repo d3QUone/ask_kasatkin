@@ -303,18 +303,21 @@ def add_new_answer(request):
 ##### TAGS ######
 
 def all_by_tag(request, tag_n=None):
-    tag = tag_name.objects.get(name=tag_n)
-    related_questions = store_tag.objects.filter(tag=tag)
-
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
     data["tag"] = tag_n
 
-    buf = []
-    append = buf.append
-    for item in related_questions:
-        append(create_question_item(item.question))
-    data["questions"] = buf
+    try:
+        tag = tag_name.objects.get(name=tag_n)
+        related_questions = store_tag.objects.filter(tag=tag)
+
+        buf = []
+        append = buf.append
+        for item in related_questions:
+            append(create_question_item(item.question))
+        data["questions"] = buf
+    except:
+        data["questions"] = None
 
     return render(request, "all_by_tag.html", data)
 

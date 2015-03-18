@@ -63,7 +63,7 @@
             <!-- RIGHT COLUMN: (tags + best members), the same for all cases -->
             <!-- + all tags are links to search-by-tag -->
             <h4>Popular Tags:</h4>
-            {% for tag in popular_tags %}<a href="/tag/{{ tag.text }}"><span class="{{ tag.label }}">{{ tag.text }}</span></a>
+            {% for tag in popular_tags %}<a href="/tag/{{ tag.text }}"><span class="{{ tag.label }} tag__margin">{{ tag.text }}</span></a>
             {% endfor %}
             <br>
             <hr>

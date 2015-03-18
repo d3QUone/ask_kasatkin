@@ -79,5 +79,6 @@
 
 /* tags */
 .tag__margin {
+    display: inline;
     margin: 5px;
 }

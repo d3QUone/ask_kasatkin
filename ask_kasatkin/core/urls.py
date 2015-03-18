@@ -21,7 +21,7 @@ urlpatterns = patterns('',
     url(r'^question/(?P<qid>\d+)/$', question_thread, name='question'),
     url(r'^add_new_answer/$', add_new_answer, name='add_new_answer'),
 
-    url(r'^tag/<tag_n>/$', all_by_tag, name='all_by_tag'),
+    url(r'^tag/(?P<tag_n>\w+)/$', all_by_tag, name='all_by_tag'),
 
     # likes: on question / on answer
 

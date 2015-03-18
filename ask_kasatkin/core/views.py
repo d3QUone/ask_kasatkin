@@ -313,7 +313,7 @@ def all_by_tag(request, tag_n=None):
     buf = []
     append = buf.append
     for item in related_questions:
-        append(create_question_item(item))
+        append(create_question_item(item.question))
     data["questions"] = buf
 
     return render(request, "all_by_tag.html", data)

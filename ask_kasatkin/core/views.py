@@ -259,14 +259,23 @@ def register(request):
 
 # validation used in registration
 def validate_new_email(email):
-    if len(email) > 4:
+    if len(email) > 5:
+        ap = 0
+        for ch in email:
+            if ch == "@":
+                ap += 1
+                
+            if ap > 1:
+                return False
         return True
-    else:
-        return False
+    return False
 
 
 def save_avatar_by_id(f, user_id):
-    # -- nex step -- get file extension with JS on frontend, save by correct extension
+    # -- next step: get file extension with JS on frontend, save by correct extension
+
+    # delete old file???
+
     filename = "{0}-{1}".format(user_id, uuid.uuid4())
     with open("uploads/{0}.jpg".format(filename), "wb+") as destination:
         for chunk in f.chunks():

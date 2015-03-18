@@ -77,3 +77,7 @@
     max-width: 100%;
 }
 
+/* tags */
+.tag__margin {
+    margin: 5px;
+}

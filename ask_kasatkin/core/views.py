@@ -482,13 +482,21 @@ def add_new_answer(request):
 
 
 
-##### SEARCH #####
+##### AJAX (POST) methods #####
 
 # !!! same template to search by tag OR by name
 # even everything the same... different sources of data only
+@csrf_exempt
 def search(request):
-    return HttpResponse("JSON result ... ")
+    if request.method == "POST":
+        return HttpResponse("JSON result ... ")
 
+
+# will use for
+def like_post(request):
+    if request.method == "POST":
+        # do, return N of likes?
+        return 3
 
 
 ##### STATIC DATA #####
@@ -497,10 +505,12 @@ def search(request):
 def get_static_data():
     res = []
     append = res.append
-    demo_pop_tags = ["Technopark", "Baumanka", "C", "Python", "MySQL", "Ruby", "apple", "iOS", "swift", "django",
-                     "php", "flask", "objective-c", "Ubuntu-server", "VPS", "Coffee Script", "sudo"]
-    demo_labels = ["label label-default", "label label-primary", "label label-success",
-                   "label label-info", "label label-warning", "label label-danger"]
+
+    all_tags = tag_name.objects.all()
+    demo_pop_tags = [t.name for t in all_tags]
+
+    #demo_pop_tags = ["Technopark", "Baumanka", "C", "Python", "MySQL", "Ruby", "apple", "iOS", "swift", "django", "php", "flask", "objective-c", "Ubuntu-server", "VPS", "Coffee Script", "sudo"]
+    demo_labels = ["label label-default", "label label-primary", "label label-success", "label label-info", "label label-warning", "label label-danger"]
     for tag in demo_pop_tags:
         append({"text": tag, "label": demo_labels[randint(0, len(demo_labels)-1)]})
 

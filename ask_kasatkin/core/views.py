@@ -1,4 +1,4 @@
-# encoding: utf8
+# coding:utf8
 
 # make UTF 8 global!
 import sys
@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from core.models import user_properties, the_question, the_answer, store_tag, tag_name
 
+import uuid  # generates unique filenames
 from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
 
 from random import randint  # used in demo
@@ -37,38 +38,41 @@ def get_user_data(request):
         user_id = request.user.id
         prop = user_properties.objects.get(user_id=user_id)
         data["nickname"] = prop.nickname
-        data["avatar"] = "{0}.jpg".format(user_id)  # don't forget to update extensions
+        data["avatar"] = "{0}.jpg".format(prop.filename)  # don't forget to update extensions
     return data
 
 
 ##### MAIN PAGE #####
 
-# -- renders new questions, pagination
-def index_page(request, offset = 0):
+# -- render question dict from DB-object
+def create_question_item(item):
+    amount = the_answer.objects.filter(contributed_to=item).count()
+    prop = user_properties.objects.get(user_id=item.author.id)
+    related_tags = store_tag.objects.filter(question=item)
+    tags = [s_tag.tag.name for s_tag in related_tags]
+    return {
+        "question_id": item.id,
+        "title": item.title,
+        "text": item.text,
+        "rating": item.rating,
+        "answers": amount,
+        "tags": tags,
+
+        "author": item.author,
+        "avatar": "{0}.jpg".format(prop.filename),
+        "nickname": prop.nickname  # for render
+    }
+
+
+def index_page(request, offset=0):
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
 
     buf = []
     append = buf.append
-
     all_questions = the_question.objects.all().order_by('-date')[offset*30:(offset+1)*30]
     for item in all_questions:
-        answers_amount = the_answer.objects.filter(contributed_to=item).count()
-
-        related_tags = store_tag.objects.filter(question=item)
-        tags = [s_tag.tag.name for s_tag in related_tags]
-
-        append({
-            "title": item.title,
-            "text": item.text,
-            "rating": item.rating,
-            "answers": answers_amount,
-            "tags": tags,
-
-            "author": item.author,
-            "avatar": "{0}.jpg".format(item.author.id),
-            "question_id": item.id
-        })
+        append(create_question_item(item))
 
     data["questions"] = buf
 
@@ -114,12 +118,8 @@ def index_page(request, offset = 0):
     return render(request, "index.html", data)
 
 
-
-##### QUESTION THREAD #####
-
+# ------- A STATIC DEMO -------
 def prepare_question(question_id):
-    '''
-    # static demo as usual
     data = [
         {
             "title": "how to make a pretty block with css?",
@@ -156,28 +156,11 @@ def prepare_question(question_id):
             "question_id": 1
         }
     ]
-    '''
+    return data[question_id]
 
-    # load data from DB
-    question = the_question.objects.get(id=question_id)
-    answers_amount = the_answer.objects.filter(contributed_to=question).count()
 
-    related_tags = store_tag.objects.filter(question=question)
-    tags = [s_tag.tag.name for s_tag in related_tags]
 
-    # prepare
-    data = {}
-    data["title"] = question.title
-    data["text"] = question.text
-    data["rating"] = question.rating
-    data["answers"] = answers_amount
-    data["tags"] = tags
-
-    data["author"] = question.author
-    data["avatar"] = "{0}.jpg".format(question.author.id)
-    data["question_id"] = question_id
-    return data
-
+##### QUESTION THREAD #####
 
 # shows a concrete thread: question + answers, allows logged in users add answers, vote
 def question_thread(request, qid = 0, error = None):
@@ -189,32 +172,30 @@ def question_thread(request, qid = 0, error = None):
         data = get_static_data()
         data["error"] = error
         data["personal"] = get_user_data(request)
-        data["question"] = prepare_question(qid)
-
+        question = the_question.objects.get(id=qid)
+        data["question"] = create_question_item(question)
         if data["question"]["author"] == request.user:
             data["owner"] = True
         else:
             data["owner"] = False
 
-        try:
-            question = the_question.objects.get(id=qid)
-            answers = the_answer.objects.filter(contributed_to=question)
+        answers = the_answer.objects.filter(contributed_to=question)
 
-            buf = []
-            append = buf.append
-            for a in answers:
-                append({
-                    "text": a.text,
-                    "rating": a.rating,
-                    "selected": a.is_marked_as_true,
-                    "author": a.author,
-                    "avatar": "{0}.jpg".format(a.author.id),
-                    "id": a.id
-                })
+        buf = []
+        append = buf.append
+        for a in answers:
+            prop = user_properties.objects.get(user_id=a.author.id)  # load user properties
+            append({
+                "id": a.id,
+                "text": a.text,
+                "rating": a.rating,
+                "selected": a.is_marked_as_true,
 
-            data["answers"] = buf
-        except:
-            data["answers"] = []
+                "author": prop.nickname,
+                "avatar": "{0}.jpg".format(prop.filename),
+            })
+        data["answers"] = buf
+
 
         '''
         # STATIC DEMO as usual
@@ -284,13 +265,13 @@ def validate_new_email(email):
         return False
 
 
-
 def save_avatar_by_id(f, user_id):
     # -- nex step -- get file extension with JS on frontend, save by correct extension
-    # 'core/static/core/{0}.jpg' ---> 'uploads/{0}.jpg'
-    with open('uploads/{0}.jpg'.format(user_id), 'wb+') as destination:
+    filename = "{0}-{1}".format(user_id, uuid.uuid4())
+    with open("uploads/{0}.jpg".format(filename), "wb+") as destination:
         for chunk in f.chunks():
             destination.write(chunk)
+    return filename
 
 
 # check input values + return info - OK
@@ -320,11 +301,12 @@ def validate_register(request):
                         try:
                             user = User.objects.create_user(username=login_, email=email_, password=password1_)
                             user.save()
-                            save_avatar_by_id(avatar_file, user.id)
+                            filename = save_avatar_by_id(avatar_file, user.id)
 
                             props = user_properties()
                             props.user = user
                             props.nickname = nickname_
+                            props.filename = filename
                             props.save()
 
                             # uncomment to return logged in user
@@ -373,11 +355,12 @@ def update_settings(request):
     if request.method == "POST":
         if request.user.is_authenticated():
             uid = request.user.id
+            props = user_properties.objects.get(user_id=uid)
+
             # update nickname if OK
             nickname_ = request.POST['input_nickname']
             if len(nickname_) > 0:
                 if len(nickname_) > 4:
-                    props = user_properties.objects.get(user_id=uid)
                     props.nickname = nickname_
                     props.save()
                 else:
@@ -385,7 +368,9 @@ def update_settings(request):
             # upload new ava if any
             try:
                 avatar_file = request.FILES['avatar']
-                save_avatar_by_id(avatar_file, uid)
+                filename = save_avatar_by_id(avatar_file, uid)
+                props.filename = filename
+                props.save()
             except:
                 pass
             # update email if OK
@@ -411,7 +396,6 @@ def new_question(request, error = None):
     data["personal"] = get_user_data(request)  # processes all user's-stuff
     data["error"] = error
     return render(request, "add_question.html", data)
-
 
 
 # upload data and add question

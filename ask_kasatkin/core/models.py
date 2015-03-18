@@ -9,6 +9,7 @@ class user_properties(models.Model):
     user = models.ForeignKey(User)
     nickname = models.CharField(max_length=100)  # 2 unique fields
     rating = models.IntegerField(default=0)
+    filename = models.CharField(max_length=100)  # avatar filename!
 
 
 # question-class - OK
@@ -18,7 +19,7 @@ class the_question(models.Model):
     rating = models.IntegerField(default=0)
     author = models.ForeignKey(User)
 
-    # any need in this???
+    # any need in this??? (i though to mark question on main page)
     the_answer_was_chosen = models.IntegerField(default=0)  # when author chooses an answer set 1
 
     date = models.BigIntegerField(default=0)

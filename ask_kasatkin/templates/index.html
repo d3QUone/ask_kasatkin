@@ -21,7 +21,7 @@
                         <a href="/search_by_tag_method?tag={{ tag }}" class="underline__link">{{ tag }}</a>&nbsp;
                     {% endfor %}
                 {% endif %}
-                <strong>Asked:</strong> {{ item.author }} &nbsp;&nbsp;
+                <strong>Asked:</strong> {{ item.nickname }} &nbsp;&nbsp;
                 <a href="{%  url 'core:question' item.question_id %}"><strong>Answer ({{ item.answers }})</strong></a>
                 </div>
             </div>

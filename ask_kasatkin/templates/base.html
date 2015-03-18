@@ -61,15 +61,14 @@
         {% block pagination %}{% endblock pagination %}
         <div class="col-xs-4">
             <!-- RIGHT COLUMN: (tags + best members), the same for all cases -->
-            <!-- + all tags are links to search-by-tag -->
             <h4>Popular Tags:</h4>
-            {% for tag in popular_tags %}<a href="/tag/{{ tag.text }}"><span class="{{ tag.label }} tag__margin">{{ tag.text }}</span></a>
+            {% for tag in popular_tags %}<a href="{% url 'core:all_by_tag' tag.text %}"><span class="{{ tag.label }} tag__margin">{{ tag.text }}</span></a>
             {% endfor %}
             <br>
             <hr>
             {% if popular_users %}
                 <h4>Best Members:</h4>
-                {% for pop_user in popular_users %}<p><span class="underline__link tag__margin">{{ pop_user }}</span></p>
+                {% for pop_user in popular_users %}<p><span class="underline__link">{{ pop_user }}</span></p>
                 {%  endfor %}
             {% else %}
                 <p>No best members yet</p>

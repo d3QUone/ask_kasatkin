@@ -170,8 +170,8 @@ def question_thread(request, qid = 0, error = None):
         return index_page(request)
     else:
         data = get_static_data()
-        data["error"] = error
         data["personal"] = get_user_data(request)
+        data["error"] = error
         question = the_question.objects.get(id=qid)
         data["question"] = create_question_item(question)
         if data["question"]["author"] == request.user:
@@ -222,6 +222,122 @@ def question_thread(request, qid = 0, error = None):
 
 
 
+##### QUESTIONS ######
+
+# show add-new-question page
+def new_question(request, error = None):
+    data = get_static_data()
+    data["personal"] = get_user_data(request)  # processes all user's-stuff
+    data["error"] = error
+    return render(request, "add_question.html", data)
+
+
+# upload data and add question
+def add_new_question(request):
+    error = None
+    if request.method == "POST":
+        title = request.POST["title"]
+        text = request.POST["text"]
+        tags = request.POST["tags"].replace(" ", "").split(",")
+        if len(title) < 10:
+            error = {"title": "Too short title", "text": "Use at least 10 symbols in the title"}
+        elif len(text) < 10:
+            error = {"title": "Too short question", "text": "Describe your problem in a proper way please"}
+        elif len(tags) > 3:
+            error = {"title": "You can use only 3 tags", "text": "{0} tags were provided in new question".format(len(tags))}
+        else:
+            # - save to DB
+
+            quest = the_question()
+            quest.title = title[:250] # max 250 chars
+            quest.text = text
+            quest.author = request.user
+            quest.save()
+
+            for t in tags[:3]:
+                try:
+                    # check if this name is already in Base
+                    tn = tag_name.objects.get(name=str(t).lower())
+                except:
+                    # create if none
+                    tn = tag_name()
+                    tn.name = str(t).lower()
+                    tn.save()
+
+                new_tag = store_tag()
+                new_tag.question = quest
+                new_tag.tag = tn
+                new_tag.save()
+
+            # returns new (clear) thread
+            return question_thread(request, qid=quest.id)
+    else:
+        error = {"title": "Only POST-requests are allowed", "text": ""}
+    return new_question(request, error=error)
+
+
+
+def add_new_answer(request):
+    redirect_id = 0
+    error = None
+    if request.method == 'POST':
+        redirect_id = request.POST["redirect_id"]
+        text = request.POST["text"]
+
+        if len(text) > 10:
+            ques = the_question.objects.get(id=redirect_id)
+
+            ans = the_answer()
+            ans.text = text
+            ans.author = request.user
+            ans.contributed_to = ques
+            ans.save()
+        else:
+            error = {"title": "Too short answer", "text": "Describe your idea in a proper way please"}
+
+    # how to show the same page????
+    return question_thread(request, qid=redirect_id, error=error)
+
+
+
+##### TAGS ######
+
+def all_by_tag(request, tag_n=None):
+    tag = tag_name.objects.get(name=tag_n)
+    related_questions = store_tag.objects.filter(tag=tag)
+
+    data = get_static_data()
+    data["personal"] = get_user_data(request)  # processes all user's-stuff
+    data["tag"] = tag_n
+
+    buf = []
+    append = buf.append
+    for item in related_questions:
+        append(create_question_item(item))
+    data["questions"] = buf
+
+    return render(request, "all_by_tag.html", data)
+
+
+
+##### AJAX (POST) methods #####
+
+# !!! same template to search by tag OR by name
+# even everything the same... different sources of data only
+@csrf_exempt
+def search(request):
+    if request.method == "POST":
+        return HttpResponse("JSON result ... ")
+
+
+# will use for
+def like_post(request):
+    if request.method == "POST":
+        # do, return N of likes?
+        return 3
+
+
+
 ##### USER METHODS #####
 
 # render login page - OK
@@ -264,7 +380,6 @@ def validate_new_email(email):
         for ch in email:
             if ch == "@":
                 ap += 1
-                
             if ap > 1:
                 return False
         return True
@@ -394,102 +509,6 @@ def update_settings(request):
         else:
             error = {"title": "Auth error", "text": "Login and try once more please"}
     return self_settings(request, error=error)  # return the same page with new data
-
-
-
-##### QUESTIONS ######
-
-# show add-new-question page
-def new_question(request, error = None):
-    data = get_static_data()
-    data["personal"] = get_user_data(request)  # processes all user's-stuff
-    data["error"] = error
-    return render(request, "add_question.html", data)
-
-
-# upload data and add question
-def add_new_question(request):
-    error = None
-    if request.method == "POST":
-        title = request.POST["title"]
-        text = request.POST["text"]
-        tags = request.POST["tags"].replace(" ", "").split(",")
-        if len(title) < 10:
-            error = {"title": "Too short title", "text": "Use at least 10 symbols in the title"}
-        elif len(text) < 10:
-            error = {"title": "Too short question", "text": "Describe your problem in a proper way please"}
-        elif len(tags) > 3:
-            error = {"title": "You can use only 3 tags", "text": "{0} tags were provided in new question".format(len(tags))}
-        else:
-            # - save to DB
-
-            quest = the_question()
-            quest.title = title[:250] # max 250 chars
-            quest.text = text
-            quest.author = request.user
-            quest.save()
-
-            for t in tags[:3]:
-                try:
-                    # check if this name is already in Base
-                    tn = tag_name.objects.get(name=str(t).lower())
-                except:
-                    # create if none
-                    tn = tag_name()
-                    tn.name = str(t).lower()
-                    tn.save()
-
-                new_tag = store_tag()
-                new_tag.question = quest
-                new_tag.tag = tn
-                new_tag.save()
-
-            # returns new (clear) thread
-            return question_thread(request, qid=quest.id)
-    else:
-        error = {"title": "Only POST-requests are allowed", "text": ""}
-    return new_question(request, error=error)
-
-
-
-def add_new_answer(request):
-    redirect_id = 0
-    error = None
-    if request.method == 'POST':
-        redirect_id = request.POST["redirect_id"]
-        text = request.POST["text"]
-
-        if len(text) > 10:
-            ques = the_question.objects.get(id=redirect_id)
-
-            ans = the_answer()
-            ans.text = text
-            ans.author = request.user
-            ans.contributed_to = ques
-            ans.save()
-        else:
-            error = {"title": "Too short answer", "text": "Describe your idea in a proper way please"}
-
-    # how to show the same page????
-    return question_thread(request, qid=redirect_id, error=error)
-
-
-
-##### AJAX (POST) methods #####
-
-# !!! same template to search by tag OR by name
-# even everything the same... different sources of data only
-@csrf_exempt
-def search(request):
-    if request.method == "POST":
-        return HttpResponse("JSON result ... ")
-
-
-# will use for
-def like_post(request):
-    if request.method == "POST":
-        # do, return N of likes?
-        return 3
 
 
 ##### STATIC DATA #####

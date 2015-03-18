@@ -2,8 +2,9 @@
 {% block title %}Ask-Kasatkin Main Page{% endblock title %}
 {% block content %}
     <div class="col-xs-8">
-        <div class="row">
-            All questions by tag <strong>{{ tag }}</strong>
+        <div class="row action__block">
+            <h4>All questions by tag <span class="underline__link">{{ tag }}</span>:</h4>
+			<br>
         </div>
     {% for item in questions %}
         <div class="row question__block">

@@ -255,19 +255,20 @@ def add_new_question(request):
             quest.save()
 
             for t in tags[:3]:
-                try:
-                    # check if this name is already in Base
-                    tn = tag_name.objects.get(name=str(t).lower())
-                except:
-                    # create if none
-                    tn = tag_name()
-                    tn.name = str(t).lower()
-                    tn.save()
+                if len(t) > 0:
+                    try:
+                        # check if this name is already in Base
+                        tn = tag_name.objects.get(name=str(t).lower())
+                    except:
+                        # create if none
+                        tn = tag_name()
+                        tn.name = str(t).lower()
+                        tn.save()
 
-                new_tag = store_tag()
-                new_tag.question = quest
-                new_tag.tag = tn
-                new_tag.save()
+                    new_tag = store_tag()
+                    new_tag.question = quest
+                    new_tag.tag = tn
+                    new_tag.save()
 
             # returns new (clear) thread
             return question_thread(request, qid=quest.id)

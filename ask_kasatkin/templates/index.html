@@ -15,14 +15,14 @@
                 <p><a href="{%  url 'core:question' item.question_id %}" class="underline__link"><strong>{{ item.title }}</strong></a></p>
                 <p>{{ item.text }}</p>
                 <div class="question__tags">
+                    <a href="{%  url 'core:question' item.question_id %}"><strong>Answers ({{ item.answers }})</strong></a> &nbsp;&nbsp;
+                    <strong>Asked:</strong> {{ item.nickname }} &nbsp;&nbsp;
                 {%  if item.tags %}
                     <strong>Tags: </strong>
                     {% for tag in item.tags %}
                         <a href="{% url 'core:all_by_tag' tag %}" class="underline__link">{{ tag }}</a>&nbsp;
                     {% endfor %}
                 {% endif %}
-                <strong>Asked:</strong> {{ item.nickname }} &nbsp;&nbsp;
-                <a href="{%  url 'core:question' item.question_id %}"><strong>Answer ({{ item.answers }})</strong></a>
                 </div>
             </div>
         </div>

@@ -78,6 +78,7 @@
 
 
         <!-- + add answer form on any pagination-current-page-index -->
+        {% if user.is_authenticated %}
             <div class="row">
                 <div class="add__answer__header">
                     <h4>Add answer:</h4>
@@ -101,6 +102,13 @@
                     <button type="submit" class="btn btn-default">Answer</button>
                 </div>
             </form>
+        {% else %}
+            <div class="row">
+                <div class="add__answer__header">
+                    <h4>Login to add answer</h4>
+                </div>
+            </div>
+        {% endif %}
         </div>
     </div>
     </div> <!-- <main column -->

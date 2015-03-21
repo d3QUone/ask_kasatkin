@@ -53,7 +53,7 @@ def create_question_item(item):
     return {
         "question_id": item.id,
         "title": item.title,
-        "text": item.text.replace("&lt;br&gt;", "<br>"),
+        "text": item.text.replace("\n", "<br>"),
         "rating": item.rating,
         "answers": amount,
         "tags": tags,
@@ -187,7 +187,7 @@ def question_thread(request, qid = 0, error = None):
             prop = user_properties.objects.get(user_id=a.author.id)  # load user properties
             append({
                 "id": a.id,
-                "text": a.text.replace("&lt;br&gt;", "<br>"),
+                "text": a.text.replace("\n", "<br>"),
                 "rating": a.rating,
                 "selected": a.is_marked_as_true,
 
@@ -235,7 +235,7 @@ def new_question(request, error = None):
 # upload data and add question
 def add_new_question(request):
     error = None
-    if request.method == "POST":
+    if request.method == "POST" and request.user.is_authenticated():
         title = request.POST["title"]
         text = request.POST["text"]
         tags = request.POST["tags"].replace(" ", "").split(",")
@@ -247,7 +247,6 @@ def add_new_question(request):
             error = {"title": "You can use only 3 tags", "text": "{0} tags were provided in new question".format(len(tags))}
         else:
             # - save to DB
-
             quest = the_question()
             quest.title = title[:250] # max 250 chars
             quest.text = text  # &lt;br&gt;
@@ -273,7 +272,7 @@ def add_new_question(request):
             # returns new (clear) thread
             return question_thread(request, qid=quest.id)
     else:
-        error = {"title": "Only POST-requests are allowed", "text": ""}
+        error = {"title": "You are not logged in", "text": ""}
     return new_question(request, error=error)
 
 

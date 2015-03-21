@@ -53,7 +53,7 @@ def create_question_item(item):
     return {
         "question_id": item.id,
         "title": item.title,
-        "text": item.text,
+        "text": item.text.replace("&lt;br&gt;", "<br>"),
         "rating": item.rating,
         "answers": amount,
         "tags": tags,
@@ -187,7 +187,7 @@ def question_thread(request, qid = 0, error = None):
             prop = user_properties.objects.get(user_id=a.author.id)  # load user properties
             append({
                 "id": a.id,
-                "text": a.text,
+                "text": a.text.replace("&lt;br&gt;", "<br>"),
                 "rating": a.rating,
                 "selected": a.is_marked_as_true,
 
@@ -250,7 +250,7 @@ def add_new_question(request):
 
             quest = the_question()
             quest.title = title[:250] # max 250 chars
-            quest.text = text
+            quest.text = text  # &lt;br&gt;
             quest.author = request.user
             quest.save()
 

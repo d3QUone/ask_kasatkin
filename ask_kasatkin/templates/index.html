@@ -13,7 +13,7 @@
             </div>
             <div class="col-xs-10 question__right">
                 <p><a href="{%  url 'core:question' item.question_id %}" class="underline__link"><strong>{{ item.title }}</strong></a></p>
-                <p>{{ item.text }}</p>
+                <p>{{ item.text|linebreaks }}</p>
                 <div class="question__tags">
                     <a href="{%  url 'core:question' item.question_id %}"><strong>Answers ({{ item.answers }})</strong></a> &nbsp;&nbsp;
                     <strong>Asked:</strong> {{ item.nickname }} &nbsp;&nbsp;

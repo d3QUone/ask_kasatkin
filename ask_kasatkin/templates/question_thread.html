@@ -12,7 +12,7 @@
         </div>
         <div class="col-xs-10 question__right">
             <p><a href="{%  url 'core:question' question.question_id %}" class="underline__link"><strong>{{ question.title }}</strong></a></p>
-            <p>{{ question.text }}</p>
+            <p>{{ question.text|linebreaks }}</p>
             <div class="question__tags">
                 {%  if question.tags %}
                     <strong>Tags: </strong>
@@ -46,7 +46,7 @@
                     <a href="" class="btn btn-danger btn-sm question__vote">-</a>
                 </div>
                 <div class="col-xs-10 question__right">
-                    <p>{{ item.text }}</p>
+                    <p>{{ item.text|linebreaks }}</p>
                     <div class="question__tags">
                         <strong>Author:</strong> {{ item.author }}
                     </div>

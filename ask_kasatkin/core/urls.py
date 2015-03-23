@@ -23,6 +23,4 @@ urlpatterns = patterns('',
 
     url(r'^tag/(?P<tag_n>\w+)/$', all_by_tag, name='all_by_tag'),
 
-    # likes: on question / on answer
-
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

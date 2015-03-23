@@ -24,14 +24,17 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+# nginx care
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost'
+]
 
 
 # Application definition
 
 INSTALLED_APPS = (
     'django.contrib.admin', # no need?
-
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -47,12 +50,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
-
-# nginx care
-ALLOWED_HOSTS = (
-    '127.0.0.1',
-    'localhost',
 )
 
 ROOT_URLCONF = 'ask_kasatkin.urls'

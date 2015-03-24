@@ -89,7 +89,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 TEMPLATE_DIRS = (
-    BASE_DIR + "/templates"
+    BASE_DIR + "/templates",
 )
 
 MEDIA_URL = '/uploads/'

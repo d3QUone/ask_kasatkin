@@ -9,13 +9,13 @@
 <link rel="stylesheet" href="/static/improve.css">
 </head>
 <body>
-<div class="container">
+<div class="container-fixed">
     <!-- STATIC HEADER-BLOCK | for all methods now! -->
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="col-xs-2 navbar__low">
-                    <a href="{% url 'core:home' %}"><h4>Ask-Kasatkin<!--small>ответы на все вопросы</small--></h4></a>
+                    <a href="{% url 'core:home' %}"><h4>Ask-Kasatkin</h4></a>
                 </div>
                 <div class="col-xs-6 navbar__high">
                     <form method="GET" action="/search">

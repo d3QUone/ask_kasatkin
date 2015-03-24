@@ -1,6 +1,7 @@
 /* make static block */
 .container-fixed {
-	min-width: 1000px;
+	width: 1050px;
+	margin: auto;
 }
 
 /* navbar improves */

@@ -88,23 +88,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
+TEMPLATE_DIRS = (
+    BASE_DIR + "/templates"
+)
+
 MEDIA_URL = '/uploads/'
+MEDIA_ROOT = BASE_DIR + '/uploads'
+
 STATIC_URL = '/static/'
-
-
-# server paths
-TEMPLATE_DIRS = (
-    '/root/ask_kasatkin/ask_kasatkin/templates',
-)
-MEDIA_ROOT = '/root/ask_kasatkin/ask_kasatkin/uploads'
-STATIC_ROOT = '/root/ask_kasatkin/ask_kasatkin/static'
-
-
-"""
-# local machine paths:
-TEMPLATE_DIRS = (
-    '/Users/vladimir/Desktop/ask_kasatkin/ask_kasatkin/templates',
-)
-MEDIA_ROOT = '/Users/vladimir/Desktop/ask_kasatkin/ask_kasatkin/uploads'
-STATIC_ROOT = '/Users/vladimir/Desktop/ask_kasatkin/ask_kasatkin/static'
-"""
+STATIC_ROOT = BASE_DIR + '/static'

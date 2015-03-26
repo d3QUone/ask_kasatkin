@@ -214,7 +214,7 @@ def create():
     props = user_properties()
     props.filename = "ex1.gif"
     props.nickname = "test~{0}".format(uuid4())
-    props.rating = -50 + randint(100)
+    props.rating = randint(-50, 50)
     props.save()
 
     return new_user

@@ -228,7 +228,7 @@ from datetime import datetime
 from uuid import uuid4
 
 
-def create_random_question(amount = 1):
+def create_random_question(amount):
     test_set = "{0}-test".format(datetime.now())
     for i in range(amount):
         user = select_random_user()
@@ -239,16 +239,16 @@ def create_random_question(amount = 1):
         question = the_question()
         question.author = user
         question.title = test_set
-        question.text = "Test question\n" + "\n".join([str(uuid4())*2 for i in range(13)])  # + add stat block at the end?
+        question.text = "Test question\n" + "\n".join([str(uuid4())*2 for i in range(11)])  # + add stat block at the end?
         question.save()
 
         # add tags
         try:
-            tn = tag_name.objects.get(name="test_set{0}".format(i))
+            tn = tag_name.objects.get(name="test_set_{0}".format(i))
         except:
             # create if none
             tn = tag_name()
-            tn.name = "test_set{0}".format(i)
+            tn.name = "test_set_{0}".format(i)
             tn.save()
 
         new_tag = store_tag()
@@ -257,11 +257,11 @@ def create_random_question(amount = 1):
         new_tag.save()
 
         # create answer
-        how_much = randint(2, 5)
+        how_much = int(randint(0, 6))
         create_random_answers(question.id, how_much)
 
 
-def create_random_answers(question_id = None, amount = 2):
+def create_random_answers(question_id = None, amount = 0):
     if question_id:
         for i in range(amount):
             user = select_random_user()
@@ -271,7 +271,13 @@ def create_random_answers(question_id = None, amount = 2):
             ques = the_question.objects.get(id=question_id)
 
             ans = the_answer()
-            ans.text = "Test answer\n" + "\n".join([str(uuid4())*2 for i in range(5)])
+            ans.text = "Test answer\n" + "\n".join(["{0}) {1}".format(i, uuid4()) for i in range(5)])
             ans.author = user
             ans.contributed_to = ques
             ans.save()
+
+
+def fill_base():
+    for i in range(100):
+        create()
+    create_random_question(100)

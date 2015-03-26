@@ -203,7 +203,7 @@ from random import randint
 
 
 def create():
-    timestamp = int(time())
+    timestamp = int(str(time())[5:])
     username = "test_{0}".format(timestamp)
     email = "{0}@test.com".format(timestamp)
     password = "forever1"  # not to forget :)
@@ -215,12 +215,12 @@ def create():
     rati = randint(-50, 50)
 
     props = user_properties()
-    props.user = new_user  # FUUUUUUUUUCK
-    props.filename = "ex1.gif"
+    props.user = new_user
+    props.filename = "ex1"
     props.nickname = nick
     props.rating = rati
     props.save()
-    print "USER CREATED with username: {0}\nnick: {1}\nrating: {2}\n--------------------\n".format(username, nick, rati)
+    print "USER CREATED: {0}\nnick: {1}\nrating: {2}\n--------------------\n".format(username, nick, rati)
     return new_user
 
 

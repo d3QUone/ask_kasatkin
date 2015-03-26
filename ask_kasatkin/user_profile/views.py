@@ -9,7 +9,8 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from user_profile.models import user_properties
-from core.views import get_static_data, index_page
+from core.views import index_page
+from common_methods import get_static_data
 
 import uuid  # to generate unique filenames
 

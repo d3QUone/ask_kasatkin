@@ -9,8 +9,9 @@ from django.shortcuts import render
 from core.models import the_question, the_answer, store_tag, tag_name
 from user_profile.models import user_properties
 from user_profile.views import get_user_data
-from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
+from common_methods import get_static_data
 
+from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
 from random import randint  # used in demo
 from django.http import HttpResponse
 
@@ -219,29 +220,6 @@ def like_post(request):
     if request.method == "POST":
         # do, return N of likes?
         return 3
-
-
-
-##### STATIC DATA #####
-
-# returns popular tags from file ? cache, will be dynamic in future updates
-def get_static_data():
-    res = []
-    append = res.append
-
-    all_tags = tag_name.objects.all()
-    demo_pop_tags = [t.name for t in all_tags]
-
-    #demo_pop_tags = ["Technopark", "Baumanka", "C", "Python", "MySQL", "Ruby", "apple", "iOS", "swift", "django", "php", "flask", "objective-c", "Ubuntu-server", "VPS", "Coffee Script", "sudo"]
-    demo_labels = ["label label-default", "label label-primary", "label label-success", "label label-info", "label label-warning", "label label-danger"]
-    for tag in demo_pop_tags:
-        append({"text": tag, "label": demo_labels[randint(0, len(demo_labels)-1)]})
-
-    data = {}
-    data["popular_tags"] = res
-    data["popular_users"] = ["Vasya Pupkin", "accl_9912_xz", "Dart Vader", "ggl.cm", "qwerTY"]
-    return data
-
 
 
 # some automatisation for testing

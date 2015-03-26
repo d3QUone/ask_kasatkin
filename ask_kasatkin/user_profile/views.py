@@ -203,15 +203,15 @@ from random import randint
 
 
 def create():
-    timestamp = int(str(time())[5:])
-    username = "test_{0}".format(timestamp)
+    timestamp = int(time())
+    username = "test_{0}".format(uuid4())
     email = "{0}@test.com".format(timestamp)
     password = "forever1"  # not to forget :)
 
     new_user = User.objects.create_user(username=username, email=email, password=password)
     new_user.save()
 
-    nick = "test~{0}".format(uuid4())
+    nick = "test_{0}".format(timestamp)
     rati = randint(-50, 50)
 
     props = user_properties()

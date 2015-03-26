@@ -5,12 +5,11 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-from django.shortcuts import render
 from core.models import the_question, the_answer, store_tag, tag_name
 from user_profile.models import user_properties
 from user_profile.views import get_user_data
 from common_methods import get_static_data
-
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
 from random import randint  # used in demo
 from django.http import HttpResponse

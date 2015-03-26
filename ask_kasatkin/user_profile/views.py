@@ -211,12 +211,15 @@ def create():
     new_user = User.objects.create_user(username=username, email=email, password=password)
     new_user.save()
 
+    nick = "test~{0}".format(uuid4())
+    rati = randint(-50, 50)
+
     props = user_properties()
     props.filename = "ex1.gif"
-    props.nickname = "test~{0}".format(uuid4())
-    props.rating = randint(-50, 50)
+    props.nickname = nick
+    props.rating = rati
     props.save()
-
+    print "USER CREATED:\nusername: {0}\nnick: {1}\nrating: {2}".format(username, nick, rati)
     return new_user
 
 
@@ -224,6 +227,8 @@ def create():
 def select_random_user():
     random_user = User.objects.all().filter(username__startswith="test")
     if random_user:
-        return random_user[randint(1, len(random_user)) - 1]
+        user = random_user[randint(1, len(random_user)) - 1]
+        print "USER selected:\nusername: {0}".format(user.username)
+        return user
     else:
         return None

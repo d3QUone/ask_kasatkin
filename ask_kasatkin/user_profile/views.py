@@ -195,10 +195,6 @@ def update_settings(request):
 
 
 
-
-
-
-
 # create some users automatically
 
 from time import time

@@ -15,7 +15,7 @@
     <div class="alert alert-danger" role="alert" id="jsalert" hidden>
         <strong>All fields must be filled</strong>
     </div>
-    <form method="POST" action="{% url 'core:validate_login' %}" name="mf" onsubmit="return c()" onclick="h()">
+    <form method="POST" action="{% url 'user_profile:validate_login' %}" name="mf" onsubmit="return c()" onclick="h()">
         {% csrf_token %}
         <div class="form-group">
             <input class="form-control" name="input_login" id="inpl" placeholder="Enter login" type="text" required>
@@ -25,7 +25,7 @@
         </div>
         <input type="submit" class="btn btn-default" value="Log in!"/>
     </form>
-    <br><strong>Or:</strong>&nbsp;&nbsp;<a href="{% url 'core:register' %}" class="underline__link">create new account</a>
+    <br><strong>Or:</strong>&nbsp;&nbsp;<a href="{% url 'user_profile:register' %}" class="underline__link">create new account</a>
     </div>
 {% endblock content %}
 

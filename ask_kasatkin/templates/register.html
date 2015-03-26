@@ -14,7 +14,7 @@
     <div id="jsalert" class="alert alert-danger" role="alert" hidden>
         <strong>All fields are required</strong>
     </div>
-    <form enctype="multipart/form-data" method="POST" action="{% url 'core:validate_register' %}" name="mf" onsubmit="return c()" onclick="h()">
+    <form enctype="multipart/form-data" method="POST" action="{% url 'user_profile:validate_register' %}" name="mf" onsubmit="return c()" onclick="h()">
         {% csrf_token %}
         <div class="form-group">
             <!--label for="input_login">Login</label-->

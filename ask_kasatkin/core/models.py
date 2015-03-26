@@ -4,14 +4,6 @@ from django.contrib.auth.models import User
 from time import time  # cause timestamps are better :)
 
 
-# additional user properties - OK
-class user_properties(models.Model):
-    user = models.ForeignKey(User)
-    nickname = models.CharField(max_length=100)  # 2 unique fields
-    rating = models.IntegerField(default=0)
-    filename = models.CharField(max_length=100)  # avatar filename!
-
-
 # question-class - OK
 class the_question(models.Model):
     title = models.CharField(max_length=250)
@@ -55,19 +47,15 @@ class store_tag(models.Model):
     question = models.ForeignKey(the_question)
 
 
-'''
-# don't create this tables while I'm not using them
 
-# save for Questions
+# likes
 class likes_questions(models.Model):
-    user_id = models.ForeignKey(User)
-    question_id = models.ForeignKey(the_question)
-    state = 0  # default - no vote. vars: -1, 0, 1
+    user = models.ForeignKey(User)
+    question = models.ForeignKey(the_question)
+    state = models.IntegerField(default=0)  # default - no vote. vars: -1, 0, 1
 
 
-# save for Answers
 class likes_answers(models.Model):
-    user_id = models.ForeignKey(User)
-    answer_id = models.ForeignKey(the_answer)
-    state = 0
-'''
+    user = models.ForeignKey(User)
+    answer = models.ForeignKey(the_answer)
+    state = models.IntegerField(default=0)

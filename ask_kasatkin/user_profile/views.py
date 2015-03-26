@@ -220,7 +220,7 @@ def create():
     props.nickname = nick
     props.rating = rati
     props.save()
-    print "USER CREATED:\nusername: {0}\nnick: {1}\nrating: {2}".format(username, nick, rati)
+    print "USER CREATED with username: {0}\nnick: {1}\nrating: {2}\n--------------------\n".format(username, nick, rati)
     return new_user
 
 
@@ -229,7 +229,7 @@ def select_random_user():
     random_user = User.objects.all().filter(username__startswith="test")
     if random_user:
         user = random_user[randint(1, len(random_user)) - 1]
-        print "USER selected:\nusername: {0}".format(user.username)
+        print "User loaded: {0}".format(user.username)
         return user
     else:
         return None

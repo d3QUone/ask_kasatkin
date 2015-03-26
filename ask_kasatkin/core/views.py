@@ -244,11 +244,11 @@ def create_random_question(amount = 1):
 
         # add tags
         try:
-            tn = tag_name.objects.get(name=test_set)
+            tn = tag_name.objects.get(name="test_set{0}".format(i))
         except:
             # create if none
             tn = tag_name()
-            tn.name = test_set
+            tn.name = "test_set{0}".format(i)
             tn.save()
 
         new_tag = store_tag()

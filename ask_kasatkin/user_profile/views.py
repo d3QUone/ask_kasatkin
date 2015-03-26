@@ -5,11 +5,10 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from user_profile.models import user_properties
-from core.views import index_page
 from common_methods import get_static_data
 
 import uuid  # to generate unique filenames
@@ -46,7 +45,7 @@ def validate_login(request):
             user = authenticate(username=rec_login, password=rec_passw)
             if user:
                 login(request, user)
-                return index_page(request)
+                return redirect("core:index_page", request)
             else:
                 data["error"] = {"title": "No such user / wrong password", "text": ""}
     else:
@@ -121,7 +120,7 @@ def validate_register(request):
                             user = authenticate(username=login_, password=password1_)
                             login(request, user)
 
-                            return index_page(request)
+                            return redirect("core:index_page", request)
                         except Exception as ex:
                             data["error"] = {"title": "Internal server error", "text": str(ex)}
                     else:
@@ -142,7 +141,7 @@ def validate_register(request):
 # shown only for logged users - OK
 def self_logout(request):
     logout(request)
-    return index_page(request)
+    return redirect("core:index_page")
 
 
 

@@ -215,6 +215,7 @@ def create():
     rati = randint(-50, 50)
 
     props = user_properties()
+    props.user = new_user  # FUUUUUUUUUCK
     props.filename = "ex1.gif"
     props.nickname = nick
     props.rating = rati

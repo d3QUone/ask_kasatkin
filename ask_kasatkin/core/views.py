@@ -239,7 +239,8 @@ def create_random_question(amount):
         question = the_question()
         question.author = user
         question.title = test_set
-        question.text = "Test question\n" + "\n".join([str(uuid4())*2 for i in range(11)])  # + add stat block at the end?
+        question.text = "Test question\n" + "\n".join([str(uuid4())*2 for i in range(11)])
+        question.rating = randint(-100, 100)
         question.save()
 
         # add tags

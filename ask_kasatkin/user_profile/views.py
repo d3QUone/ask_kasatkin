@@ -210,16 +210,15 @@ def create():
     new_user = User.objects.create_user(username=username, email=email, password=password)
     new_user.save()
 
-    nick = "test_{0}".format(timestamp)
     rati = randint(-50, 50)
 
     props = user_properties()
     props.user = new_user
     props.filename = "ex1"
-    props.nickname = nick
+    props.nickname = username  # for me to be able to check test profile
     props.rating = rati
     props.save()
-    print "USER CREATED: {0}\nnick: {1}\nrating: {2}\n--------------------\n".format(username, nick, rati)
+    print "USER CREATED: {0}\nrating: {1}\n--------------------\n".format(username, rati)
     return new_user
 
 

@@ -5,7 +5,7 @@
     </div>
     <div class="col-xs-6">
     {% if user.is_authenticated %}
-        <form class="form-horizontal" enctype="multipart/form-data" method="POST" action="{% url 'core:validate_settings' %}" onclick="h()">
+        <form class="form-horizontal" enctype="multipart/form-data" method="POST" action="{% url 'user_profile:validate_settings' %}" onclick="h()">
             {% csrf_token %}
             <div class="form-group">
                 <div class="col-sm-2"></div>
@@ -63,9 +63,9 @@
         </div>
 
         <div class="container-fluid action__block">
-            <a href="{% url 'core:register' %}" class="btn btn-primary">Register</a>
+            <a href="{% url 'user_profile:register' %}" class="btn btn-primary">Register</a>
             &nbsp;
-            <a href="{% url 'core:login' %}" class="btn btn-primary">Log in</a>
+            <a href="{% url 'user_profile:login' %}" class="btn btn-primary">Log in</a>
         </div>
     {% endif %}
     </div>

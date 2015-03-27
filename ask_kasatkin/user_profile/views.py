@@ -5,7 +5,9 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-from django.shortcuts import render, redirect
+from django.http import HttpResponsePermanentRedirect
+from django.core.urlresolvers import reverse
+from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from user_profile.models import user_properties
@@ -45,7 +47,7 @@ def validate_login(request):
             user = authenticate(username=rec_login, password=rec_passw)
             if user:
                 login(request, user)
-                return redirect("core:index_page", request)
+                return HttpResponsePermanentRedirect(reverse("core:home"))
             else:
                 data["error"] = {"title": "No such user / wrong password", "text": ""}
     else:
@@ -119,7 +121,8 @@ def validate_register(request):
                             # uncomment to return logged in user
                             user = authenticate(username=login_, password=password1_)
                             login(request, user)
-                            return redirect("core:index_page", request)
+
+                            return HttpResponsePermanentRedirect(reverse("core:home"))
                         except Exception as ex:
                             data["error"] = {"title": "Internal server error", "text": str(ex)}
                     else:
@@ -136,12 +139,10 @@ def validate_register(request):
     return render(request, "register.html", data)
 
 
-
 # shown only for logged users - OK
 def self_logout(request):
     logout(request)
-    return redirect("core:index_page")
-
+    return HttpResponsePermanentRedirect(reverse("core:home"))
 
 
 def self_settings(request, error = None):
@@ -153,7 +154,6 @@ def self_settings(request, error = None):
         user_id = request.user.id
         data["personal"]["email"] = User.objects.get(id=user_id).email
     return render(request, "setting.html", data)
-
 
 
 def update_settings(request):
@@ -191,7 +191,6 @@ def update_settings(request):
         else:
             error = {"title": "Auth error", "text": "Login and try once more please"}
     return self_settings(request, error=error)  # return the same page with new data
-
 
 
 # create some users automatically

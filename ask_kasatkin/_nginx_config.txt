@@ -47,9 +47,7 @@ server {
 		alias /root/ask_kasatkin/ask_kasatkin/static;
 	}
 	
-	location /templates {
-		#expires 10d;
-	}
+	location /templates {}
 	
 	location ^~ /uploads {
 		expires 5d;

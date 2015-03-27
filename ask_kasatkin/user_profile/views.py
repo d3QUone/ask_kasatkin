@@ -95,8 +95,8 @@ def validate_register(request):
         except:
             avatar_file = request.POST['avatar']  # no file sent
 
-        if len(login_) < 5:
-            data["error"] = {"title": "Login-field", "text": "Please use login at least 5 symbols long"}
+        if len(login_) < 5 or len(login_) > 30:
+            data["error"] = {"title": "Login-field", "text": "Please use login at least 5 chars long and less then 30 chars"}
         elif len(nickname_) < 5:
             data["error"] = {"title": "Nickname-field", "text": "Please use nickname at least 5 symbols long"}
         elif len(password1_) < 5:
@@ -119,7 +119,6 @@ def validate_register(request):
                             # uncomment to return logged in user
                             user = authenticate(username=login_, password=password1_)
                             login(request, user)
-
                             return redirect("core:index_page", request)
                         except Exception as ex:
                             data["error"] = {"title": "Internal server error", "text": str(ex)}
@@ -204,7 +203,7 @@ from random import randint
 
 def create():
     timestamp = int(time())
-    username = "test_{0}".format(uuid4())
+    username = "test_{0}".format(uuid4())[:30]  # django max size
     email = "{0}@test.com".format(timestamp)
     password = "forever1"  # not to forget :)
 

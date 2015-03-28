@@ -5,7 +5,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-from core.models import the_question, the_answer, store_tag, tag_name
+from core.models import the_question, the_answer, store_tag, tag_name, likes_answers, likes_questions
 from user_profile.models import user_properties
 from user_profile.views import get_user_data
 from common_methods import get_static_data
@@ -217,9 +217,27 @@ def search(request):
 # will use for
 def like_post(request):
     if request.method == "POST":
+        pid = request.POST["pid"]
+        try:
+            question = the_question.objects.get(id=pid)
+        except:
+            question = None
+
+        
+
         # do, return N of likes?
         return 3
 
+
+
+def like_answer(request):
+    if request.method == "POST":
+        aid = request.POST["aid"]
+        answer = the_answer.objects.get(id=aid)
+
+        #check_like =
+
+        return 5
 
 
 #

@@ -61,7 +61,7 @@ def index_page(request, offset=0):
         append(create_question_item(item))
 
     data["questions"] = buf
-    return render(request, "index.html", data)
+    return render(request, "core__index.html", data)
 
 
 
@@ -100,7 +100,7 @@ def question_thread(request, qid = 0, error = None):
                 "avatar": "{0}.jpg".format(prop.filename),
             })
         data["answers"] = buf
-        return render(request, "question_thread.html", data)
+        return render(request, "core__question_page.html", data)
 
 
 
@@ -111,7 +111,7 @@ def new_question(request, error = None):
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
     data["error"] = error
-    return render(request, "add_question.html", data)
+    return render(request, "core__ask.html", data)
 
 
 # upload data and add question
@@ -200,7 +200,7 @@ def all_by_tag(request, tag_n=None):
     except:
         data["questions"] = None
 
-    return render(request, "all_by_tag.html", data)
+    return render(request, "core__by_tag.html", data)
 
 
 
@@ -221,7 +221,10 @@ def like_post(request):
         return 3
 
 
-# some automatisation for testing
+
+#
+# some automatic for testing
+#
 
 from user_profile.views import create, select_random_user
 from datetime import datetime

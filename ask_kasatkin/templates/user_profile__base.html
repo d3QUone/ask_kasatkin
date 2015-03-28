@@ -23,6 +23,9 @@
 
     
     <a href="{% if user.is_authenticated %}{% url 'core:create_question' %}{% else %}{% url 'user_profile:login' %}{% endif %}" class="btn button__styled">Ask</a>
+        
+
+
 
     {% if user.is_authenticated %}
         <div class="col-xs-3">
@@ -39,6 +42,11 @@
         &nbsp;
         <a href="{% url 'user_profile:login' %}"class="btn btn-primary">Log in</a>
     {% endif %}
+
+
+
+
+
 
 
     <!--div class="container">
@@ -84,13 +92,15 @@
     </div-->
 
 </nav>
+
 <!-- container for our content -->
 <div class="container-fixed">
     <div class="row-fluid">
-        <div class="col-xs-2"></div>
-        <div class="col-xs-8">
-            <!-- LEFT COLUMN: questions / register / add answer / add question / etc. -->
+        <div class="col-xs-3"></div>
+        <div class="col-xs-6">
             {% block content %}{% endblock content %}
+        </div>
+        <div class="col-xs-1">
         </div>
         <div class="col-xs-2">
             <!-- RIGHT COLUMN: (tags + best members), the same for all cases -->

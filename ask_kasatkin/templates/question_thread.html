@@ -1,123 +1,118 @@
 {% extends "base.html" %}
 {% block title %}Ask-Kasatkin Main Page{% endblock title %}
 {% block content %}
-    <div class="col-xs-8">
-    <div class="row question__block">
-        <div class="col-xs-2 question__left">
-            <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ question.avatar }}"><br>
-            <strong>Rating: {{ question.rating }}</strong><br>
-            <!-- use JQuery to like -->
-            <span class="question__vote__offset">
+<div class="row question__block">
+    <div class="col-xs-2 question__left">
+        <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ question.avatar }}"><br>
+        <strong>Rating: {{ question.rating }}</strong><br>
+        <!-- use JQuery to like -->
+        <span class="question__vote__offset">
+            <a href="" class="btn btn-success btn-sm question__vote">+</a>
+            <a href="" class="btn btn-danger btn-sm question__vote">-</a>
+        </span>
+    </div>
+    <div class="col-xs-10 question__right">
+        <p><a href="{%  url 'core:question' question.question_id %}" class="underline__link"><strong>{{ question.title }}</strong></a></p>
+        <p>{{ question.text|linebreaks }}</p>
+        <div class="question__tags">
+            <strong>Asked:</strong> {{ question.nickname }} &nbsp;&nbsp;
+            {%  if question.tags %}
+                <strong>Tags: </strong>
+                {% for tag in question.tags %}
+                    <a href="{% url 'core:all_by_tag' tag %}" class="underline__link">{{ tag }}</a>&nbsp;
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-1"></div>
+    <div class="col-xs-11">
+        <!-- ANSWERS -->
+        <div class="row">
+            <div class="answers__amount__header">
+                <h4>{{ question.answers }} Answers</h4>
+            </div>
+        </div>
+
+    <!-- 30 answers on a page, do in backend 'offset' = page*30, 'count'=30 -->
+    {% for item in answers %}
+        <div class="row question__block">
+            <div class="col-xs-2 question__left">
+                <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.avatar }}"><br>
+                <strong>Rating: {{ item.rating }}</strong><br>
+                <!-- use JQuery to like -->
                 <a href="" class="btn btn-success btn-sm question__vote">+</a>
                 <a href="" class="btn btn-danger btn-sm question__vote">-</a>
-            </span>
-        </div>
-        <div class="col-xs-10 question__right">
-            <p><a href="{%  url 'core:question' question.question_id %}" class="underline__link"><strong>{{ question.title }}</strong></a></p>
-            <p>{{ question.text|linebreaks }}</p>
-            <div class="question__tags">
-                <strong>Asked:</strong> {{ question.nickname }} &nbsp;&nbsp;
-                {%  if question.tags %}
-                    <strong>Tags: </strong>
-                    {% for tag in question.tags %}
-                        <a href="{% url 'core:all_by_tag' tag %}" class="underline__link">{{ tag }}</a>&nbsp;
-                    {% endfor %}
-                {% endif %}
             </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-xs-1"></div>
-        <div class="col-xs-11">
-            <!-- ANSWERS -->
-            <div class="row">
-                <div class="answers__amount__header">
-                    <h4>{{ question.answers }} Answers</h4>
+            <div class="col-xs-10 question__right">
+                <p>{{ item.text|linebreaks }}</p>
+                <div class="question__tags">
+                    <strong>Author:</strong> {{ item.author }}
                 </div>
-            </div>
 
-        <!-- 30 answers on a page, do in backend 'offset' = page*30, 'count'=30 -->
-        {% for item in answers %}
-            <div class="row question__block">
-                <div class="col-xs-2 question__left">
-                    <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.avatar }}"><br>
-                    <strong>Rating: {{ item.rating }}</strong><br>
-                    <!-- use JQuery to like -->
-                    <a href="" class="btn btn-success btn-sm question__vote">+</a>
-                    <a href="" class="btn btn-danger btn-sm question__vote">-</a>
-                </div>
-                <div class="col-xs-10 question__right">
-                    <p>{{ item.text|linebreaks }}</p>
-                    <div class="question__tags">
-                        <strong>Author:</strong> {{ item.author }}
-                    </div>
-
-                    <!-- only author can vote! -->
-                    {% if owner %}
-                        <!-- this must be showing/working only for the author -->
-                        <form method="post" action="/correct_answer">
-                            <div class="checkbox">
-                                <label>
-                                    {% if item.selected %}
-                                        <p class="bg-success"><input type="checkbox" checked="checked">Correct!</p>
-                                    {% else %}
-                                        <input type="checkbox">Correct?
-                                    {% endif %}
-                                </label>
-                              </div>
-                        </form>
-                    {% else %}
-                        <!-- draw a badge here -->
-                        {% if item.selected %}
-                            <p class="bg-success">Correct!</p>
-                        {% endif %}
+                <!-- only author can vote! -->
+                {% if owner %}
+                    <!-- this must be showing/working only for the author -->
+                    <form method="post" action="/correct_answer">
+                        <div class="checkbox">
+                            <label>
+                                {% if item.selected %}
+                                    <p class="bg-success"><input type="checkbox" checked="checked">Correct!</p>
+                                {% else %}
+                                    <input type="checkbox">Correct?
+                                {% endif %}
+                            </label>
+                          </div>
+                    </form>
+                {% else %}
+                    <!-- draw a badge here -->
+                    {% if item.selected %}
+                        <p class="bg-success">Correct!</p>
                     {% endif %}
-                </div>
-            </div>
-            <br>
-        {% endfor %}
-
-
-        <!-- + add answer form on any pagination-current-page-index -->
-        {% if user.is_authenticated %}
-            <div class="row">
-                <div class="add__answer__header">
-                    <h4>Add answer:</h4>
-                </div>
-            </div>
-            <form class="form-horizontal" method="POST" action="{% url 'core:add_new_answer' %}" onclick="h()">
-                {% csrf_token %}
-                {% if error %}
-                    <div class="form-group" id="add_error">
-                        <div class="alert alert-danger" role="alert">
-                            <strong>{{ error.title }}</strong>
-                            <p>{{ error.text }}</p>
-                        </div>
-                    </div>
                 {% endif %}
-                <input type="hidden" name="redirect_id" value="{{ question.question_id }}">
-                <div class="form-group">
-                    <textarea class="form-control add__answer__textarea" name="text" rows="5"></textarea>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-default">Answer</button>
-                </div>
-            </form>
-        {% else %}
-            <div class="row">
-                <div class="add__answer__header">
-                    <h4>Login to add answer</h4>
-                </div>
             </div>
-        {% endif %}
         </div>
-    </div>
-    </div> <!-- <main column -->
-{% endblock content %}
+        <br>
+    {% endfor %}
 
-{% block pagination %}
-{% endblock pagination %}
+
+    <!-- + add answer form on any pagination-current-page-index -->
+    {% if user.is_authenticated %}
+        <div class="row">
+            <div class="add__answer__header">
+                <h4>Add answer:</h4>
+            </div>
+        </div>
+        <form class="form-horizontal" method="POST" action="{% url 'core:add_new_answer' %}" onclick="h()">
+            {% csrf_token %}
+            {% if error %}
+                <div class="form-group" id="add_error">
+                    <div class="alert alert-danger" role="alert">
+                        <strong>{{ error.title }}</strong>
+                        <p>{{ error.text }}</p>
+                    </div>
+                </div>
+            {% endif %}
+            <input type="hidden" name="redirect_id" value="{{ question.question_id }}">
+            <div class="form-group">
+                <textarea class="form-control add__answer__textarea" name="text" rows="5"></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">Answer</button>
+            </div>
+        </form>
+    {% else %}
+        <div class="row">
+            <div class="add__answer__header">
+                <h4>Login to add answer</h4>
+            </div>
+        </div>
+    {% endif %}
+    </div>
+</div>
+{% endblock content %}
 
 
 {% block scripts %}

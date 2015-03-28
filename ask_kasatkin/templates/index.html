@@ -1,54 +1,53 @@
 {% extends "base.html" %}
 {% block title %}Ask-Kasatkin Main Page{% endblock title %}
 {% block content %}
-    <div class="col-xs-8">
-    {% for item in questions %}
-        <div class="row question__block">
-            <div class="col-xs-2 question__left">
-                <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.avatar }}"><br>
-                <strong>Rating: {{ item.rating }}</strong><br>
-                <!-- use JQuery (AJAX) to like -->
-                <div class="question__vote__block">
-                    <a href="" class="like__block">+</a>
-                    <a href="" class="like__block">-</a>
-                </div>
-            </div>
-            <div class="col-xs-10 question__right">
-                <p><a href="{%  url 'core:question' item.question_id %}" class="underline__link"><strong>{{ item.title }}</strong></a></p>
-                <p>{{ item.text|linebreaks }}</p>
-                <div class="question__tags">
-                    <a href="{%  url 'core:question' item.question_id %}"><strong>Answers ({{ item.answers }})</strong></a> &nbsp;&nbsp;
-                    <strong>Asked:</strong> {{ item.nickname }} &nbsp;&nbsp;
-                {%  if item.tags %}
-                    <strong>Tags: </strong>
-                    {% for tag in item.tags %}
-                        <a href="{% url 'core:all_by_tag' tag %}" class="underline__link">{{ tag }}</a>&nbsp;
-                    {% endfor %}
-                {% endif %}
-                </div>
+{% for item in questions %}
+    <div class="row question__block">
+        <div class="col-xs-2 question__left">
+            <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.avatar }}"><br>
+            <strong>Rating: {{ item.rating }}</strong><br>
+            <!-- use JQuery (AJAX) to like -->
+            <div class="question__vote__block">
+                <a href="" class="like__block">+</a>
+                <a href="" class="like__block">-</a>
             </div>
         </div>
-        <br>
-    {% endfor %}
-
-        <nav>
-          <ul class="pagination">
-            <li class="disabled">
-              <a href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            <li class="active"><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li>
-              <a href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
+        <div class="col-xs-10 question__right">
+            <p><a href="{%  url 'core:question' item.question_id %}" class="underline__link"><strong>{{ item.title }}</strong></a></p>
+            <p>{{ item.text|linebreaks }}</p>
+            <div class="question__tags">
+                <a href="{%  url 'core:question' item.question_id %}"><strong>Answers ({{ item.answers }})</strong></a> &nbsp;&nbsp;
+                <strong>Asked:</strong> {{ item.nickname }} &nbsp;&nbsp;
+            {%  if item.tags %}
+                <strong>Tags: </strong>
+                {% for tag in item.tags %}
+                    <a href="{% url 'core:all_by_tag' tag %}" class="underline__link">{{ tag }}</a>&nbsp;
+                {% endfor %}
+            {% endif %}
+            </div>
+        </div>
     </div>
+    <br>
+{% endfor %}
+
+    <nav>
+      <ul class="pagination">
+        <li class="disabled">
+          <a href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li class="active"><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+        <li>
+          <a href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+</div>
 {% endblock content %}

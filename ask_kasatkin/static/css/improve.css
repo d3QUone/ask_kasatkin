@@ -16,12 +16,43 @@ body {
     text-decoration: underline;
 }
 
+
 /* navbar improves */
 .navbar__new__color {
     background-color: #BEA8B9;
     min-width: 1050px;
     display: block;
 }
+
+.button__styled {
+    background-color: #8E6784;
+    border-color: black;
+    color: white;
+}
+
+.button__styled:hover {
+    background-color: #7E5273;
+    border-color: black;
+    color: white;
+}
+
+
+/* new header */
+.h_col_1 {
+
+}
+
+
+.h__input__field {
+    background-color: #EEE9ED;
+    width: 600px;
+}
+
+
+
+
+
+/* new header */
 
 .navbar__low {
     margin-top: 4px;
@@ -31,28 +62,25 @@ body {
     margin-top: 8px;
 }
 
+.navbar__input__form {
+    background-color: #EEE9ED;
+    width: 80%;
+}
+
+
 .navbar__avatar {
     height: 35px;
     width: 35px;
 }
 
-/* colored text */
-.navbar__logo__1 {
-    color: #7ad9ff; 
-    font-size: 20px; 
-    font-weight: bold;
-}
 
-.navbar__logo__2 {
-    color: #7246ff; 
-    font-size: 28px;
-}
 
 
 /* question block */
 .question__block {
     background-color: #DED3DC;
     box-shadow: 0 0 3px #c9c9c9;
+    border-color: black;
     border: 3px;
     padding: 10px 10px 10px 10px;
 }
@@ -88,6 +116,8 @@ body {
     background-color: #BEA8B9;
     width: 30px;
     border-radius: 5px;
+    border-color: black;
+    /*border: 1px solid transparent;*/
     margin-left: 10px;
 }
 

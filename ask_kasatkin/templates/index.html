@@ -5,11 +5,12 @@
     <div class="row question__block">
         <div class="col-xs-2 question__left">
             <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.avatar }}"><br>
-            <strong>Rating: {{ item.rating }}</strong><br>
-            <!-- use JQuery (AJAX) to like -->
-            <div class="question__vote__block">
-                <a href="" class="like__block">+</a>
-                <a href="" class="like__block">-</a>
+            <div class="rating__info">
+                Rating: {{ item.rating }}
+            </div>
+            <div class="rating__like__block">
+                <a href="" class="like__button">+</a>
+                <a href="" class="like__button">-</a>
             </div>
         </div>
         <div class="col-xs-10 question__right">

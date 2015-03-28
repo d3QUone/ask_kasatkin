@@ -115,7 +115,12 @@ body {
 
 
 /* likes */
-.question__vote__block {
+.rating__info {
+    font-weight: 900;
+    padding-top: 8px;
+}
+
+.rating__like__block {
     display: inline;
     background-color: #BEA8B9;
     width: 30px;
@@ -126,11 +131,17 @@ body {
     margin-left: 8px;
 }
 
-.like__block {
+.like__button {
     font-size: 30px;
     color: #5E2750;
     margin: 5px;
-    /*background-color: #9E7D96;*/
+}
+
+.like__button:hover {
+    font-size: 30px;
+    color: #EEE9ED;
+    margin: 5px;
+    text-decoration: none;
 }
 
 

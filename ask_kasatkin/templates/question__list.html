@@ -1,0 +1,29 @@
+{% for question in questions %}
+    <div class="row question__block">
+        <div class="col-xs-2 question__left">
+            <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ question.avatar }}"><br>
+            <div class="rating__info">
+                Rating: {{ question.rating }}
+            </div>
+            <div class="rating__like__block">
+                <a href="" class="like__button">+</a>
+                <a href="" class="like__button">-</a>
+            </div>
+        </div>
+        <div class="col-xs-10 question__right">
+            <p><a href="{%  url 'core:question' question.question_id %}" class="underline__link"><strong>{{ question.title }}</strong></a></p>
+            <p>{{ question.text|linebreaks }}</p>
+            <div class="question__tags">
+                <a href="{%  url 'core:question' question.question_id %}" class="underline__link"><strong>Answers ({{ question.answers }})</strong></a> &nbsp;&nbsp;
+                <strong>Asked:</strong> {{ question.nickname }} &nbsp;&nbsp;
+            {%  if question.tags %}
+                <strong>Tags: </strong>
+                {% for tag in question.tags %}
+                    <a href="{% url 'core:all_by_tag' tag %}" class="underline__link">{{ tag }}</a>&nbsp;
+                {% endfor %}
+            {% endif %}
+            </div>
+        </div>
+    </div>
+    <br>
+{% endfor %}

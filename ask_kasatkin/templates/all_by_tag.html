@@ -6,38 +6,12 @@
         <h4>All questions by tag <span class="underline__link">{{ tag }}</span>:</h4>
 		<br>
     </div>
-{% for item in questions %}
-    <div class="row question__block">
-        <div class="col-xs-2 question__left">
-            <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.avatar }}"><br>
-            <strong>Rating: {{ item.rating }}</strong><br>
-            <!-- use JQuery (AJAX) to like -->
-            <a href="" class="btn btn-success btn-sm question__vote">+</a>
-            <a href="" class="btn btn-danger btn-sm question__vote">-</a>
-        </div>
-        <div class="col-xs-10 question__right">
-            <p><a href="{%  url 'core:question' item.question_id %}" class="underline__link"><strong>{{ item.title }}</strong></a></p>
-            <p>{{ item.text }}</p>
-            <div class="question__tags">
-            {%  if item.tags %}
-                <strong>Tags: </strong>
-                {% for tag in item.tags %}
-                    <a href="{% url 'core:all_by_tag' tag %}" class="underline__link">{{ tag }}</a>&nbsp;
-                {% endfor %}
-            {% endif %}
-            <strong>Asked:</strong> {{ item.nickname }} &nbsp;&nbsp;
-            <a href="{%  url 'core:question' item.question_id %}"><strong>Answer ({{ item.answers }})</strong></a>
-            </div>
-        </div>
-    </div>
-    <br>
-{% endfor %}
+{% include "question__list.html" %}
 {% else %}
     <div class="row action__block">
         <h4>Nothing found by tag <span class="underline__link">{{ tag }}</span>:</h4>
     </div>
 {% endif %}
-
 
 <nav>
   <ul class="pagination">

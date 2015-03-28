@@ -1,36 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Ask-Kasatkin Main Page{% endblock title %}
 {% block content %}
-{% for item in questions %}
-    <div class="row question__block">
-        <div class="col-xs-2 question__left">
-            <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.avatar }}"><br>
-            <div class="rating__info">
-                Rating: {{ item.rating }}
-            </div>
-            <div class="rating__like__block">
-                <a href="" class="like__button">+</a>
-                <a href="" class="like__button">-</a>
-            </div>
-        </div>
-        <div class="col-xs-10 question__right">
-            <p><a href="{%  url 'core:question' item.question_id %}" class="underline__link"><strong>{{ item.title }}</strong></a></p>
-            <p>{{ item.text|linebreaks }}</p>
-            <div class="question__tags">
-                <a href="{%  url 'core:question' item.question_id %}"><strong>Answers ({{ item.answers }})</strong></a> &nbsp;&nbsp;
-                <strong>Asked:</strong> {{ item.nickname }} &nbsp;&nbsp;
-            {%  if item.tags %}
-                <strong>Tags: </strong>
-                {% for tag in item.tags %}
-                    <a href="{% url 'core:all_by_tag' tag %}" class="underline__link">{{ tag }}</a>&nbsp;
-                {% endfor %}
-            {% endif %}
-            </div>
-        </div>
-    </div>
-    <br>
-{% endfor %}
-
+{% include "question__list.html" %}
     <nav>
       <ul class="pagination">
         <li class="disabled">

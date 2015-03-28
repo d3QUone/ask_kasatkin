@@ -10,36 +10,33 @@
 </head>
 <body>
 <nav class="navbar navbar-default navbar-static-top navbar__new__color">
+    <div class="navbar__base__block">
 
-    <div class="h_col_1">
-      <a href="{% url 'core:home' %}"><h4>Ask.Kasatkin</h4></a>
-    </div>
+        <a href="{% url 'core:home' %}"><h4>Ask.Kasatkin</h4></a>
+        
+        <form method="GET" action="#">
+            <input name="request" type="search" class="form-control h__input__field" placeholder="Find something">
+        </form>
 
+        <a href="{% if user.is_authenticated %}{% url 'core:create_question' %}{% else %}{% url 'user_profile:login' %}{% endif %}" class="btn button__styled">Ask</a>
 
-    <form method="GET" action="#">
-        <input name="request" type="search" class="form-control h__input__field" placeholder="Find something">
-    </form>
-
-
-    
-    <a href="{% if user.is_authenticated %}{% url 'core:create_question' %}{% else %}{% url 'user_profile:login' %}{% endif %}" class="btn button__styled">Ask</a>
-
-    {% if user.is_authenticated %}
-        <div class="col-xs-3">
-            <img class="img-rounded navbar__avatar" src="{{ MEDIA_URL }}{{ personal.avatar }}"><br>
-        </div>
-        <div class="col-xs-9">
-            {{ personal.nickname }}<br>
-            <a href="{% url 'user_profile:settings' %}">Settings</a>
+        {% if user.is_authenticated %}
+            <div class="col-xs-3 no__paddings">
+                <img class="img-rounded navbar__avatar" src="{{ MEDIA_URL }}{{ personal.avatar }}"><br>
+            </div>
+            <div class="col-xs-9 no__paddings">
+                {{ personal.nickname }}<br>
+                <a href="{% url 'user_profile:settings' %}">Settings</a>
+                &nbsp;
+                <a href="{% url 'user_profile:logout' %}">Log out</a>
+            </div>
+        {% else %}
+            <a href="{% url 'user_profile:register' %}" class="btn btn-primary">Register</a>
             &nbsp;
-            <a href="{% url 'user_profile:logout' %}">Log out</a>
-        </div>
-    {% else %}
-        <a href="{% url 'user_profile:register' %}" class="btn btn-primary">Register</a>
-        &nbsp;
-        <a href="{% url 'user_profile:login' %}"class="btn btn-primary">Log in</a>
-    {% endif %}
+            <a href="{% url 'user_profile:login' %}"class="btn btn-primary">Log in</a>
+        {% endif %}
 
+    </div>
 
     <!--div class="container">
         <div class="row-fluid">
@@ -92,7 +89,7 @@
             <!-- LEFT COLUMN: questions / register / add answer / add question / etc. -->
             {% block content %}{% endblock content %}
         </div>
-        <div class="col-xs-2">
+        <div class="col-xs-2 column__left__fix">
             <!-- RIGHT COLUMN: (tags + best members), the same for all cases -->
             <h4>Popular Tags:</h4>
             {% for tag in popular_tags %}<a href="{% url 'core:all_by_tag' tag.text %}"><span class="{{ tag.label }} tag__margin">{{ tag.text }}</span></a>

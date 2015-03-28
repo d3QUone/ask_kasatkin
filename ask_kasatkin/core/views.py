@@ -11,8 +11,10 @@ from user_profile.views import get_user_data
 from common_methods import get_static_data
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
+from django.http import HttpResponse    #jquery simple return
 from random import randint  # used in demo
-from django.http import HttpResponse
+
+
 
 # test method, HOME TASK 4
 @csrf_exempt
@@ -25,7 +27,6 @@ def test(request):
         for key in request.POST:
             out += "<strong>{0}:</strong> {1}<br>\n".format(key, request.POST[key])
     return HttpResponse(out)
-
 
 
 ##### MAIN PAGE #####
@@ -214,30 +215,47 @@ def search(request):
         return HttpResponse("JSON result ... ")
 
 
-# will use for
+
+# this first ...
+@csrf_exempt
 def like_post(request):
     if request.method == "POST":
         pid = request.POST["pid"]
-        try:
-            question = the_question.objects.get(id=pid)
-        except:
-            question = None
+        like = request.POST["like"]  # true or false
+        question = the_question.objects.get(id=pid)
+        # except:
+        #     question = None
 
-        
+        if like:
+            res = 5
+        else:
+            res = -5
 
-        # do, return N of likes?
-        return 3
+        # fuck yea! that stuff works
+        if request.user.is_authenticated():
+            res += 100
+        else:
+            res -= 100
+
+        return HttpResponse(res)
 
 
 
+
+@csrf_exempt
 def like_answer(request):
     if request.method == "POST":
         aid = request.POST["aid"]
+        like = request.POST["like"]  # true or false
         answer = the_answer.objects.get(id=aid)
-
         #check_like =
 
-        return 5
+        if like:
+            res = 5
+        else:
+            res = -5
+
+        return HttpResponse(res)
 
 
 #

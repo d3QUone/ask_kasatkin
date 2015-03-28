@@ -86,11 +86,11 @@
     <div class="row-fluid">
         <div class="col-xs-2"></div>
         <div class="col-xs-8">
-            <!-- LEFT COLUMN: questions / register / add answer / add question / etc. -->
+            <!-- LEFT COLUMN: questions / add answer / add question / etc. -->
             {% block content %}{% endblock content %}
         </div>
         <div class="col-xs-2 column__left__fix">
-            <!-- RIGHT COLUMN: (tags + best members), the same for all cases -->
+            <!-- RIGHT COLUMN: (tags + best members), same in all cases -->
             <h4>Popular Tags:</h4>
             {% for tag in popular_tags %}<a href="{% url 'core:all_by_tag' tag.text %}"><span class="{{ tag.label }} tag__margin">{{ tag.text }}</span></a>
             {% endfor %}
@@ -108,7 +108,30 @@
 </div>
 <script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
-{% block scripts %}{% endblock %}
+{% block scripts %}{% endblock scripts %}
+{% block jq_likes %}
+<!-- will override this method ob page I dont need it -->
+<script type="text/javascript">
+$("span.question_like").click(function(){
+  var clicked = $(this).attr('id');
+
+  // post(url-string, data-json, result-jsfunction)
+  $.post("{% url 'core:like_question' %}", 
+    {
+      pid: clicked, 
+      like: true
+    }, 
+    update_rating
+  );
+
+  function update_rating(result){
+      $("div#" + clicked).html("Rating: " + result);
+  }
+})
+
+
+</script>
+{% endblock jq_likes %}
 <script type="text/javascript">
     (function (d, w, c) {
      (w[c] = w[c] || []).push(function() {

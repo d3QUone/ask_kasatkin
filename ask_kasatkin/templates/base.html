@@ -112,23 +112,75 @@
 {% block jq_likes %}
 <!-- will override this method ob page I dont need it -->
 <script type="text/javascript">
-$("span.question_like").click(function(){
-  var clicked = $(this).attr('id');
 
-  // post(url-string, data-json, result-jsfunction)
+//// QUESTIONS /////
+
+$("span.question_like").click(function(){
+  var pid = $(this).attr('id');
   $.post("{% url 'core:like_question' %}", 
     {
-      pid: clicked, 
-      like: true
+      pid: pid, 
+      like: 1
     }, 
     update_rating
   );
-
   function update_rating(result){
-      $("div#" + clicked).html("Rating: " + result);
+    if (result != "None") {
+      $("div#" + pid).html("Rating: " + result);
+    }
   }
-})
+});
 
+$("span.question_dislike").click(function(){
+  var pid = $(this).attr('id');
+  $.post("{% url 'core:like_question' %}", 
+    {
+      pid: pid, 
+      like: 0
+    }, 
+    update_rating
+  );
+  function update_rating(result){
+    if (result != "None") {
+      $("div#" + pid).html("Rating: " + result);
+    }
+  }
+});
+
+
+///// ANSWERS //////
+
+$("span.ans_like").click(function(){
+  var aid = $(this).attr('id');
+  $.post("{% url 'core:like_answer' %}", 
+    {
+      aid: aid, 
+      like: 1
+    }, 
+    update_rating
+  );
+  function update_rating(result){
+    if (result != "None") {
+      $("div#" + aid).html("Rating: " + result);
+    }
+  }
+});
+
+$("span.ans_dislike").click(function(){
+  var aid = $(this).attr('id');
+  $.post("{% url 'core:like_answer' %}", 
+    {
+      aid: aid, 
+      like: 0
+    }, 
+    update_rating
+  );
+  function update_rating(result){
+    if (result != "None") {
+      $("div#" + aid).html("Rating: " + result);
+    }
+  }
+});
 
 </script>
 {% endblock jq_likes %}

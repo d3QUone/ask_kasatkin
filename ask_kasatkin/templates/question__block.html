@@ -1,12 +1,12 @@
 <div class="row question__block">
     <div class="col-xs-2 question__left">
         <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ question.avatar }}"><br>
-        <div class="rating__info">
+        <div id="{{ question.question_id }}" class="rating__info">
             Rating: {{ question.rating }}
         </div>
         <div class="rating__like__block">
-            <a href="" class="like__button">+</a>
-            <a href="" class="like__button">-</a>
+            <span id="{{ question.question_id }}" class="like__button question_like">+</span>
+            <span id="{{ question.question_id }}" class="like__button question_dislike">-</span>
         </div>
     </div>
     <div class="col-xs-10 question__right">

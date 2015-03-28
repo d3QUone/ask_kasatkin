@@ -220,40 +220,51 @@ def search(request):
 @csrf_exempt
 def like_post(request):
     if request.method == "POST":
-        pid = request.POST["pid"]
-        like = request.POST["like"]  # true or false
-        question = the_question.objects.get(id=pid)
-        # except:
-        #     question = None
+        try:
+            pid = int(request.POST["pid"])
+            like = int(request.POST["like"])  # true or false
+            question = the_question.objects.get(id=pid)
+        except:
+            return HttpResponse(None)
 
-        if like:
-            res = 5
-        else:
-            res = -5
+        if like == 1:
+            res = 11
+        elif like == 0:
+            res = -11
 
-        # fuck yea! that stuff works
+        # fuck yea! that stuff works too
         if request.user.is_authenticated():
-            res += 100
+            res += 10
         else:
-            res -= 100
+            res -= 10
 
         return HttpResponse(res)
-
-
 
 
 @csrf_exempt
 def like_answer(request):
     if request.method == "POST":
-        aid = request.POST["aid"]
-        like = request.POST["like"]  # true or false
-        answer = the_answer.objects.get(id=aid)
+        try:
+            aid = int(request.POST["aid"])
+            like = int(request.POST["like"])
+            answer = the_answer.objects.get(id=aid)
+        except:
+            return HttpResponse(None)
+
         #check_like =
+
+        # hardcode zone :)
 
         if like:
             res = 5
         else:
             res = -5
+
+        # fuck yea! that stuff works too
+        if request.user.is_authenticated():
+            res += 10
+        else:
+            res -= 10
 
         return HttpResponse(res)
 

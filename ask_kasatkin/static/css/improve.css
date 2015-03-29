@@ -21,12 +21,13 @@ body {
     display: block;
     min-width: 1050px;
     min-height: 40px;
+    margin-bottom: 10px;
     background-color: #BEA8B9;
     box-shadow: 0 0 3px #c9c9c9;
 }
 
 .navbar__base__block {
-    margin: auto;
+    min-width: 1050px;
     height: 40px;
 }
 
@@ -35,20 +36,32 @@ body {
     float: left;
     padding-left: 2px;
     padding-right: 2px;
-    margin: 0px;
+    margin-left: 2px;
+    margin-right: 2px;
 }
 
 .navbar__high {
     margin-top: 8px;
 }
 
-.navbar__low {
-    margin-top: 4px;
+.navbar__title {
+    display: inline-block;
+    margin-top: 6px;
+    margin-left: 50px;
+    margin-right: 50px;
+    color: #EEE9ED;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.navbar__title:hover {
+    color: white;
 }
 
 .navbar__input__form {
     background-color: #EEE9ED;
     width: 600px;
+    margin-top: 3px;
 }
 
 .button__styled {    
@@ -59,6 +72,7 @@ body {
     padding-right: 7px;
     background-color: #8E6784;
     color: white;
+    margin-top: 7px;
 }
 
 .button__styled:hover {
@@ -72,6 +86,10 @@ body {
     width: 40px;
 }
 
+.navbar__user__miniprofile {
+    min-width: 200px;
+    float: right;
+}
 
 /* switcher */
 .switchers__block {
@@ -128,7 +146,10 @@ body {
     box-shadow: 0 0 3px #c9c9c9;
     border-color: black;
     border-radius: 5px;
-    padding: 10px 10px 10px 10px;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .question__left {
@@ -203,12 +224,12 @@ body {
 
 /* question thread */
 .answers__amount__header {
-    margin-top: 15px;
-    margin-bottom: 15px;
+    padding-top: 5px;
+    margin-bottom: 13px;
 }
 
 .add__answer__header {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 .add__answer__textarea {
@@ -219,6 +240,11 @@ body {
 /* right info column  */
 .column__left__fix {
     padding-left: 30px;
+    padding-right: 0px;
+}
+
+.column__left__title {
+    font-size: 20px;
 }
 
 .tag__margin {

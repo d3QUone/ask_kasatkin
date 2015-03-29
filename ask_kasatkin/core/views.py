@@ -50,18 +50,34 @@ def create_question_item(item):
     }
 
 
-def index_page(request, offset=0):
-    data = get_static_data()
-    data["personal"] = get_user_data(request)  # processes all user's-stuff
+def index_page(request):
+    if request.method == "GET":
+        try:
+            offset = int(request.GET["offset"])
+        except:
+            offset = 0
+        try:
+            query = request.GET["query"]
+        except:
+            query = "latest"
 
-    buf = []
-    append = buf.append
-    all_questions = the_question.objects.all().order_by('-date')[offset*30:(offset+1)*30]
-    for item in all_questions:
-        append(create_question_item(item))
+        if query != "popular":
+            all_questions = the_question.objects.all().order_by('-date')[offset*30:(offset+1)*30]
+        else:
+            all_questions = the_question.objects.all().order_by('-rating')[offset*30:(offset+1)*30]
 
-    data["questions"] = buf
-    return render(request, "core__index.html", data)
+        # create data to render
+        buf = []
+        append = buf.append
+        for item in all_questions:
+            append(create_question_item(item))
+
+        data = get_static_data()
+        data["personal"] = get_user_data(request)  # processes all user's-stuff
+        data["questions"] = buf
+        data["offset"] = offset  # save request params to render page like a boss
+        data["query"] = query
+        return render(request, "core__index.html", data)
 
 
 

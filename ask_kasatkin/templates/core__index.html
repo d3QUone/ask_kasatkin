@@ -1,7 +1,18 @@
 {% extends "base.html" %}
 {% block title %}Ask-Kasatkin Main Page{% endblock title %}
 {% block content %}
+<div class="switchers__block">
+{% if query == 'latest' %}
+  <div class="switcher__active">Latest</div>
+  <div class="switcher__notactive"><a href="{% url 'core:home' %}?query=popular">Popular</a></div>
+{% else %}
+  <div class="switcher__noactive"><a href="{% url 'core:home' %}?query=latest">Latest</a></div>
+  <div class="switcher__active">Popular</div>
+{% endif %}
+</div>
+
 {% include "question__list.html" %}
+    <!-- connect this too... -->
     <nav>
       <ul class="pagination">
         <li class="disabled">

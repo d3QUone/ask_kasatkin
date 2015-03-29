@@ -99,8 +99,8 @@ def validate_register(request):
 
         if len(login_) < 5 or len(login_) > 30:
             data["error"] = {"title": "Login-field", "text": "Please use login at least 5 chars long and less then 30 chars"}
-        elif len(nickname_) < 5:
-            data["error"] = {"title": "Nickname-field", "text": "Please use nickname at least 5 symbols long"}
+        elif len(nickname_) < 5 or len(nickname_) > 20:
+            data["error"] = {"title": "Nickname-field", "text": "Please use nickname at least 5 chars long and less then 20 chars"}
         elif len(password1_) < 5:
             data["error"] = {"title": "Password-field", "text": "Please use password at least 5 symbols long"}
         else:
@@ -166,11 +166,11 @@ def update_settings(request):
             # update nickname if OK
             nickname_ = request.POST['input_nickname']
             if len(nickname_) > 0:
-                if len(nickname_) > 4:
+                if len(nickname_) >= 5 and len(nickname_) <= 20:
                     props.nickname = nickname_
                     props.save()
                 else:
-                    error = {"title": "Your nickname must be at least 5 chars long", "text": ""}
+                    error = {"title": "Your nickname must be at least 5 chars long and less then 20 chars", "text": ""}
             # upload new ava if any
             try:
                 avatar_file = request.FILES['avatar']

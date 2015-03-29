@@ -20,57 +20,57 @@ body {
 .navbar__new__color {
     display: block;
     min-width: 1050px;
+    min-height: 40px;
     background-color: #BEA8B9;
     box-shadow: 0 0 3px #c9c9c9;
 }
 
 .navbar__base__block {
+    margin: auto;
+    height: 40px;
+}
+
+.no__paddings {
     display: inline;
     float: left;
-    margin: auto;
-}
-
-.button__styled {
-    background-color: #8E6784;
-    border-color: black;
-    color: white;
-}
-
-.button__styled:hover {
-    background-color: #7E5273;
-    border-color: black;
-    color: white;
-}
-
-/* new header */
-.no__paddings {
     padding: 0px;
     margin: 0px;
-}
-
-.h__input__field {
-    background-color: #EEE9ED;
-    width: 600px;
-}
-/* new header */
-
-.navbar__low {
-    margin-top: 4px;
 }
 
 .navbar__high {
     margin-top: 8px;
 }
 
+.navbar__low {
+    margin-top: 4px;
+}
+
 .navbar__input__form {
     background-color: #EEE9ED;
-    width: 80%;
+    width: 600px;
+}
+
+.button__styled {    
+    border: 0px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 7px;
+    padding-right: 7px;
+    background-color: #8E6784;
+    color: white;
+}
+
+.button__styled:hover {
+    border: 0px;
+    background-color: #7E5273;
+    color: white;
 }
 
 .navbar__avatar {
-    height: 35px;
-    width: 35px;
+    height: 40px;
+    width: 40px;
 }
+
 
 /* switcher */
 .switchers__block {

@@ -136,7 +136,7 @@ $("span.question_dislike").click(function(){
   $.post("{% url 'core:like_question' %}", 
     {
       pid: pid, 
-      like: 0
+      like: -1
     }, 
     update_rating
   );
@@ -171,7 +171,7 @@ $("span.ans_dislike").click(function(){
   $.post("{% url 'core:like_answer' %}", 
     {
       aid: aid, 
-      like: 0
+      like: -1
     }, 
     update_rating
   );

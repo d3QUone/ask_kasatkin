@@ -33,7 +33,8 @@ body {
 .no__paddings {
     display: inline;
     float: left;
-    padding: 0px;
+    padding-left: 2px;
+    padding-right: 2px;
     margin: 0px;
 }
 

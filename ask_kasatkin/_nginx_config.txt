@@ -37,8 +37,6 @@ server {
 	}
 
 	location ~* \.(ico|js|css|html)$ {
-		# add gziping ....
-		
 		gzip on;
 		gzip_disable "msie6";
 		gzip_types text/css text/html application/x-javascript text/javascript;

@@ -58,6 +58,14 @@ body {
     color: white;
 }
 
+.empty__block {
+    display: inline-block;
+    float: left;
+    min-width: 0%;
+    max-width: 10%;
+    width: 1px;
+}
+
 .navbar__input__form {
     display: inline-block;
     background-color: #EEE9ED;

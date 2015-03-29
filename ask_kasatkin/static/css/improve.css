@@ -10,7 +10,6 @@ body {
 	margin: auto;
 }
 
-/* used for all links? */
 .underline__link {
     text-decoration: underline;
     color: #5E2750;
@@ -19,9 +18,10 @@ body {
 
 /* navbar improves */
 .navbar__new__color {
-    background-color: #BEA8B9;
-    min-width: 1050px;
     display: block;
+    min-width: 1050px;
+    background-color: #BEA8B9;
+    box-shadow: 0 0 3px #c9c9c9;
 }
 
 .navbar__base__block {
@@ -82,6 +82,8 @@ body {
     margin-left: 40%;
     background-color: #DED3DC;
     border-radius: 8px;
+
+    box-shadow: 0 0 3px #c9c9c9;
 }
 
 .switcher__active {
@@ -124,7 +126,6 @@ body {
     background-color: #DED3DC;
     box-shadow: 0 0 3px #c9c9c9;
     border-color: black;
-    /*border: 3px;*/
     border-radius: 5px;
     padding: 10px 10px 10px 10px;
 }

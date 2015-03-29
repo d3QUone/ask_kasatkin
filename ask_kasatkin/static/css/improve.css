@@ -15,6 +15,10 @@ body {
     color: #5E2750;
 }
 
+.underline__link:hover {
+    text-decoration: underline;
+    color: #E36C43;
+}
 
 /* navbar improves */
 .navbar__new__color {
@@ -32,7 +36,7 @@ body {
 }
 
 .no__paddings {
-    display: inline;
+    display: inline-block;
     float: left;
     padding-left: 2px;
     padding-right: 2px;
@@ -40,15 +44,11 @@ body {
     margin-right: 2px;
 }
 
-.navbar__high {
-    margin-top: 8px;
-}
-
 .navbar__title {
     display: inline-block;
     margin-top: 6px;
-    margin-left: 50px;
-    margin-right: 50px;
+    margin-left: 15px;
+    margin-right: 15px;
     color: #EEE9ED;
     font-size: 20px;
     font-weight: 700;
@@ -59,6 +59,7 @@ body {
 }
 
 .navbar__input__form {
+    display: inline-block;
     background-color: #EEE9ED;
     width: 600px;
     margin-top: 3px;
@@ -93,15 +94,14 @@ body {
 
 /* switcher */
 .switchers__block {
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     padding-left: 4px;
     width: 119px;
     margin-bottom: 10px;
     margin-left: 40%;
     background-color: #DED3DC;
     border-radius: 8px;
-
     box-shadow: 0 0 3px #c9c9c9;
 }
 
@@ -119,8 +119,6 @@ body {
     display: inline;
     padding-left: 5px;
     padding-right: 5px;
-    padding-top: 1px;
-    padding-bottom: 1px;
     border-radius: 5px;
 }
 
@@ -128,15 +126,16 @@ body {
     display: inline;
     padding-left: 5px;
     padding-right: 5px;
-    padding-top: 1px;
-    padding-bottom: 1px;
     border-radius: 5px;
     background-color: #EEE9ED;
 }
 
 .link__clear {
     color: black;
-    text-decoration: none;
+}
+
+.link__clear:hover {
+    color: black;
 }
 
 

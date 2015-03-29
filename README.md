@@ -12,8 +12,8 @@ QA-platform, light version of Stack-Overflow
 ```
 - HTML5
 - CSS, Twitter Bootstrap
-- JS
-- Nginx 
+- Jquery, JS
+- Nginx
 ```
 
 VPS-hosting used: https://flops.ru/index.html?refid=12315

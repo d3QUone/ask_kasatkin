@@ -11,9 +11,8 @@ from user_profile.views import get_user_data
 from common_methods import get_static_data
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
-from django.http import HttpResponse    #jquery simple return
+from django.http import HttpResponse    # jquery simple return
 from random import randint  # used in demo
-
 
 
 # test method, HOME TASK 4
@@ -69,7 +68,7 @@ def index_page(request, offset=0):
 ##### QUESTION THREAD #####
 
 # shows a concrete thread: question + answers, allows logged in users add answers, vote
-def question_thread(request, qid = 0, error = None):
+def question_thread(request, qid=0, error=None):
     # if 'qid' == 0 (means no id) return prepared page with helpful links on usage ???
     # e.g. how to register / add question / ???...
     if qid == 0:
@@ -108,7 +107,7 @@ def question_thread(request, qid = 0, error = None):
 ##### QUESTIONS ######
 
 # show add-new-question page
-def new_question(request, error = None):
+def new_question(request, error=None):
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
     data["error"] = error
@@ -158,7 +157,7 @@ def add_new_question(request):
     return new_question(request, error=error)
 
 
-
+# adding-answer method
 def add_new_answer(request):
     redirect_id = 0
     error = None
@@ -179,7 +178,6 @@ def add_new_answer(request):
 
     # how to show the same page????
     return question_thread(request, qid=redirect_id, error=error)
-
 
 
 ##### TAGS ######
@@ -204,7 +202,6 @@ def all_by_tag(request, tag_n=None):
     return render(request, "core__by_tag.html", data)
 
 
-
 ##### AJAX (POST) methods #####
 
 # !!! same template to search by tag OR by name
@@ -215,58 +212,77 @@ def search(request):
         return HttpResponse("JSON result ... ")
 
 
-
 # this first ...
 @csrf_exempt
 def like_post(request):
     if request.method == "POST":
-        try:
-            pid = int(request.POST["pid"])
-            like = int(request.POST["like"])  # true or false
-            question = the_question.objects.get(id=pid)
-        except:
-            return HttpResponse(None)
-
-        if like == 1:
-            res = 11
-        elif like == 0:
-            res = -11
-
-        # fuck yea! that stuff works too
         if request.user.is_authenticated():
-            res += 10
-        else:
-            res -= 10
-
-        return HttpResponse(res)
+            try:
+                pid = int(request.POST["pid"])
+                like_state = int(request.POST["like"])  # -1 / 1
+                question = the_question.objects.get(id=pid)
+                usr = request.user
+            except Exception as e:
+                return HttpResponse(e)  # None
+            try:
+                # load current-user like object
+                like = likes_questions.objects.get(question=question, user=usr)  # get 1 curr state
+                if abs(like.state + like_state) <= 1:
+                    like.state += like_state
+                    like.save()
+                    # update global rating
+                    question.rating += like_state
+                    question.save()
+            except:
+                # create new like if no like
+                like = likes_questions()
+                like.user = usr
+                like.question = question
+                if abs(like_state) == 1:
+                    like.state = like_state
+                    like.save()
+                    # update global rating
+                    question.rating += like_state
+                    question.save()
+            question = the_question.objects.get(id=pid)
+            return HttpResponse(question.rating)
+    return HttpResponse(None)
 
 
 @csrf_exempt
 def like_answer(request):
     if request.method == "POST":
-        try:
-            aid = int(request.POST["aid"])
-            like = int(request.POST["like"])
-            answer = the_answer.objects.get(id=aid)
-        except:
-            return HttpResponse(None)
-
-        #check_like =
-
-        # hardcode zone :)
-
-        if like:
-            res = 5
-        else:
-            res = -5
-
-        # fuck yea! that stuff works too
         if request.user.is_authenticated():
-            res += 10
-        else:
-            res -= 10
-
-        return HttpResponse(res)
+            try:
+                aid = int(request.POST["aid"])
+                like_state = int(request.POST["like"])  # -1 / 1
+                answer = the_answer.objects.get(id=aid)
+                usr = request.user
+            except Exception as e:
+                return HttpResponse(e)  # None
+            try:
+                # load current-user like object
+                like = likes_answers.objects.get(answer=answer, user=usr)  # get 1 curr state
+                if abs(like.state + like_state) <= 1:
+                    like.state += like_state
+                    like.save()
+                    # update global rating
+                    answer.rating += like_state
+                    answer.save()
+            except:
+                # create new like if no like
+                like = likes_answers()
+                like.user = usr
+                like.answer = answer
+                if abs(like_state) == 1:
+                    like.state = like_state
+                    like.save()
+                    # update global rating
+                    answer.rating += like_state
+                    answer.save()
+            answer = the_answer.objects.get(id=aid)
+            return HttpResponse(answer.rating)
+    return HttpResponse(None)
 
 
 #
@@ -312,7 +328,7 @@ def create_random_question(amount):
         create_random_answers(question.id, how_much)
 
 
-def create_random_answers(question_id = None, amount = 0):
+def create_random_answers(question_id=None, amount=0):
     if question_id:
         for i in range(amount):
             user = select_random_user()

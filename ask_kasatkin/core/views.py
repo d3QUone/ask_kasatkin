@@ -234,12 +234,12 @@ def like_post(request):
     if request.method == "POST":
         if request.user.is_authenticated():
             try:
-                pid = int(request.POST["pid"])
+                pid = int(request.POST["id"])
                 like_state = int(request.POST["like"])  # -1 / 1
                 question = the_question.objects.get(id=pid)
                 usr = request.user
-            except Exception as e:
-                return HttpResponse(e)  # None
+            except:
+                return HttpResponse("None")
             try:
                 # load current-user like object
                 like = likes_questions.objects.get(question=question, user=usr)  # get 1 curr state
@@ -270,12 +270,12 @@ def like_answer(request):
     if request.method == "POST":
         if request.user.is_authenticated():
             try:
-                aid = int(request.POST["aid"])
+                aid = int(request.POST["id"])
                 like_state = int(request.POST["like"])  # -1 / 1
                 answer = the_answer.objects.get(id=aid)
                 usr = request.user
-            except Exception as e:
-                return HttpResponse(e)  # None
+            except:
+                return HttpResponse("None")
             try:
                 # load current-user like object
                 like = likes_answers.objects.get(answer=answer, user=usr)  # get 1 curr state

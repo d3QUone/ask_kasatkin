@@ -76,17 +76,16 @@ body {
 .switchers__block {
     padding-top: 3px;
     padding-bottom: 3px;
-    padding-left: 3px;
-    width: 150px;
+    padding-left: 4px;
+    width: 119px;
     margin-bottom: 10px;
     margin-left: 40%;
     background-color: #DED3DC;
-    border-radius: 5px;
+    border-radius: 8px;
 }
 
 .switcher__active {
     display: inline;
-    width: 60px;
     padding-left: 5px;
     padding-right: 5px;
     padding-top: 1px;
@@ -97,29 +96,25 @@ body {
 
 .switcher__notactive {
     display: inline;
-    width: 60px;
     padding-left: 5px;
     padding-right: 5px;
     padding-top: 1px;
     padding-bottom: 1px;
-
-    background-color: #DED3DC;
     border-radius: 5px;
 }
 
 .switcher__notactive:hover {
     display: inline;
-    width: 60px;
     padding-left: 5px;
     padding-right: 5px;
     padding-top: 1px;
     padding-bottom: 1px;
-
-    background-color: #DED3DC;
     border-radius: 5px;
+    background-color: #EEE9ED;
 }
 
 .link__clear {
+    color: black;
     text-decoration: none;
 }
 

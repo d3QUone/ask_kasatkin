@@ -82,14 +82,25 @@ body {
     color: white;
 }
 
+.navbar__user__miniprofile {
+    min-width: 200px;
+    float: right;
+}
+
 .navbar__avatar {
     height: 40px;
     width: 40px;
 }
 
-.navbar__user__miniprofile {
-    min-width: 200px;
-    float: right;
+.navbar__user__options {
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+}
+
+.navbar__user__options:hover {
+    text-decoration: none;
+    color: black;
 }
 
 /* switcher */
@@ -137,7 +148,6 @@ body {
 .link__clear:hover {
     color: black;
 }
-
 
 /* question block */
 .question__block {

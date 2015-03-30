@@ -218,13 +218,20 @@ def all_by_tag(request, tag_n=None):
     return render(request, "core__by_tag.html", data)
 
 
-##### AJAX (POST) methods #####
+##### jQuery-AJAX (POST) methods #####
 
-# !!! same template to search by tag OR by name
-# even everything the same... different sources of data only
+# I'll use this for all searches..
+#
+# - add a page dividing results by tag / by question ???
+#
 @csrf_exempt
 def search(request):
     if request.method == "POST":
+        input = request.POST["input"]
+
+
+
+
         return HttpResponse("JSON result ... ")
 
 

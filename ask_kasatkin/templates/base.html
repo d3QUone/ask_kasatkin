@@ -15,19 +15,22 @@
           <a href="{% url 'core:home' %}" class="navbar__title">Ask.Kasatkin</a>
         </span>
 
-        <span class="empty__block"></span>
+        <span class="empty__block">
+          <span class="empty__block__child">
 
-        <span class="no__paddings">
-          <form method="GET" action="#">
-            <!-- dont forget to use JQuery -->
-            <input name="request" type="search" class="form-control navbar__input__form" placeholder="Search">
-          </form>
-        </span>
+            <span class="no__paddings">
+              <form id="search__form" action="">
+                <input name="request" type="search" class="form-control navbar__input__form" placeholder="Search">
+              </form>
+            </span>
 
-        <span class="no__paddings">
-          <a href="{% if user.is_authenticated %}{% url 'core:create_question' %}{% else %}{% url 'user_profile:login' %}{% endif %}" class="btn button__styled">
-            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Ask
-          </a>
+            <span class="no__paddings">
+              <a href="{% if user.is_authenticated %}{% url 'core:create_question' %}{% else %}{% url 'user_profile:login' %}{% endif %}" class="btn button__styled">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Ask
+              </a>
+            </span>
+
+          </span>
         </span>
 
         <div class="navbar__user__miniprofile">
@@ -47,7 +50,7 @@
             <a href="{% url 'user_profile:settings' %}"><span class="glyphicon glyphicon-cog navbar__user__options" data-toggle="tooltip" data-placement="bottom" title="Settings"><span></a>
           </span>
 
-          <span class="no__paddings" style="">
+          <span class="no__paddings">
             <a href="{% url 'user_profile:logout' %}" class="navbar__user__options" data-toggle="tooltip" data-placement="bottom" title="Log out">Exit</a>
           </span>
 

@@ -1,9 +1,6 @@
 from django.conf.urls import patterns, url
 from core.views import index_page, new_question, add_new_question, test, question_thread, add_new_answer, all_by_tag, like_post, like_answer
 
-from django.conf import settings
-from django.conf.urls.static import static
-
 urlpatterns = patterns('',
     url(r'^test/$', test),
     url(r'^$', index_page, name='home'),
@@ -15,4 +12,4 @@ urlpatterns = patterns('',
     # likes!
     url(r'^like_post/$', like_post, name='like_question'),
     url(r'^like_answ/$', like_answer, name='like_answer'),
-) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+)

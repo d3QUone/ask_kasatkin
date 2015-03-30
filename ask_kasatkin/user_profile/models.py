@@ -6,5 +6,6 @@ from django.contrib.auth.models import User
 class user_properties(models.Model):
     user = models.ForeignKey(User)
     nickname = models.CharField(max_length=100)  # 2 unique fields
+    filename = models.CharField(max_length=100)
     rating = models.IntegerField(default=0)
-    filename = models.CharField(max_length=100)  # avatar filename!
+

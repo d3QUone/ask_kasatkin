@@ -110,18 +110,13 @@ def validate_register(request):
                         try:
                             user = User.objects.create_user(username=login_, email=email_, password=password1_)
                             user.save()
-                            filename = save_avatar_by_id(avatar_file, user.id)
+                            filename_ = save_avatar_by_id(avatar_file, user.id)
 
-                            props = user_properties()
-                            props.user = user
-                            props.nickname = nickname_
-                            props.filename = filename
-                            props.save()
+                            user_properties.objects.create(user=user, nickname=nickname_, filename=filename_)
 
                             # uncomment to return logged in user
                             user = authenticate(username=login_, password=password1_)
                             login(request, user)
-
                             return HttpResponsePermanentRedirect(reverse("core:home"))
                         except Exception as ex:
                             data["error"] = {"title": "Internal server error", "text": str(ex)}
@@ -161,72 +156,31 @@ def update_settings(request):
     if request.method == "POST":
         if request.user.is_authenticated():
             uid = request.user.id
-            props = user_properties.objects.get(user_id=uid)
 
             # update nickname if OK
             nickname_ = request.POST['input_nickname']
             if len(nickname_) > 0:
                 if len(nickname_) >= 5 and len(nickname_) <= 20:
-                    props.nickname = nickname_
-                    props.save()
+                    user_properties.objects.filter(user_id=uid).update(nickname=nickname_)
                 else:
                     error = {"title": "Your nickname must be at least 5 chars long and less then 20 chars", "text": ""}
+
             # upload new ava if any
             try:
                 avatar_file = request.FILES['avatar']
-                filename = save_avatar_by_id(avatar_file, uid)
-                props.filename = filename
-                props.save()
+                # will exit condition if no file
+                filename_ = save_avatar_by_id(avatar_file, uid)
+                user_properties.objects.filter(user_id=uid).update(filename=filename_)
             except:
                 pass
+
             # update email if OK
             email_ = request.POST['input_email']
             if len(email_) > 0:
                 if validate_new_email(email_):
-                    user = User.objects.get(id=uid)
-                    user.email = email_
-                    user.save()
+                    User.objects.filter(id=uid).update(email=email_)
                 else:
                     error = {"title": "Incorrect email", "text": "Please use a valid email"}
         else:
             error = {"title": "Auth error", "text": "Login and try once more please"}
     return self_settings(request, error=error)  # return the same page with new data
-
-
-# create some users automatically
-
-from time import time
-from uuid import uuid4
-from random import randint
-
-
-def create():
-    timestamp = int(time())
-    username = "test_{0}".format(uuid4())[:30]  # django max size
-    email = "{0}@test.com".format(timestamp)
-    password = "forever1"  # not to forget :)
-
-    new_user = User.objects.create_user(username=username, email=email, password=password)
-    new_user.save()
-
-    rati = randint(-50, 50)
-
-    props = user_properties()
-    props.user = new_user
-    props.filename = "ex1"
-    props.nickname = username  # for me to be able to check test profile
-    props.rating = rati
-    props.save()
-    print "USER CREATED: {0}\nrating: {1}\n--------------------\n".format(username, rati)
-    return new_user
-
-
-# just returns a test user from DB
-def select_random_user():
-    random_user = User.objects.all().filter(username__startswith="test")
-    if random_user:
-        user = random_user[randint(1, len(random_user)) - 1]
-        print "User loaded: {0}".format(user.username)
-        return user
-    else:
-        return None

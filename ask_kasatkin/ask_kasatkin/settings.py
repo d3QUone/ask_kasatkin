@@ -34,13 +34,16 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin', # no need?
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'core',
     'user_profile',
+
+    #'debug_toolbar',  # db debug tool :)
+    #'django.contrib.staticfiles',
 )
 
 MIDDLEWARE_CLASSES = (

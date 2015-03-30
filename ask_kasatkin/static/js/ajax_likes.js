@@ -11,6 +11,7 @@ function change_rating(endpoint, eid, dif) {
     if (result != "None") {
       $("div#" + eid).html("Rating: " + result);
     }
+    // add error message if not loged ???
   }
 }
 

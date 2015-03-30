@@ -66,7 +66,6 @@ def index_page(request):
         else:
             all_questions = the_question.objects.all().order_by('-rating')[offset*30:(offset+1)*30]
 
-        # create data to render
         buf = []
         append = buf.append
         for item in all_questions:
@@ -100,11 +99,9 @@ def question_thread(request, qid=0, error=None):
         else:
             data["owner"] = False
 
-        answers = the_answer.objects.filter(contributed_to=question)
-
         buf = []
         append = buf.append
-        for a in answers:
+        for a in the_answer.objects.filter(contributed_to=question).iterator():
             prop = user_properties.objects.get(user_id=a.author.id)  # load user properties
             append({
                 "id": a.id,
@@ -145,27 +142,17 @@ def add_new_question(request):
             error = {"title": "You can use only 3 tags", "text": "{0} tags were provided in new question".format(len(tags))}
         else:
             # - save to DB
-            quest = the_question()
-            quest.title = title[:250] # max 250 chars
-            quest.text = text  # &lt;br&gt;
-            quest.author = request.user
-            quest.save()
+            quest = the_question.objects.create(title=title[:250], text=text, author=request.user)
 
             for t in tags[:3]:
                 if len(t) > 0:
+                    # get_or_create "style"
                     try:
-                        # check if this name is already in Base
                         tn = tag_name.objects.get(name=str(t).lower())
                     except:
-                        # create if none
-                        tn = tag_name()
-                        tn.name = str(t).lower()
-                        tn.save()
+                        tn = tag_name.objects.create(name=str(t).lower())
 
-                    new_tag = store_tag()
-                    new_tag.question = quest
-                    new_tag.tag = tn
-                    new_tag.save()
+                    store_tag.objects.create(question=quest, tag=tn)
             # returns new (clear) thread
             return question_thread(request, qid=quest.id)
     else:
@@ -180,19 +167,13 @@ def add_new_answer(request):
     if request.method == 'POST':
         redirect_id = request.POST["redirect_id"]
         text = request.POST["text"]
-
         if len(text) > 10:
-            ques = the_question.objects.get(id=redirect_id)
+            the_answer.objects.create(text=text, author=request.user, contributed_to=the_question.objects.get(id=redirect_id))
 
-            ans = the_answer()
-            ans.text = text
-            ans.author = request.user
-            ans.contributed_to = ques
-            ans.save()
+            # send mail to author here!!!
+
         else:
             error = {"title": "Too short answer", "text": "Describe your idea in a proper way please"}
-
-    # how to show the same page????
     return question_thread(request, qid=redirect_id, error=error)
 
 
@@ -205,11 +186,10 @@ def all_by_tag(request, tag_n=None):
 
     try:
         tag = tag_name.objects.get(name=tag_n)
-        related_questions = store_tag.objects.filter(tag=tag)
 
         buf = []
         append = buf.append
-        for item in related_questions:
+        for item in store_tag.objects.filter(tag=tag).iterator():
             append(create_question_item(item.question))
         data["questions"] = buf
     except:
@@ -228,14 +208,11 @@ def all_by_tag(request, tag_n=None):
 def search(request):
     if request.method == "POST":
         input = request.POST["input"]
-
-
-
+        # smth here ...
 
         return HttpResponse("JSON result ... ")
 
 
-# this first ...
 @csrf_exempt
 def like_post(request):
     if request.method == "POST":
@@ -245,31 +222,24 @@ def like_post(request):
                 like_state = int(request.POST["like"])  # -1 / 1
                 question = the_question.objects.get(id=pid)
                 usr = request.user
+                usr_props = user_properties.objects.get(user=usr)
             except:
                 return HttpResponse("None")
             try:
-                # load current-user like object
                 like = likes_questions.objects.get(question=question, user=usr)  # get 1 curr state
                 if abs(like.state + like_state) <= 1:
-                    like.state += like_state
-                    like.save()
-                    # update global rating
-                    question.rating += like_state
-                    question.save()
+                    likes_questions.objects.filter(question=question, user=usr).update(state=like.state+like_state)
+                    the_question.objects.filter(id=pid).update(rating=question.rating+like_state)
+                    user_properties.objects.filter(user=usr).update(rating=usr_props.rating+like_state)
             except:
                 # create new like if no like
-                like = likes_questions()
-                like.user = usr
-                like.question = question
                 if abs(like_state) == 1:
-                    like.state = like_state
-                    like.save()
-                    # update global rating
-                    question.rating += like_state
-                    question.save()
-            question = the_question.objects.get(id=pid)
-            return HttpResponse(question.rating)
+                    likes_questions.objects.create(user=usr, question=question, state=like_state)
+                    the_question.objects.filter(id=pid).update(rating=(question.rating+like_state))
+                    user_properties.objects.filter(user=usr).update(rating=(usr_props.rating+like_state))
+            return HttpResponse(the_question.objects.get(id=pid).rating)
     return HttpResponse(None)
+
 
 
 @csrf_exempt
@@ -306,68 +276,3 @@ def like_answer(request):
             answer = the_answer.objects.get(id=aid)
             return HttpResponse(answer.rating)
     return HttpResponse(None)
-
-
-#
-# some automatic for testing
-#
-
-from user_profile.views import create, select_random_user
-from datetime import datetime
-from uuid import uuid4
-
-
-def create_random_question(amount):
-    test_set = "{0}-test".format(datetime.now())
-    for i in range(amount):
-        user = select_random_user()
-        if not user:
-            user = create()
-
-        # create question
-        question = the_question()
-        question.author = user
-        question.title = test_set
-        question.text = "Test question\n" + "\n".join([str(uuid4())*2 for i in range(11)])
-        question.rating = randint(-100, 100)
-        question.save()
-
-        # add tags
-        try:
-            tn = tag_name.objects.get(name="test_set_{0}".format(i))
-        except:
-            # create if none
-            tn = tag_name()
-            tn.name = "test_set_{0}".format(i)
-            tn.save()
-
-        new_tag = store_tag()
-        new_tag.question = question
-        new_tag.tag = tn
-        new_tag.save()
-
-        # create answer
-        how_much = int(randint(0, 6))
-        create_random_answers(question.id, how_much)
-
-
-def create_random_answers(question_id=None, amount=0):
-    if question_id:
-        for i in range(amount):
-            user = select_random_user()
-            if not user:
-                user = create()
-
-            ques = the_question.objects.get(id=question_id)
-
-            ans = the_answer()
-            ans.text = "Test answer\n" + "\n".join(["{0}) {1}".format(i, uuid4()) for i in range(5)])
-            ans.author = user
-            ans.contributed_to = ques
-            ans.save()
-
-
-def fill_base():
-    for i in range(100):
-        create()
-    create_random_question(100)

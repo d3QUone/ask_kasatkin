@@ -1,0 +1,56 @@
+<nav class="navbar navbar-default navbar-static-top navbar__new__color">
+  <div class="navbar__base__block">
+        <span class="no__paddings">
+          <a href="{% url 'core:home' %}" class="navbar__title">Ask.Kasatkin</a>
+        </span>
+
+        <span class="empty__block">
+          <span class="empty__block__child">
+
+            <span class="no__paddings">
+              <form id="search__form" action="">
+                <input name="request" type="search" class="form-control navbar__input__form" placeholder="Search">
+              </form>
+            </span>
+
+            <span class="no__paddings">
+              <a href="{% if user.is_authenticated %}{% url 'core:create_question' %}{% else %}{% url 'user_profile:login' %}{% endif %}" class="btn button__styled">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Ask
+              </a>
+            </span>
+
+          </span>
+        </span>
+
+        <div class="navbar__user__miniprofile">
+        {% if user.is_authenticated %}
+
+          <span class="no__paddings">
+            <img class="navbar__avatar" src="{{ MEDIA_URL }}{{ personal.avatar }}">
+          </span>
+              
+          <span class="no__paddings">
+            {{ personal.nickname }}
+          </span>
+
+          <br>
+
+          <span class="no__paddings">
+            <a href="{% url 'user_profile:settings' %}"><span class="glyphicon glyphicon-cog navbar__user__options" data-toggle="tooltip" data-placement="bottom" title="Settings"><span></a>
+          </span>
+
+          <span class="no__paddings">
+            <a href="{% url 'user_profile:logout' %}" class="navbar__user__options" data-toggle="tooltip" data-placement="bottom" title="Log out">Exit</a>
+          </span>
+
+        {% else %}
+          <span class="no__paddings">
+            <a href="{% url 'user_profile:register' %}" class="btn button__styled">Register</a>
+          </span>
+          <span class="no__paddings">
+            <a href="{% url 'user_profile:login' %}"class="btn button__styled">Log in</a>
+          </span>
+        {% endif %}
+        </div>
+  </div>
+</nav>

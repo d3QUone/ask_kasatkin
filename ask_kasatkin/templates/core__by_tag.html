@@ -6,8 +6,36 @@
         <h4>All questions by tag <span class="underline__link">{{ tag }}</span>:</h4>
 		<br>
     </div>
-{% include "question__list.html" %}
-{% else %}
+
+{% for question in questions %}
+  <div class="row question__block">
+    <div class="col-xs-2 question__left">
+        <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ question.avatar }}"><br>
+        <div id="{{ question.question_id }}" class="rating__info">
+            Rating: {{ question.rating }}
+        </div>
+        <div class="rating__like__block">
+            <span id="{{ question.question_id }}" class="like__button question_like">+</span>
+            <span id="{{ question.question_id }}" class="like__button question_dislike">-</span>
+        </div>
+    </div>
+    <div class="col-xs-10 question__right">
+        <p><a href="{%  url 'core:question' question.question_id %}" class="underline__link"><strong>{{ question.title }}</strong></a></p>
+        <p>{{ question.text|linebreaks }}</p>
+        <div class="question__tags">
+            <a href="{%  url 'core:question' question.question_id %}" class="underline__link"><strong>Answers ({{ question.answers }})</strong></a> &nbsp;&nbsp;
+            <strong>Asked:</strong> {{ question.nickname }} &nbsp;&nbsp;
+        {%  if question.tags %}
+            <strong>Tags: </strong>
+            {% for tag in question.tags %}
+                <a href="{% url 'core:all_by_tag' tag %}" class="underline__link">{{ tag }}</a>&nbsp;
+            {% endfor %}
+        {% endif %}
+        </div>
+    </div>
+</div> 
+{% endfor %}
+
     <div class="row action__block">
         <h4>Nothing found by tag <span class="underline__link">{{ tag }}</span>:</h4>
     </div>

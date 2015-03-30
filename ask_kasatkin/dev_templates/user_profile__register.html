@@ -1,0 +1,67 @@
+{% extends "user_profile__base.html" %}
+{% block title %}Ask-Kasatkin Registration Page{% endblock title %}
+{% block content %}
+<h4>Registration page. <small>Please fill all fields!</small></h4>
+{% if error %}
+    <div id="back_end_error_message" class="alert alert-danger" role="alert">
+        <strong>{{ error.title }}</strong>
+        <p>{{ error.text }}</p>
+    </div>
+{% endif %}
+<div id="jsalert" class="alert alert-danger" role="alert" hidden>
+    <strong>All fields are required</strong>
+</div>
+<form enctype="multipart/form-data" method="POST" action="{% url 'user_profile:validate_register' %}" name="mf" onsubmit="return c()" onclick="h()">
+    {% csrf_token %}
+    <div class="form-group">
+        <!--label for="input_login">Login</label-->
+        <input class="form-control" name="input_login" placeholder="Enter login">
+            </div>
+    <div class="form-group">
+        <!--label for="input_nickname">Nickname</label-->
+        <input class="form-control" name="input_nickname" placeholder="Enter nickname">
+            </div>
+    <div class="form-group">
+        <!--label for="input_email">Email address</label-->
+        <input type="email" class="form-control" name="input_email" placeholder="Enter email">
+            </div>
+    <div class="form-group">
+        <!--label for="input_password">Password</label-->
+        <input type="password" class="form-control" name="input_password" placeholder="Enter password">
+            </div>
+    <div class="form-group">
+        <!--label for="input_password_rep">Repeat password</label-->
+        <input type="password" class="form-control" name="input_password_rep" placeholder="Repeat password">
+            </div>
+    <div class="form-group">
+        <!--label for="avatar">Upload avatar</label-->
+        <input type="file" name="avatar">
+            <p class="help-block">Upload avatar, only JPG is allowed. Size 100px * 100px is prefered for the best performance</p>
+            </div>
+    <button type="submit" class="btn btn-default">Register</button>
+</form>
+{% endblock content %}
+
+
+{% block scripts %}
+<script>
+function c(){
+    var f = document.forms["mf"];
+    var a = f["input_login"].value;
+    var n = f["input_nickname"].value;
+    var d = f["input_email"].value;
+    var e1 = f["input_password"].value;
+    var e2 = f["input_password_rep"].value;
+    var g = f["avatar"].value; //  g == null || g == "" ||
+    if (a == null || a == "" || n == null || n == "" || d == null || d == "" || e1 == null || e1 == "" || e2 == null || e2 == "" || g == null || g == "" || e1 != e2) {
+        document.getElementById("back_end_error_message").hidden = true;
+        document.getElementById("jsalert").hidden = false;
+        return false;
+    }
+}
+function h() {
+    document.getElementById("back_end_error_message").hidden = true;
+    document.getElementById("jsalert").hidden = true;
+}
+</script>
+{% endblock scripts %}

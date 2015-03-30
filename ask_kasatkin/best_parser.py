@@ -49,7 +49,7 @@ def get_pop_tags():
         amount = store_tag.objects.filter(tag=tag).count()
         append(amount)
         save[amount] = tag.name
-    result.sort()
+    result.sort(reverse=True)
     return [{"text": save[result[i]], "label": label_color[i]} for i in range(len(result[:20]))]
 
 

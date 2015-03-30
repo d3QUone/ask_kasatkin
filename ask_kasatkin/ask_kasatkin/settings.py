@@ -22,7 +22,19 @@ SECRET_KEY = '&#2w0xg7tcov29$x41)gd0wf^is#g&9=_itd@^)!9$i2#(q5w3'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
+
+# enable template chaching
+TEMPLATE_LOADERS = (
+    (
+        'django.template.loaders.cached.Loader',
+        (
+            'django.template.loaders.filesystem.Loader',
+            'django.template.loaders.app_directories.Loader',
+        ),
+    ),
+)
+
 
 # nginx care
 ALLOWED_HOSTS = [
@@ -101,3 +113,4 @@ MEDIA_ROOT = BASE_DIR + '/uploads'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR + '/static'
+

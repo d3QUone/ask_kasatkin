@@ -3,6 +3,12 @@
 #
 # Run the 'build.py' script after doing "python manage.py collectstatic" 
 #
+# all folders must bu pointed form this config-file, e.g:
+#
+# - base_folder/
+# |---config.py
+# |---dev_templates/
+# |---templates/
 
 # Django's standart folder-style
 SOURCE_DIRS = [

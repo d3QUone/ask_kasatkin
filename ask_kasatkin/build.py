@@ -5,6 +5,10 @@
 from config import SOURCE_DIRS, TARGET_DIR, TARGET_FILES
 from os import listdir, remove
 import sys
+import os
+
+BASE_DIR = os.getcwd() + "/"
+print "BASE_DIR: ", BASE_DIR
 
 # 
 # just put filename in tag insted of your include. This file will be searching in the same 
@@ -17,16 +21,16 @@ import sys
 
 def parse_base_file(folder, filename):
 	try:
-		f = open(folder + filename, "r")
+		f = open(BASE_DIR + folder + filename, "r")
 		copy = f.read()
 		f.close()
 
 		# create empty file:
-		f = open(TARGET_DIR + filename, "w")
+		f = open(BASE_DIR + TARGET_DIR + filename, "w")
 		f.close()
 
 		# open it for writing at the end:
-		f = open(TARGET_DIR + filename, "a")
+		f = open(BASE_DIR + TARGET_DIR + filename, "a")
 
 		left_t = 0
 		right_t = 0
@@ -37,7 +41,7 @@ def parse_base_file(folder, filename):
 			left_t = copy.find("[[[")
 
 			if left_t == -1:
-				print """File "{0}" complete with {1} insertions""".format(TARGET_DIR + filename, ins)
+				print """File "{0}" complete with {1} insertions""".format(BASE_DIR + TARGET_DIR + filename, ins)
 
 				# insert what left!!!
 				f.write(copy)
@@ -62,7 +66,7 @@ def parse_base_file(folder, filename):
 			# open include, add content....
 			print 'Found "{0}"'.format(include)
 			try:
-				include_file = open(folder + include, "r")
+				include_file = open(BASE_DIR + folder + include, "r")
 				include_content = include_file.read()
 				include_file.close()
 
@@ -71,7 +75,7 @@ def parse_base_file(folder, filename):
 				print "No matching file found..."
 				f.close()
 				# delete target file...
-				remove(TARGET_DIR + filename)
+				remove(BASE_DIR + TARGET_DIR + filename)
 				break
 
 			copy = copy[right_t + 3:]

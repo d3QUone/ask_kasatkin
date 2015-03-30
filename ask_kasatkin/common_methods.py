@@ -1,3 +1,5 @@
+# coding:utf8
+
 from best_parser import FILENAME
 import json
 
@@ -11,4 +13,7 @@ def get_static_data():
         return data
     except:
         # if no file found ...
-        return {}
+        return {
+            "popular_users": [],
+            "popular_tags": []
+        }

@@ -182,9 +182,9 @@ def add_new_answer(request):
 def all_by_tag(request, tag_n=None):
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
-    data["tag"] = tag_n
 
     try:
+        data["tag"] = tag_n
         tag = tag_name.objects.get(name=tag_n)
 
         buf = []

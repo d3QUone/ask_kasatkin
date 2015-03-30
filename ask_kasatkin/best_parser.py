@@ -1,3 +1,4 @@
+# coding:utf8
 #
 # script for creating the popular-set
 #
@@ -14,7 +15,7 @@ django.setup()
 # 2) import models, etc else
 
 from user_profile.models import user_properties
-from core.models import store_tag, the_question, the_answer
+from core.models import tag_name, store_tag
 import json
 
 FILENAME = "best_data.txt"
@@ -32,15 +33,24 @@ def get_pop_users():
     return result
 
 
+label_color = [
+    "#DD4814", "#E05A2B", "#E36C43", "#E77E5A", "#EA9172",
+    "#EEA389", "#EFAC95", "#F1B5A1", "#F3BEAC", "#F4C8B8",
+    "#F6D1C4", "#F8DAD0", "#F9E3DB", "#FBECE7", "#FBECE7",
+    "#FBECE7", "#FBECE7", "#FBECE7", "#FBECE7", "#FBECE7",
+]
+
 # get TOP20 tags here
 def get_pop_tags():
-    big_big_set = store_tag.objects.all()
-
+    save = {}
     result = []
     append = result.append
-
-    return result
-
+    for tag in tag_name.objects.all():
+        amount = store_tag.objects.filter(tag=tag).count()
+        append(amount)
+        save[amount] = tag.name
+    result.sort()
+    return [{"text": save[result[i]], "label": label_color[i]} for i in range(len(result[:20]))]
 
 
 def save_data():
@@ -51,8 +61,5 @@ def save_data():
         f.write(json.dumps(data))
 
 
-#demo_labels = ["label label-default", "label label-primary", "label label-success", "label label-info", "label label-warning", "label label-danger"]
-#selected_tags = ["technopark", "baumanka", "c", "python", "mysql", "ruby", "apple", "iOS", "swift", "django", "sudo", "flask"]
-
-save_data() # run this stuff once
+save_data()  # run this stuff once
 

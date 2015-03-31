@@ -280,3 +280,24 @@ body {
     display: inline;
     margin: 3px;
 }
+
+/* paginator */
+.pagination>li>a {
+    background-color: #BEA8B9;
+    color: black;
+}
+
+.pagination>li>a:hover {
+    color: black;
+}
+
+
+.pagination>.active>a {
+    background-color: #8E6784;
+    border-color: #8E6784;
+}
+
+.pagination>.active>a:hover {
+    background-color: #8E6784;
+    border-color: #8E6784;
+}

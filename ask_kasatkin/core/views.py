@@ -71,7 +71,10 @@ def index_page(request):
             all_questions = the_question.objects.all().order_by('-rating')
 
         paginator = Paginator(all_questions, 30)
-        questions_to_render = paginator.page(page)  # return all this data to render paginator only + buf(the same + even more data)
+        try:
+            questions_to_render = paginator.page(page)  # return all this data to render paginator only + buf(the same + even more data)
+        except:
+            questions_to_render = paginator.page(paginator.num_pages)
 
         buf = []
         append = buf.append
@@ -117,7 +120,10 @@ def question_thread(request, qid=0, error=None):
 
         # add pagination for answers here!
         paginator = Paginator(the_answer.objects.filter(contributed_to=question), 30)
-        ans_to_render = paginator.page(page)
+        try:
+            ans_to_render = paginator.page(page)
+        except:
+            ans_to_render = paginator.page(paginator.num_pages)
 
         buf = []
         append = buf.append
@@ -209,15 +215,17 @@ def all_by_tag(request, tag_n=None):
     try:
         page = int(request.GET.get("page", "1"))
     except:
-        #raise Http404
-        pass
+        raise Http404
 
     try:
         data["tag"] = tag_n
         tag = tag_name.objects.get(name=tag_n)
 
         paginator = Paginator(store_tag.objects.filter(tag=tag), 30)
-        q_to_render = paginator.page(page)
+        try:
+            q_to_render = paginator.page(page)
+        except:
+            q_to_render = paginator.page(paginator.num_pages)
 
         buf = []
         append = buf.append

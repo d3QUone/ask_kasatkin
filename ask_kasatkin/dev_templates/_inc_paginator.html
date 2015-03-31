@@ -1,0 +1,29 @@
+<nav>
+  <ul class="pagination">
+    <!-- first item -->
+    <li>
+      <a href="{% url 'core:home' %}?query={{ query }}&page=1" aria-label="Previous">
+        <span>&laquo;</span>
+      </a>
+    </li>
+    
+    {% if paginator.has_previous %}
+    <li><a href="{% url 'core:home' %}?query={{ query }}&page={{ paginator.previous_page_number }}">
+        {{ paginator.previous_page_number }}</a></li>
+    {% endif %}
+
+    <li class="active"><a href="">{{ page }}</a></li>
+        
+    {% if paginator.has_next %}
+    <li><a href="{% url 'core:home' %}?query={{ query }}&page={{ paginator.next_page_number }}">{{ paginator.next_page_number }}</a></li>
+    {% endif %}
+
+    <!-- fifth item -->
+    <li>
+      <a href="{% url 'core:home' %}?query={{ query }}&page={{ paginator.paginator.num_pages }}" aria-label="Next">
+        <span>&raquo;</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>

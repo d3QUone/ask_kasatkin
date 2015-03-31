@@ -10,30 +10,8 @@
   <div class="switcher__active">Popular</div>
 {% endif %}
 </div>
-
 {% for question in questions %}
   [[[ "_inc_question.html" ]]] 
 {% endfor %}
-
-    <!-- connect this too... -->
-    <nav>
-      <ul class="pagination">
-        <li class="disabled">
-          <a href="#" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-        <li class="active"><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li>
-          <a href="#" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-</div>
+  [[[ "_inc_paginator.html" ]]]
 {% endblock content %}

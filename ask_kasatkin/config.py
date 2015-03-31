@@ -28,5 +28,6 @@ TARGET_FILES = [
 	'user_profile__base.html', 
 	'user_profile__login.html', 
 	'user_profile__register.html', 
-	'user_profile__setting.html'
+	'user_profile__setting.html',
+	'404.html'
 ]

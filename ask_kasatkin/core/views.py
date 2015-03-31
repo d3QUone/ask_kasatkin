@@ -11,9 +11,8 @@ from user_profile.views import get_user_data
 from common_methods import get_static_data
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
-from django.http import HttpResponse    # jquery simple return
-from random import randint  # used in demo
-
+from django.http import HttpResponse                  # jquery simple return
+from django.core.paginator import Paginator
 
 # test method, HOME TASK 4
 @csrf_exempt
@@ -50,32 +49,40 @@ def create_question_item(item):
     }
 
 
+# we use paginator on Index, Question by tag and Search-result fields... - 3 similar blocks
 def index_page(request):
     if request.method == "GET":
         try:
-            offset = int(request.GET["offset"])
+            page = int(request.GET["page"])
+            if page < 1:
+                page = 1
         except:
-            offset = 0
+            page = 1
+
         try:
             query = request.GET["query"]
         except:
             query = "latest"
 
         if query != "popular":
-            all_questions = the_question.objects.all().order_by('-date')[offset*30:(offset+1)*30]
+            all_questions = the_question.objects.all().order_by('-date')
         else:
-            all_questions = the_question.objects.all().order_by('-rating')[offset*30:(offset+1)*30]
+            all_questions = the_question.objects.all().order_by('-rating')
+
+        paginator = Paginator(all_questions, 30)
+        questions_to_render = paginator.page(page)  # return all this data to render paginator only + buf(the same + even more data)
 
         buf = []
         append = buf.append
-        for item in all_questions:
+        for item in questions_to_render:
             append(create_question_item(item))
 
         data = get_static_data()
         data["personal"] = get_user_data(request)  # processes all user's-stuff
         data["questions"] = buf
-        data["offset"] = offset  # save request params to render page like a boss
+        data["page"] = page
         data["query"] = query
+        data["paginator"] = questions_to_render
         return render(request, "core__index.html", data)
 
 
@@ -98,6 +105,8 @@ def question_thread(request, qid=0, error=None):
             data["owner"] = True
         else:
             data["owner"] = False
+
+        # add pagination for answers here!
 
         buf = []
         append = buf.append

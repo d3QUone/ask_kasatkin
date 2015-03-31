@@ -22,18 +22,19 @@ SECRET_KEY = '&#2w0xg7tcov29$x41)gd0wf^is#g&9=_itd@^)!9$i2#(q5w3'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = False
+TEMPLATE_DEBUG = True
 
-# enable template chaching
-TEMPLATE_LOADERS = (
-    (
-        'django.template.loaders.cached.Loader',
+# enable template chaching in production
+if not DEBUG:
+    TEMPLATE_LOADERS = (
         (
-            'django.template.loaders.filesystem.Loader',
-            'django.template.loaders.app_directories.Loader',
+            'django.template.loaders.cached.Loader',
+            (
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ),
         ),
-    ),
-)
+    )
 
 
 # nginx care

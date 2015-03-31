@@ -11,7 +11,7 @@ from user_profile.views import get_user_data
 from common_methods import get_static_data
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
-from django.http import HttpResponse                  # jquery simple return
+from django.http import HttpResponse, Http404         # jquery simple return
 from django.core.paginator import Paginator
 
 # test method, HOME TASK 4
@@ -54,6 +54,7 @@ def index_page(request):
     if request.method == "GET":
         try:
             page = int(request.GET["page"])
+            # page = int(request.GET.get("page")) # returns None if no par sent
             if page < 1:
                 page = 1
         except:
@@ -80,6 +81,7 @@ def index_page(request):
         data = get_static_data()
         data["personal"] = get_user_data(request)  # processes all user's-stuff
         data["questions"] = buf
+        # paginator...
         data["page"] = page
         data["query"] = query
         data["paginator"] = questions_to_render
@@ -106,11 +108,20 @@ def question_thread(request, qid=0, error=None):
         else:
             data["owner"] = False
 
+        try:
+            page = int(request.GET["page"])
+            if page < 1:
+                page = 1
+        except:
+            page = 1
+
         # add pagination for answers here!
+        paginator = Paginator(the_answer.objects.filter(contributed_to=question), 30)
+        ans_to_render = paginator.page(page)
 
         buf = []
         append = buf.append
-        for a in the_answer.objects.filter(contributed_to=question).iterator():
+        for a in ans_to_render:
             prop = user_properties.objects.get(user_id=a.author.id)  # load user properties
             append({
                 "id": a.id,
@@ -122,6 +133,9 @@ def question_thread(request, qid=0, error=None):
                 "avatar": "{0}.jpg".format(prop.filename),
             })
         data["answers"] = buf
+        # paginator...
+        data["page"] = page
+        data["paginator"] = ans_to_render
         return render(request, "core__question_page.html", data)
 
 
@@ -193,17 +207,27 @@ def all_by_tag(request, tag_n=None):
     data["personal"] = get_user_data(request)  # processes all user's-stuff
 
     try:
+        page = int(request.GET.get("page", "1"))
+    except:
+        #raise Http404
+        pass
+
+    try:
         data["tag"] = tag_n
         tag = tag_name.objects.get(name=tag_n)
 
+        paginator = Paginator(store_tag.objects.filter(tag=tag), 30)
+        q_to_render = paginator.page(page)
+
         buf = []
         append = buf.append
-        for item in store_tag.objects.filter(tag=tag).iterator():
+        for item in q_to_render:
             append(create_question_item(item.question))
         data["questions"] = buf
+        data["page"] = page
+        data["paginator"] = q_to_render
     except:
         data["questions"] = None
-
     return render(request, "core__by_tag.html", data)
 
 
@@ -219,7 +243,7 @@ def search(request):
         input = request.POST["input"]
         # smth here ...
 
-        return HttpResponse("JSON result ... ")
+        return HttpResponse({"text": "JSON result ... "}, content_type="application/json")
 
 
 @csrf_exempt

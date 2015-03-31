@@ -8,7 +8,38 @@
   {% for question in questions %}
   [[[ "_inc_question.html" ]]] 
   {% endfor %}
-  [[[ "_inc_paginator.html" ]]]
+
+  <nav>
+    <ul class="pagination">
+      <!-- first item -->
+      <li>
+        <a href="{% url 'core:all_by_tag' tag %}?page=1" aria-label="Previous">
+          <span>&laquo;</span>
+        </a>
+      </li>
+      
+      {% if paginator.has_previous %}
+      <li><a href="{% url 'core:all_by_tag' tag %}?page={{ paginator.previous_page_number }}">
+          {{ paginator.previous_page_number }}</a></li>
+      {% endif %}
+
+      <li class="active"><a href="">{{ page }}</a></li>
+          
+      {% if paginator.has_next %}
+      <li><a href="{% url 'core:all_by_tag' tag %}?page={{ paginator.next_page_number }}">{{ paginator.next_page_number }}</a></li>
+      {% endif %}
+
+      <!-- fifth item -->
+      <li>
+        <a href="{% url 'core:all_by_tag' tag %}?page={{ paginator.paginator.num_pages }}" aria-label="Next">
+          <span>&raquo;</span>
+        </a>
+      </li>
+
+    </ul>
+  </nav> 
+
+
 {% else %}
     <div class="row action__block">
         <h4>Nothing found by tag <span class="underline__link">{{ tag }}</span>:</h4>

@@ -40,33 +40,34 @@ def create_user():
     return new_user
 
 
-def create_question(user, i):
+def create_question(user):
     # 10 question on 1 user
+    for i in range(10):
+        test_set = "{0}-test".format(datetime.now())
+        tag_name = "test_set_{0}".format(i)
 
-    test_set = "{0}-test".format(datetime.now())
-    tag_name = "test_set_{0}".format(i)
+        # create question
+        question = Question.objects.create(
+            author=user,
+            title=test_set,
+            text="Test question\n" + "\n".join([str(uuid4())*2 for i in range(11)]),
+        )
 
-    # create question
-    question = Question.objects.create(
-        author=user,
-        title=test_set,
-        text="Test question\n" + "\n".join([str(uuid4())*2 for i in range(11)]),
-    )
+        # add tags to question
+        try:
+            tn = TagName.objects.get(name=tag_name)
+        except :
+            tn = TagName.objects.create(name=tag_name)
 
-    # add tags to question
-    try:
-        tn = TagName.objects.get(name=tag_name)
-    except :
-        tn = TagName.objects.create(name=tag_name)
+        StoreTag.objects.create(question=question, tag=tn)
 
-    StoreTag.objects.create(question=question, tag=tn)
-
-    # create answer
-    how_much = int(randint(0, 6))
-    create_random_answers(question.id, how_much)
+        # create answer
+        how_much = int(randint(0, 6))
+        create_random_answers(question.id, how_much)
 
 
-def create_random_answers(question_id=None, amount=0):
+
+def create_random_answers(question_id, amount=0):
 
     if question_id:
         ques = Question.objects.get(id=question_id)
@@ -86,10 +87,10 @@ def fb():
     for i in range(10000 - total_users):
         create_user()
 
-
+    # we have 10000 users now...
     total_questions = Question.objects.all().count()
-    for i in range(100000 - total_questions):
-        create_question()
+    for user in User.objects.all():
+        create_question(user=user)
 
 
     print "Done in {0}".format(datetime.now() - t0)

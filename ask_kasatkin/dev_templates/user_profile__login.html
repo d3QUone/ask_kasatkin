@@ -15,10 +15,11 @@
 <form method="POST" action="{% url 'user_profile:validate_login' %}" name="mf" onsubmit="return c()" onclick="h()">
     {% csrf_token %}
     <div class="form-group">
-        <input class="form-control" name="input_login" id="inpl" placeholder="Enter login" type="text" required>
+        <!-- names are the same as in class!! -->
+        <input class="form-control" name="login" id="inpl" placeholder="Enter login" type="text" required>
     </div>
     <div class="form-group">
-        <input class="form-control" name="input_password" placeholder="Enter password" type="password" required>
+        <input class="form-control" name="password" placeholder="Enter password" type="password" required>
     </div>
     <input type="submit" class="btn btn-default" value="Log in!"/>
 </form>

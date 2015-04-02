@@ -5,14 +5,15 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+from django.core.validators import validate_email, ValidationError
 from django.http import HttpResponsePermanentRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from user_profile.models import UserProperties
+from user_profile.forms import LoginForm, RegistrationForm, SettingsFrom
 from common_methods import get_static_data
-
 import uuid  # to generate unique filenames
 
 
@@ -37,41 +38,37 @@ def show_login(request):
 def validate_login(request):
     data = get_static_data()
     if request.method == "POST":
-        rec_login = request.POST["input_login"]
-        rec_passw = request.POST["input_password"]
-        if len(rec_login) == 0:
-            data["error"] = {"title": "No login", "text": "Please enter your login and try again"}
-        elif len(rec_passw) == 0:
-            data["error"] = {"title": "No password", "text": "Please enter your password and try again"}
-        else:
-            user = authenticate(username=rec_login, password=rec_passw)
-            if user:
+
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            try:
+                data = form.cleaned_data
+                user = authenticate(username=data["login"], password=data["password"])
                 login(request, user)
                 return HttpResponsePermanentRedirect(reverse("core:home"))
+            except AttributeError:
+                data["error"] = {"title": "No such user", "text": "You can register this user"}
+            except Exception as e:
+                data["error"] = {"title": "Form is not valid", "text": str(e)}
+        else:
+            if len(form["login"].errors) >= 1:
+                login_error = form["login"].errors[0]
             else:
-                data["error"] = {"title": "No such user / wrong password", "text": ""}
+                login_error = None
+            if len(form["password"].errors) >= 1:
+                password_error = form["password"].errors[0]
+            else:
+                password_error = None
+            data["error"] = {"title": "Incorrect input", "login_error": login_error, "password_error": password_error}  # + update error render in frontend
     else:
         data["error"] = {"title": "Wrong request", "text": "You should use POST-requests only to login"}
-    # returns error message
+    # this one will return error message
     return render(request, "user_profile__login.html", data)
 
 
 # render registration page - OK
 def register(request):
     return render(request, "user_profile__register.html", get_static_data())
-
-
-# validation used in registration
-def validate_new_email(email):
-    if len(email) > 5:
-        ap = 0
-        for ch in email:
-            if ch == "@":
-                ap += 1
-            if ap > 1:
-                return False
-        return True
-    return False
 
 
 def save_avatar_by_id(f, user_id):
@@ -155,6 +152,9 @@ def update_settings(request):
     error = None
     if request.method == "POST":
         if request.user.is_authenticated():
+
+            #form = SettingsFrom(request.POST)  # do with forms...
+
             uid = request.user.id
 
             # update nickname if OK
@@ -177,10 +177,11 @@ def update_settings(request):
             # update email if OK
             email_ = request.POST['input_email']
             if len(email_) > 0:
-                if validate_new_email(email_):
+                try:
+                    validate_email(email_)
                     User.objects.filter(id=uid).update(email=email_)
-                else:
-                    error = {"title": "Incorrect email", "text": "Please use a valid email"}
+                except ValidationError as ve:
+                    error = {"text": ve.message}  # + update templates to show errors in its fields
         else:
             error = {"title": "Auth error", "text": "Login and try once more please"}
     return self_settings(request, error=error)  # return the same page with new data

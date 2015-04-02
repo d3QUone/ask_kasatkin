@@ -3,9 +3,9 @@ from django.contrib.auth.models import User
 
 
 # additional user properties - OK
-class user_properties(models.Model):
+class UserProperties(models.Model):
     user = models.ForeignKey(User)
     nickname = models.CharField(max_length=100)  # 2 unique fields
     filename = models.CharField(max_length=100)
+    #avatar = models.ImageField()
     rating = models.IntegerField(default=0)
-

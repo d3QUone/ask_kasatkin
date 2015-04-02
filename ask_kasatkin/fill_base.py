@@ -13,8 +13,8 @@ django.setup()
 # now we are able to fetch django methods
 
 from django.contrib.auth.models import User
-from user_profile.models import user_properties
-from core.models import the_question, the_answer, tag_name, store_tag
+from user_profile.models import UserProperties
+from core.models import Question, Answer, TagName, StoreTag
 
 from datetime import datetime
 from time import time
@@ -22,8 +22,8 @@ from uuid import uuid4
 from random import randint
 
 
-# create some users automatically
-def create():
+# create one user
+def create_user():
     timestamp = int(time())
     username = "test_{0}".format(uuid4())[:30]  # django max size
     email = "{0}@test.com".format(timestamp)
@@ -32,7 +32,7 @@ def create():
     new_user = User.objects.create_user(username=username, email=email, password=password)
     new_user.save()
 
-    user_properties.objects.create(
+    UserProperties.objects.create(
         user=new_user,
         filename="ex1",
         nickname=username,
@@ -40,55 +40,39 @@ def create():
     return new_user
 
 
-# just returns a test user from DB
-def select_random_user():
-    random_user = User.objects.all().filter(username__startswith="test")
-    if random_user:
-        user = random_user[randint(1, len(random_user)) - 1]
-        return user
-    else:
-        return None
+def create_question(user, i):
+    # 10 question on 1 user
 
-
-def create_random_question(amount):
     test_set = "{0}-test".format(datetime.now())
-    for i in range(amount):
-        user = select_random_user()
-        if not user:
-            user = create()
+    tag_name = "test_set_{0}".format(i)
 
-        # create question
-        question = the_question.objects.create(
-            author=user,
-            title=test_set,
-            text="Test question\n" + "\n".join([str(uuid4())*2 for i in range(11)]),
-        )
+    # create question
+    question = Question.objects.create(
+        author=user,
+        title=test_set,
+        text="Test question\n" + "\n".join([str(uuid4())*2 for i in range(11)]),
+    )
 
-        # add tags to question
-        try:
-            tn = tag_name.objects.get(name="test_set_{0}".format(i))
-        except:
-            tn = tag_name.objects.create(name="test_set_{0}".format(i))
+    # add tags to question
+    try:
+        tn = TagName.objects.get(name=tag_name)
+    except :
+        tn = TagName.objects.create(name=tag_name)
 
-        new_tag = store_tag()
-        new_tag.question = question
-        new_tag.tag = tn
-        new_tag.save()
+    StoreTag.objects.create(question=question, tag=tn)
 
-        # create answer
-        how_much = int(randint(0, 6))
-        create_random_answers(question.id, how_much)
+    # create answer
+    how_much = int(randint(0, 6))
+    create_random_answers(question.id, how_much)
 
 
 def create_random_answers(question_id=None, amount=0):
-    if question_id:
-        ques = the_question.objects.get(id=question_id)
-        for i in range(amount):
-            user = select_random_user()
-            if not user:
-                user = create()
 
-            the_answer.objects.create(
+    if question_id:
+        ques = Question.objects.get(id=question_id)
+        for i in range(amount):
+
+            Answer.objects.create(
                 text="Test answer\n" + "\n".join(["{0}) {1}".format(i, uuid4()) for i in range(5)]),
                 author=user,
                 contributed_to=ques
@@ -97,10 +81,29 @@ def create_random_answers(question_id=None, amount=0):
 
 def fb():
     t0 = datetime.now()
-    for i in range(100):
-        create()
-    create_random_question(100)
+    total_users = User.objects.all().count()
+    print "{0} users now".format(total_users)
+    for i in range(10000 - total_users):
+        create_user()
+
+
+    total_questions = Question.objects.all().count()
+    for i in range(100000 - total_questions):
+        create_question()
+
+
     print "Done in {0}".format(datetime.now() - t0)
 
 
 fb()
+
+
+'''
+Requirements:
+
+Users > 10 000
+Questions > 100 000
+Answers > 1 000 000
+Tags > 10 000
+Likes > 2 000 000
+'''

@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from user_profile.models import user_properties
+from user_profile.models import UserProperties
 from common_methods import get_static_data
 
 import uuid  # to generate unique filenames
@@ -22,7 +22,7 @@ def get_user_data(request):
     data = {}
     if request.user.is_authenticated():
         user_id = request.user.id
-        prop = user_properties.objects.get(user_id=user_id)
+        prop = UserProperties.objects.get(user_id=user_id)
         data["nickname"] = prop.nickname
         data["avatar"] = "{0}.jpg".format(prop.filename)  # don't forget to update extensions
     return data
@@ -112,7 +112,7 @@ def validate_register(request):
                             user.save()
                             filename_ = save_avatar_by_id(avatar_file, user.id)
 
-                            user_properties.objects.create(user=user, nickname=nickname_, filename=filename_)
+                            UserProperties.objects.create(user=user, nickname=nickname_, filename=filename_)
 
                             # uncomment to return logged in user
                             user = authenticate(username=login_, password=password1_)
@@ -161,7 +161,7 @@ def update_settings(request):
             nickname_ = request.POST['input_nickname']
             if len(nickname_) > 0:
                 if len(nickname_) >= 5 and len(nickname_) <= 20:
-                    user_properties.objects.filter(user_id=uid).update(nickname=nickname_)
+                    UserProperties.objects.filter(user_id=uid).update(nickname=nickname_)
                 else:
                     error = {"title": "Your nickname must be at least 5 chars long and less then 20 chars", "text": ""}
 
@@ -170,7 +170,7 @@ def update_settings(request):
                 avatar_file = request.FILES['avatar']
                 # will exit condition if no file
                 filename_ = save_avatar_by_id(avatar_file, uid)
-                user_properties.objects.filter(user_id=uid).update(filename=filename_)
+                UserProperties.objects.filter(user_id=uid).update(filename=filename_)
             except:
                 pass
 

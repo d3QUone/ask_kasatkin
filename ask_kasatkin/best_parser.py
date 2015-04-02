@@ -14,8 +14,8 @@ django.setup()
 
 # 2) import models, etc else
 
-from user_profile.models import user_properties
-from core.models import tag_name, store_tag
+from user_profile.models import UserProperties
+from core.models import TagName, StoreTag
 import json
 
 FILENAME = "best_data.txt"
@@ -28,7 +28,7 @@ FILENAME = "best_data.txt"
 def get_pop_users():
     result = []
     append = result.append
-    for user_data in list(user_properties.objects.all().order_by('-rating')[:20]):
+    for user_data in list(UserProperties.objects.all().order_by('-rating')[:20]):
         append(user_data.nickname)
     return result
 
@@ -45,8 +45,8 @@ def get_pop_tags():
     save = {}
     result = []
     append = result.append
-    for tag in tag_name.objects.all():
-        amount = store_tag.objects.filter(tag=tag).count()
+    for tag in TagName.objects.all():
+        amount = StoreTag.objects.filter(tag=tag).count()
         append(amount)
         save[amount] = tag.name
     result.sort(reverse=True)

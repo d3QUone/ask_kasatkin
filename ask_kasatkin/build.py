@@ -8,7 +8,7 @@ import sys
 import os
 
 BASE_DIR = os.getcwd() + "/"
-print "BASE_DIR: ", BASE_DIR
+print "\nBASE_DIR: ", BASE_DIR
 
 # 
 # just put filename in tag insted of your include. This file will be searching in the same 
@@ -41,7 +41,7 @@ def parse_base_file(folder, filename):
 			left_t = copy.find("[[[")
 
 			if left_t == -1:
-				print """File "{0}" complete with {1} insertions""".format(BASE_DIR + TARGET_DIR + filename, ins)
+				print """File "{0}" complete with {1} insertions""".format(filename, ins)
 
 				# insert what left!!!
 				f.write(copy)

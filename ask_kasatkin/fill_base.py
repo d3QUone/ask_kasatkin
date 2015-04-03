@@ -40,44 +40,46 @@ def create_user():
     return new_user
 
 
+# 1 user -> 10 questions -> 100 answers -> 1 tag -> 200 likes
+
 def create_question(user):
+    # add 1 tag
+    tag_name = "test_set_{0}".format(user.login)
+    try:
+        tn = TagName.objects.get(name=tag_name)
+    except:
+        tn = TagName.objects.create(name=tag_name)
+
     # 10 question on 1 user
     for i in range(10):
         test_set = "{0}-test".format(datetime.now())
-        tag_name = "test_set_{0}".format(i)
 
         # create question
         question = Question.objects.create(
             author=user,
             title=test_set,
-            text="Test question\n" + "\n".join([str(uuid4())*2 for i in range(11)]),
+            text="Test question\n" + "\n".join([str(uuid4())*2 for i in range(8)]),
         )
-
-        # add tags to question
-        try:
-            tn = TagName.objects.get(name=tag_name)
-        except :
-            tn = TagName.objects.create(name=tag_name)
-
+        # link the tag
         StoreTag.objects.create(question=question, tag=tn)
 
-        # create answer
-        how_much = int(randint(0, 6))
-        create_random_answers(question.id, how_much)
-
-
-
-def create_random_answers(question_id, amount=0):
-
-    if question_id:
-        ques = Question.objects.get(id=question_id)
-        for i in range(amount):
-
+        for j in range(10):
             Answer.objects.create(
-                text="Test answer\n" + "\n".join(["{0}) {1}".format(i, uuid4()) for i in range(5)]),
+                text="Test answer\n" + "\n".join(["{0}) {1}".format(i, uuid4()) for i in range(4)]),
                 author=user,
-                contributed_to=ques
+                contributed_to=question
             )
+
+
+'''
+# + add likes..., but at the end
+def do_likes():
+    # 100 on questions, 100 on answers by every user
+
+
+
+    for user in User.objects.all():
+'''
 
 
 def fb():
@@ -85,14 +87,8 @@ def fb():
     total_users = User.objects.all().count()
     print "{0} users now".format(total_users)
     for i in range(10000 - total_users):
-        create_user()
-
-    # we have 10000 users now...
-    total_questions = Question.objects.all().count()
-    for user in User.objects.all():
+        user = create_user()
         create_question(user=user)
-
-
     print "Done in {0}".format(datetime.now() - t0)
 
 

@@ -127,18 +127,16 @@ def self_settings(request, error=None):
 def update_settings(request):
     error = None
     if request.user.is_authenticated():
-
         #form = SettingsFrom(request.POST)  # do with forms...
 
         uid = request.user.id
 
         # update nickname if OK
         nickname_ = request.POST['input_nickname']
-        if len(nickname_) > 0:
-            if len(nickname_) >= 5 and len(nickname_) <= 20:
-                UserProperties.objects.filter(user_id=uid).update(nickname=nickname_)
-            else:
-                error = {"title": "Your nickname must be at least 5 chars long and less then 20 chars", "text": ""}
+        if len(nickname_) >= 5 and len(nickname_) <= 20:
+            UserProperties.objects.filter(user_id=uid).update(nickname=nickname_)
+        elif len(nickname_) > 0:
+            error = {"title": "Your nickname must be at least 5 chars long and less then 20 chars", "text": ""}
 
         # upload new ava if any
         try:

@@ -14,7 +14,7 @@ django.setup()
 
 from django.contrib.auth.models import User
 from user_profile.models import UserProperties
-from core.models import Question, Answer, TagName, StoreTag
+from core.models import Question, Answer, TagName, StoreTag, LikesQuestions, LikesAnswers
 
 from datetime import datetime
 from time import time
@@ -71,15 +71,25 @@ def create_question(user):
             )
 
 
-'''
 # + add likes..., but at the end
 def do_likes():
-    # 100 on questions, 100 on answers by every user
-
-
+    question_amount = Question.objects.all().count()
+    answer_amount = Answer.objects.filter("-id").count()
 
     for user in User.objects.all():
-'''
+        print user.id
+        for i in range(100):
+            # 100 on random questions
+            question = Question.objects.get(id=randint(0, question_amount))
+            LikesQuestions.objects.create(question=question, user=user, state=1)
+            owner = UserProperties.objects.get(user=question.author)
+            UserProperties.objects.filter(user=question.author).update(rating=owner.rating + 1)
+
+            # and 100 on random answers by every user
+            answer = Answer.objects.get(id=randint(0, answer_amount))
+            LikesAnswers.objects.create(answer=answer, user=user, state=1)
+            owner = UserProperties.objects.get(user=answer.author)
+            UserProperties.objects.filter(user=answer.author).update(rating=owner.rating + 1)
 
 
 def fb():
@@ -89,6 +99,7 @@ def fb():
     for i in range(10000 - total_users):
         user = create_user()
         create_question(user=user)
+    do_likes()
     print "Done in {0}".format(datetime.now() - t0)
 
 

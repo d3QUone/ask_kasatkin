@@ -6,19 +6,18 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 from core.models import Question, Answer, StoreTag, TagName, LikesAnswers, LikesQuestions
+from core.forms import Like
 from user_profile.models import UserProperties
 from user_profile.views import get_user_data
 from common_methods import get_static_data
 from django.contrib.auth.models import User
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
 from django.http import HttpResponse, Http404         # jquery simple return
 
 from django.core.paginator import Paginator
 
-@csrf_exempt  # works not as a usual decorator... one decorator for the whole page (all methods)
-
-# test method, HOME TASK 4
+@csrf_exempt
 def test(request):
     out = "Hello World<hr>\n"
     if request.method == "GET":
@@ -141,7 +140,7 @@ def question_thread(request, qid=0, error=None):
                 "id": a.id,
                 "text": a.text,
                 "rating": a.rating,
-                "selected": a.is_marked_as_true,
+                "selected": a.chosen,
 
                 "author": prop.nickname,
                 "avatar": "{0}.jpg".format(prop.filename),
@@ -253,6 +252,7 @@ def all_by_tag(request, tag_n=None):
 #
 # - add a page dividing results by tag / by question ???
 #
+@csrf_exempt
 def search(request):
     if request.method == "POST":
         input = request.POST["input"]
@@ -261,69 +261,71 @@ def search(request):
         return HttpResponse({"text": "JSON result ... "}, content_type="application/json")
 
 
+@csrf_exempt
 def like_post(request):
     if request.method == "POST":
         if request.user.is_authenticated():
-            try:
-                pid = int(request.POST["id"])
-                like_state = int(request.POST["like"])  # -1 / 1
-                question = Question.objects.get(id=pid)
-                usr = request.user
-                usr_props = UserProperties.objects.get(user=usr)
-            except ValueError:
-                return HttpResponse("None")
-            try:
-                like = LikesQuestions.objects.get(question=question, user=usr)  # get 1 curr state
-                if abs(like.state + like_state) <= 1:
-                    LikesQuestions.objects.filter(question=question, user=usr).update(state=like.state+like_state)
-                    Question.objects.filter(id=pid).update(rating=question.rating+like_state)
-                    UserProperties.objects.filter(user=usr).update(rating=usr_props.rating+like_state)
-            except:
-                # create new like if no like
-                if abs(like_state) == 1:
-                    LikesQuestions.objects.create(user=usr, question=question, state=like_state)
-                    Question.objects.filter(id=pid).update(rating=(question.rating+like_state))
-                    UserProperties.objects.filter(user=usr).update(rating=(usr_props.rating+like_state))
-            return HttpResponse(Question.objects.get(id=pid).rating)
+            form = Like(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                pid = data["id"]
+                like_state = data["like"]
+                try:
+                    question = Question.objects.get(id=pid)
+                    usr = request.user
+                    usr_props = UserProperties.objects.get(user=usr)
+                except Question.DoesNotExist:
+                    return HttpResponse("None")
+                except UserProperties.DoesNotExist:
+                    return HttpResponse("None")
+
+                try:
+                    like = LikesQuestions.objects.get(question=question, user=usr)  # get 1 curr state
+                    if abs(like.state + like_state) <= 1:
+                        LikesQuestions.objects.filter(question=question, user=usr).update(state=like.state+like_state)
+                        Question.objects.filter(id=pid).update(rating=question.rating+like_state)
+                        UserProperties.objects.filter(user=usr).update(rating=usr_props.rating+like_state)
+                except LikesQuestions.DoesNotExist:
+                    # create new like if no like
+                    if abs(like_state) == 1:
+                        LikesQuestions.objects.create(user=usr, question=question, state=like_state)
+                        Question.objects.filter(id=pid).update(rating=question.rating+like_state)
+                        UserProperties.objects.filter(user=usr).update(rating=usr_props.rating+like_state)
+                return HttpResponse(Question.objects.get(id=pid).rating)
+
     return HttpResponse(None)
 
 
-
-
-# .... fix this after adding Loading-Form
-
+@csrf_exempt
 def like_answer(request):
     if request.method == "POST":
         if request.user.is_authenticated():
-            try:
-                aid = int(request.POST["id"])
-                like_state = int(request.POST["like"])  # -1 / 1
-                answer = Answer.objects.get(id=aid)
-                usr = request.user
-            except:
-                return HttpResponse("None")
-            try:
-                # load current-user like object
-                like = LikesAnswers.objects.get(answer=answer, user=usr)  # get 1 curr state
-                if abs(like.state + like_state) <= 1:
-                    like.state += like_state
-                    like.save()
-                    # update global rating
-                    answer.rating += like_state
-                    answer.save()
-            except:
-                # create new like if no like
-                like = LikesAnswers()
-                like.user = usr
-                like.answer = answer
-                if abs(like_state) == 1:
-                    like.state = like_state
-                    like.save()
-                    # update global rating
-                    answer.rating += like_state
-                    answer.save()
-            answer = Answer.objects.get(id=aid)
-            return HttpResponse(answer.rating)
+            form = Like(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                pid = data["id"]
+                like_state = data["like"]
+                try:
+                    answer = Answer.objects.get(id=pid)
+                    usr = request.user
+                    usr_props = UserProperties.objects.get(user=usr)
+                except Answer.DoesNotExist:
+                    return HttpResponse("None")
+                except UserProperties.DoesNotExist:
+                    return HttpResponse("None")
+
+                try:
+                    like = LikesAnswers.objects.get(answer=answer, user=usr)  # get 1 curr state
+                    if abs(like.state + like_state) <= 1:
+                        LikesAnswers.objects.filter(answer=answer, user=usr).update(state=like.state+like_state)
+                        Answer.objects.filter(id=pid).update(rating=answer.rating+like_state)
+                        UserProperties.objects.filter(user=usr).update(rating=usr_props.rating+like_state)
+                except LikesAnswers.DoesNotExist:
+                    if abs(like_state) == 1:
+                        LikesAnswers.objects.create(user=usr, answer=answer, state=like_state)
+                        Answer.objects.filter(id=pid).update(rating=(answer.rating+like_state))
+                        UserProperties.objects.filter(user=usr).update(rating=usr_props.rating+like_state)
+                return HttpResponse(Answer.objects.get(id=pid).rating)
     return HttpResponse(None)
 
 

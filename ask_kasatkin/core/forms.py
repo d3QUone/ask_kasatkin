@@ -13,5 +13,5 @@ class NewAnswer(forms.Form):
 
 
 class Like(forms.Form):
-    item_id = forms.IntegerField(min_value=0)
+    id = forms.IntegerField(min_value=0)
     like = forms.IntegerField(min_value=-1, max_value=1)

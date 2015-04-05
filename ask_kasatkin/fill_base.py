@@ -79,17 +79,23 @@ def do_likes():
     for user in User.objects.all():
         print user.id
         for i in range(100):
-            # 100 on random questions
-            question = Question.objects.get(id=randint(0, question_amount))
-            LikesQuestions.objects.create(question=question, user=user, state=1)
-            owner = UserProperties.objects.get(user=question.author)
-            UserProperties.objects.filter(user=question.author).update(rating=owner.rating + 1)
+            try:
+                # 100 on random questions
+                question = Question.objects.get(id=randint(0, question_amount))
+                LikesQuestions.objects.create(question=question, user=user, state=1)
+                owner = UserProperties.objects.get(user=question.author)
+                UserProperties.objects.filter(user=question.author).update(rating=owner.rating + 1)
+            except Question.DoesNotExist:
+                pass
 
-            # and 100 on random answers by every user
-            answer = Answer.objects.get(id=randint(0, answer_amount))
-            LikesAnswers.objects.create(answer=answer, user=user, state=1)
-            owner = UserProperties.objects.get(user=answer.author)
-            UserProperties.objects.filter(user=answer.author).update(rating=owner.rating + 1)
+            try:
+                # and 100 on random answers by every user
+                answer = Answer.objects.get(id=randint(0, answer_amount))
+                LikesAnswers.objects.create(answer=answer, user=user, state=1)
+                owner = UserProperties.objects.get(user=answer.author)
+                UserProperties.objects.filter(user=answer.author).update(rating=owner.rating + 1)
+            except Answer.DoesNotExist:
+                pass
 
 
 def fb():

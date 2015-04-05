@@ -82,6 +82,7 @@ def do_likes():
             try:
                 # 100 on random questions
                 question = Question.objects.get(id=randint(0, question_amount))
+                Question.objects.filter(id=question.id).update(rating=question.rating + 1)
                 LikesQuestions.objects.create(question=question, user=user, state=1)
                 owner = UserProperties.objects.get(user=question.author)
                 UserProperties.objects.filter(user=question.author).update(rating=owner.rating + 1)
@@ -91,6 +92,7 @@ def do_likes():
             try:
                 # and 100 on random answers by every user
                 answer = Answer.objects.get(id=randint(0, answer_amount))
+                Answer.objects.filter(id=answer.id).update(rating=answer.rating + 1)
                 LikesAnswers.objects.create(answer=answer, user=user, state=1)
                 owner = UserProperties.objects.get(user=answer.author)
                 UserProperties.objects.filter(user=answer.author).update(rating=owner.rating + 1)

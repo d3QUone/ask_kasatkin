@@ -1,21 +1,24 @@
 {% extends "base.html" %}
 {% block title %}Ask-Kasatkin New Question{% endblock title %}
 {% block content %}    
+<div class="question__block">
+    {% if not error %}<div class="user__profile__item">
+        Nickname: {{ profile.nickname }}
+    </div>
+    
+    <div class="user__profile__item">    
+        Rating: {% if profile.rating > 0 %}<span style="color: green;">{{ profile.rating }}</span>{% else %}<span style="color: red;">{{ profile.rating }}</span>{% endif %}
+    </div>
+    
+    <div class="user__profile__item">
+        Questions: {{ total_questions }}
+    </div>
 
-
-{% if not error %}
-
-
-    Nickname: {{ profile.nickname }}
-    <br>
-    Rating: {{ profile.rating }}
-    <br>
-    Questions: {{ total_questions }}
-    <br>
-    Answers: {{ total_answers }}
-
-{% else %}
-    {{ error }}
-{% endif %}
-
+    <div class="user__profile__item">    
+        Answers: {{ total_answers }}
+    </div>
+    {% else %}<div class="user__profile__item">
+        {{ error }}
+    </div>
+{% endif %}</div>
 {% endblock content %}

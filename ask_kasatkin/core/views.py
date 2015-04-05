@@ -260,7 +260,7 @@ def user_profile_stats(request, id=None):
         data["total_questions"] = Question.objects.filter(author=current_user).count()
         data["total_answers"] = Answer.objects.filter(author=current_user).count()
     else:
-        data["error"] = "No profile selected"
+        data["error"] = "No profile selected :("
     return render(request, "core__user_stats.html", data)
 
 

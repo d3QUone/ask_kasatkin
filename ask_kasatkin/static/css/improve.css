@@ -60,8 +60,7 @@ body {
 .empty__block {
     display: inline-block;
     position: absolute; 
-    left: 50%;
-    
+    left: 50%;    
     /*
     display: inline;
     position: absolute;
@@ -106,14 +105,27 @@ body {
     float: right;
 }
 
+.navbar__user__nickname {
+    color: white;
+    text-decoration: underline;   
+}
+
+.navbar__user__nickname:hover {
+    color: black;
+    text-decoration: underline;   
+}
+
 .navbar__avatar {
     height: 40px;
     width: 40px;
 }
 
 .navbar__user__options {
+    top: 1px;
     padding-left: 5px;
     padding-right: 5px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
     color: white;
 }
 
@@ -179,6 +191,7 @@ body {
     padding-left: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
+    word-break: break-all;
 }
 
 .question__left {
@@ -310,4 +323,10 @@ body {
 .pagination>.active>a:hover {
     background-color: #8E6784;
     border-color: #8E6784;
+}
+
+/* user profile (but inside 'core' app lol) */
+.user__profile__item {
+    margin-left: 35%;
+    font-size: 20px;
 }

@@ -6,13 +6,14 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 from core.models import Question, Answer, StoreTag, TagName, LikesAnswers, LikesQuestions
-from core.forms import Like
+from core.forms import Like, NewQuestion, NewAnswer
 from user_profile.models import UserProperties
 from user_profile.views import get_user_data
 from common_methods import get_static_data
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
+from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse, Http404         # jquery simple return
 
 from django.core.paginator import Paginator
@@ -58,44 +59,43 @@ def create_question_item(item):
 
 # we use paginator on Index, Question by tag and Search-result fields... - 3 similar blocks
 def index_page(request):
-    if request.method == "GET":
-        try:
-            page = int(request.GET["page"])
-            # page = int(request.GET.get("page")) # returns None if no par sent
-            if page < 1:
-                page = 1
-        except:
+    try:
+        page = int(request.GET["page"])
+        # page = int(request.GET.get("page")) # returns None if no par sent
+        if page < 1:
             page = 1
+    except:
+        page = 1
 
-        try:
-            query = request.GET["query"]
-        except:
-            query = "latest"
+    try:
+        query = request.GET["query"]
+    except:
+        query = "latest"
 
-        if query != "popular":
-            all_questions = Question.objects.all().order_by('-id')  # life hack :)
-        else:
-            all_questions = Question.objects.all().order_by('-rating')
+    if query != "popular":
+        all_questions = Question.objects.all().order_by('-id')  # life hack :)
+    else:
+        all_questions = Question.objects.all().order_by('-rating')
 
-        paginator = Paginator(all_questions, 30)
-        try:
-            questions_to_render = paginator.page(page)  # return all this data to render paginator only + buf(the same + even more data)
-        except:
-            questions_to_render = paginator.page(paginator.num_pages)
+    paginator = Paginator(all_questions, 30)
+    try:
+        questions_to_render = paginator.page(page)  # return all this data to render paginator only + buf(the same + even more data)
+    except:
+        questions_to_render = paginator.page(paginator.num_pages)
 
-        buf = []
-        append = buf.append
-        for item in questions_to_render:
-            append(create_question_item(item))
+    buf = []
+    append = buf.append
+    for item in questions_to_render:
+        append(create_question_item(item))
 
-        data = get_static_data()
-        data["personal"] = get_user_data(request)  # processes all user's-stuff
-        data["questions"] = buf
-        # paginator...
-        data["page"] = page
-        data["query"] = query
-        data["paginator"] = questions_to_render
-        return render(request, "core__index.html", data)
+    data = get_static_data()
+    data["personal"] = get_user_data(request)  # processes all user's-stuff
+    data["questions"] = buf
+    # paginator...
+    data["page"] = page
+    data["query"] = query
+    data["paginator"] = questions_to_render
+    return render(request, "core__index.html", data)
 
 
 
@@ -103,11 +103,7 @@ def index_page(request):
 
 # shows a concrete thread: question + answers, allows logged in users add answers, vote
 def question_thread(request, qid=0, error=None):
-    # if 'qid' == 0 (means no id) return prepared page with helpful links on usage ???
-    # e.g. how to register / add question / ???...
-    if qid == 0:
-        return index_page(request)
-    else:
+    if qid != 0:
         data = get_static_data()
         data["personal"] = get_user_data(request)
         data["error"] = error
@@ -150,7 +146,9 @@ def question_thread(request, qid=0, error=None):
         data["page"] = page
         data["paginator"] = ans_to_render
         return render(request, "core__question_page.html", data)
-
+    else:
+        # we can show some prepared hint-pages in such cases e.g. how to register / add question / ...
+        return index_page(request)
 
 
 ##### QUESTIONS ######
@@ -166,20 +164,15 @@ def new_question(request, error=None):
 # upload data and add question
 def add_new_question(request):
     error = None
-    if request.method == "POST" and request.user.is_authenticated():
-        title = request.POST["title"]
-        text = request.POST["text"]
-        tags = request.POST["tags"].replace(" ", "").split(",")
-        if len(title) < 10:
-            error = {"title": "Too short title", "text": "Use at least 10 symbols in the title"}
-        elif len(text) < 10:
-            error = {"title": "Too short question", "text": "Describe your problem in a proper way please"}
-        elif len(tags) > 3:
-            error = {"title": "You can use only 3 tags", "text": "{0} tags were provided in new question".format(len(tags))}
-        else:
-            # - save to DB
-            quest = Question.objects.create(title=title[:250], text=text, author=request.user)
+    if request.user.is_authenticated():
+        form = NewQuestion(request.POST or None)
+        if form.is_valid():
+            data = form.cleaned_data
+            title = data["title"]
+            text = data["text"]
+            tags = data["tags"].replace(" ", "").split(",")
 
+            quest = Question.objects.create(title=title[:250], text=text, author=request.user)
             for t in tags[:3]:
                 if len(t) > 0:
                     # get_or_create "style"
@@ -189,8 +182,9 @@ def add_new_question(request):
                         tn = TagName.objects.create(name=str(t).lower())
 
                     StoreTag.objects.create(question=quest, tag=tn)
-            # returns new (clear) thread
             return question_thread(request, qid=quest.id)
+        else:
+            error = form.errors.as_json()
     else:
         error = {"title": "You are not logged in", "text": ""}
     return new_question(request, error=error)
@@ -198,23 +192,26 @@ def add_new_question(request):
 
 # adding-answer method
 def add_new_answer(request):
-    redirect_id = 0
     error = None
-    if request.method == 'POST':
+    form = NewAnswer(request.POST or None)
+    if form.is_valid():
+        data = form.cleaned_data
+        redirect_id = data["redirect_id"]
+        text = data["text"]
+        Answer.objects.create(text=text, author=request.user, question=Question.objects.get(id=redirect_id))
+        # TODO: send mail to question-author about added answer
+    else:
         redirect_id = request.POST["redirect_id"]
-        text = request.POST["text"]
-        if len(text) > 10:
-            Answer.objects.create(text=text, author=request.user, question=Question.objects.get(id=redirect_id))
-
-            # send mail to author here!!!
-
-        else:
-            error = {"title": "Too short answer", "text": "Describe your idea in a proper way please"}
+        error = form.errors.as_json()
     return question_thread(request, qid=redirect_id, error=error)
 
 
-##### TAGS ######
 
+# TODO: add mark-as-true method!!!
+
+
+##### TAGS ######
+@require_GET
 def all_by_tag(request, tag_n=None):
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
@@ -223,7 +220,6 @@ def all_by_tag(request, tag_n=None):
         page = int(request.GET.get("page", "1"))
     except:
         raise Http404
-
     try:
         data["tag"] = tag_n
         tag = TagName.objects.get(name=tag_n)
@@ -246,94 +242,12 @@ def all_by_tag(request, tag_n=None):
     return render(request, "core__by_tag.html", data)
 
 
-##### jQuery-AJAX (POST) methods #####
 
-# I'll use this for all searches..
-#
-# - add a page dividing results by tag / by question ???
-#
-@csrf_exempt
-def search(request):
-    if request.method == "POST":
-        input = request.POST["input"]
-        # smth here ...
+##### USER PROFILE (additional feature) #####
 
-        return HttpResponse({"text": "JSON result ... "}, content_type="application/json")
-
-
-@csrf_exempt
-def like_post(request):
-    if request.method == "POST":
-        if request.user.is_authenticated():
-            form = Like(request.POST)
-            if form.is_valid():
-                data = form.cleaned_data
-                pid = data["id"]
-                like_state = data["like"]
-                try:
-                    question = Question.objects.get(id=pid)
-                    usr = request.user
-                    usr_props = UserProperties.objects.get(user=usr)
-                except Question.DoesNotExist:
-                    return HttpResponse("None")
-                except UserProperties.DoesNotExist:
-                    return HttpResponse("None")
-
-                try:
-                    like = LikesQuestions.objects.get(question=question, user=usr)  # get 1 curr state
-                    if abs(like.state + like_state) <= 1:
-                        LikesQuestions.objects.filter(question=question, user=usr).update(state=like.state+like_state)
-                        Question.objects.filter(id=pid).update(rating=question.rating+like_state)
-                        UserProperties.objects.filter(user=usr).update(rating=usr_props.rating+like_state)
-                except LikesQuestions.DoesNotExist:
-                    # create new like if no like
-                    if abs(like_state) == 1:
-                        LikesQuestions.objects.create(user=usr, question=question, state=like_state)
-                        Question.objects.filter(id=pid).update(rating=question.rating+like_state)
-                        UserProperties.objects.filter(user=usr).update(rating=usr_props.rating+like_state)
-                return HttpResponse(Question.objects.get(id=pid).rating)
-
-    return HttpResponse(None)
-
-
-@csrf_exempt
-def like_answer(request):
-    if request.method == "POST":
-        if request.user.is_authenticated():
-            form = Like(request.POST)
-            if form.is_valid():
-                data = form.cleaned_data
-                pid = data["id"]
-                like_state = data["like"]
-                try:
-                    answer = Answer.objects.get(id=pid)
-                    usr = request.user
-                    usr_props = UserProperties.objects.get(user=usr)
-                except Answer.DoesNotExist:
-                    return HttpResponse("None")
-                except UserProperties.DoesNotExist:
-                    return HttpResponse("None")
-
-                try:
-                    like = LikesAnswers.objects.get(answer=answer, user=usr)  # get 1 curr state
-                    if abs(like.state + like_state) <= 1:
-                        LikesAnswers.objects.filter(answer=answer, user=usr).update(state=like.state+like_state)
-                        Answer.objects.filter(id=pid).update(rating=answer.rating+like_state)
-                        UserProperties.objects.filter(user=usr).update(rating=usr_props.rating+like_state)
-                except LikesAnswers.DoesNotExist:
-                    if abs(like_state) == 1:
-                        LikesAnswers.objects.create(user=usr, answer=answer, state=like_state)
-                        Answer.objects.filter(id=pid).update(rating=(answer.rating+like_state))
-                        UserProperties.objects.filter(user=usr).update(rating=usr_props.rating+like_state)
-                return HttpResponse(Answer.objects.get(id=pid).rating)
-    return HttpResponse(None)
-
-
-# user profile ( 2 templates )
-
-# - separate page with Stats
-# - separate page with question-preview, answer-preview
-
+# - separate page for Stats
+# - separate page for question-preview, answer-preview
+@require_GET
 def user_profile_stats(request, id=None):
     data = get_static_data()
     data["personal"] = get_user_data(request)
@@ -350,8 +264,88 @@ def user_profile_stats(request, id=None):
     return render(request, "core__user_stats.html", data)
 
 
+@require_GET
 def user_profile_all_data(request):
-
 
     # paginator for all questions / or separate page with all questions and all answers
     return None
+
+
+##### jQuery-AJAX (POST) methods #####
+
+@csrf_exempt
+@require_POST
+def like_post(request):
+    if request.user.is_authenticated():
+        form = Like(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            pid = data["id"]
+            like_state = data["like"]
+            try:
+                question = Question.objects.get(id=pid)
+                author_account = UserProperties.objects.get(user=question.author)
+                usr = request.user
+            except Question.DoesNotExist:
+                return HttpResponse("None")
+            except UserProperties.DoesNotExist:
+                return HttpResponse("None")
+            try:
+                like = LikesQuestions.objects.get(question=question, user=usr)  # get 1 curr state
+                if abs(like.state + like_state) <= 1:
+                    LikesQuestions.objects.filter(question=question, user=usr).update(state=like.state+like_state)
+                    Question.objects.filter(id=pid).update(rating=question.rating+like_state)
+                    UserProperties.objects.filter(user=question.author).update(rating=author_account.rating+like_state)
+            except LikesQuestions.DoesNotExist:
+                # create new like if no like
+                if abs(like_state) == 1:
+                    LikesQuestions.objects.create(user=usr, question=question, state=like_state)
+                    Question.objects.filter(id=pid).update(rating=question.rating+like_state)
+                    UserProperties.objects.filter(user=question.author).update(rating=author_account.rating+like_state)
+            return HttpResponse(Question.objects.get(id=pid).rating)
+    return HttpResponse(None)
+
+
+@csrf_exempt
+@require_POST
+def like_answer(request):
+    if request.user.is_authenticated():
+        form = Like(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            pid = data["id"]
+            like_state = data["like"]
+            try:
+                answer = Answer.objects.get(id=pid)
+                author_account = UserProperties.objects.get(user=answer.author)
+                usr = request.user
+            except Answer.DoesNotExist:
+                return HttpResponse("None")
+            except UserProperties.DoesNotExist:
+                return HttpResponse("None")
+            try:
+                like = LikesAnswers.objects.get(answer=answer, user=usr)  # get 1 curr state
+                if abs(like.state + like_state) <= 1:
+                    LikesAnswers.objects.filter(answer=answer, user=usr).update(state=like.state+like_state)
+                    Answer.objects.filter(id=pid).update(rating=answer.rating+like_state)
+                    UserProperties.objects.filter(user=answer.author).update(rating=author_account.rating+like_state)
+            except LikesAnswers.DoesNotExist:
+                if abs(like_state) == 1:
+                    LikesAnswers.objects.create(user=usr, answer=answer, state=like_state)
+                    Answer.objects.filter(id=pid).update(rating=(answer.rating+like_state))
+                    UserProperties.objects.filter(user=answer.author).update(rating=author_account.rating+like_state)
+            return HttpResponse(Answer.objects.get(id=pid).rating)
+    return HttpResponse(None)
+
+
+#
+# - add a page dividing results by tag / by question ???
+#
+@csrf_exempt
+@require_POST
+def search(request):
+    if request.method == "POST":
+        input = request.POST["input"]
+        # smth here ...
+
+        return HttpResponse({"text": "JSON result ... "}, content_type="application/json")

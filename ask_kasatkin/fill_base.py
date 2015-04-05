@@ -44,7 +44,7 @@ def create_user():
 
 def create_question(user):
     # add 1 tag
-    tag_name = "test_set_{0}".format(user.login)
+    tag_name = "test_set_{0}".format(user.username)
     try:
         tn = TagName.objects.get(name=tag_name)
     except:
@@ -67,14 +67,14 @@ def create_question(user):
             Answer.objects.create(
                 text="Test answer\n" + "\n".join(["{0}) {1}".format(i, uuid4()) for i in range(4)]),
                 author=user,
-                contributed_to=question
+                question=question
             )
 
 
 # + add likes..., but at the end
 def do_likes():
     question_amount = Question.objects.all().count()
-    answer_amount = Answer.objects.filter("-id").count()
+    answer_amount = Answer.objects.all().count()
 
     for user in User.objects.all():
         print user.id

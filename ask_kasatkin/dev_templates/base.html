@@ -23,13 +23,11 @@
             {% for tag in popular_tags %}<a href="{% url 'core:all_by_tag' tag.text %}"><span class="tag__margin" style="background-color: {{ tag.label }};">{{ tag.text }}</span></a>
             {% endfor %}
             <br><br>
-            {% if popular_users %}
-                <h4 class="column__left__title">Best Members:</h4>
+            {% if popular_users %}<h4 class="column__left__title">Best Members:</h4>
                 {% for pop_user in popular_users %}
                     <p><a href="{% url 'core:user' pop_user.id %}" class="underline__link">{{ pop_user.nickname }}<a></p>
                 {%  endfor %}
-            {% else %}
-                <p>No best members yet</p>
+            {% else %}<p>No best members yet</p>
             {% endif %}
         </div>
     </div>

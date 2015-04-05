@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Ask-Kasatkin New Question{% endblock title %}
+{% block content %}    
+
+
+{% if not error %}
+
+
+    Nickname: {{ profile.nickname }}
+    <br>
+    Rating: {{ profile.rating }}
+    <br>
+    Questions: {{ total_questions }}
+    <br>
+    Answers: {{ total_answers }}
+
+{% else %}
+    {{ error }}
+{% endif %}
+
+{% endblock content %}

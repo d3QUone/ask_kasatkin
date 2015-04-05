@@ -29,7 +29,10 @@ def get_pop_users():
     result = []
     append = result.append
     for user_data in list(UserProperties.objects.all().order_by('-rating')[:20]):
-        append(user_data.nickname)
+        append({
+            "nickname": user_data.nickname,
+            "id": user_data.user.id
+        })
     return result
 
 

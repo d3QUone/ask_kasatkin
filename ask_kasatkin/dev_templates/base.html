@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="description" content="Сайт с ответами на любые вопросы. Русский конкурент Stackoverflow">
-  <meta name="keywords" content="dequone, rezoh, stackoverflow, python, django, ask, kasatkin, techopark, mail.ru, mail.ru group, mailru, mailru group, технопарк, мэйл.ру, мэйл.ру груп">
-  <title>{% block title %}{% endblock title %}</title>
-  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/static/css/improve.css">
+    <meta charset="utf-8">
+    <meta name="description" content="Сайт с ответами на любые вопросы. Русский конкурент Stackoverflow">
+    <meta name="keywords" content="dequone, rezoh, stackoverflow, python, django, ask, kasatkin, techopark, mail.ru, mail.ru group, mailru, mailru group, технопарк, мэйл.ру, мэйл.ру груп">
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/improve.css">
 </head>
 <body>
 [[[ "_inc_header.html" ]]]
@@ -25,7 +25,8 @@
             <br><br>
             {% if popular_users %}
                 <h4 class="column__left__title">Best Members:</h4>
-                {% for pop_user in popular_users %}<p><span class="underline__link">{{ pop_user }}</span></p>
+                {% for pop_user in popular_users %}
+                    <p><span class="underline__link"><a href="{% url 'core:user' pop_user.id %}">{{ pop_user.nickname }}<a></span></p>
                 {%  endfor %}
             {% else %}
                 <p>No best members yet</p>

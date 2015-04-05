@@ -9,7 +9,8 @@ from core.models import Question, Answer, StoreTag, TagName, LikesAnswers, Likes
 from user_profile.models import UserProperties
 from user_profile.views import get_user_data
 from common_methods import get_static_data
-from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
 from django.http import HttpResponse, Http404         # jquery simple return
 
@@ -331,24 +332,27 @@ def like_answer(request):
 # - separate page with Stats
 # - separate page with question-preview, answer-preview
 
-def user_profile_stats(request):
-    if request.user.is_authenticated():
-        current_user = request.user
+def user_profile_stats(request, id=None):
+    data = get_static_data()
+    data["personal"] = get_user_data(request)
+
+    if id:
+        try:
+            current_user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            raise Http404
 
         profile = UserProperties.objects.get(user=current_user)
-        # get avatar, get rating...
-
         total_questions = Question.objects.filter(author=current_user).count()
         total_answers = Answer.objects.filter(author=current_user).count()
 
-        data = {}
         data["profile"] = profile
         data["total_questions"] = total_questions
         data["total_answers"] = total_answers
+    else:
+        data["error"] = "No profile selected"
 
-        return render(request, "core__user_profile.html", data)
-
-    return None
+    return render(request, "core__user_stats.html", data)
 
 
 def user_profile_all_data(request):

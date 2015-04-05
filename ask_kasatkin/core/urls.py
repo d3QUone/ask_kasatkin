@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from core.views import index_page, new_question, add_new_question, test, question_thread, add_new_answer, all_by_tag, like_post, like_answer
+from core.views import index_page, new_question, add_new_question, test, question_thread, add_new_answer, all_by_tag, like_post, like_answer, user_profile_stats
 
 urlpatterns = patterns('',
     url(r'^test/$', test),
@@ -12,4 +12,6 @@ urlpatterns = patterns('',
     # likes!
     url(r'^like_post/$', like_post, name='like_question'),
     url(r'^like_answ/$', like_answer, name='like_answer'),
+    url(r'^user/$', user_profile_stats, name='user'),
+    url(r'^user/(?P<id>\d+)/$', user_profile_stats, name='user'),
 )

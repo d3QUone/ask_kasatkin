@@ -337,23 +337,16 @@ def like_answer(request):
 def user_profile_stats(request, id=None):
     data = get_static_data()
     data["personal"] = get_user_data(request)
-
     if id:
         try:
             current_user = User.objects.get(id=id)
         except User.DoesNotExist:
             raise Http404
-
-        profile = UserProperties.objects.get(user=current_user)
-        total_questions = Question.objects.filter(author=current_user).count()
-        total_answers = Answer.objects.filter(author=current_user).count()
-
-        data["profile"] = profile
-        data["total_questions"] = total_questions
-        data["total_answers"] = total_answers
+        data["profile"] = UserProperties.objects.get(user=current_user)
+        data["total_questions"] = Question.objects.filter(author=current_user).count()
+        data["total_answers"] = Answer.objects.filter(author=current_user).count()
     else:
         data["error"] = "No profile selected"
-
     return render(request, "core__user_stats.html", data)
 
 

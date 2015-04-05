@@ -20,13 +20,13 @@
         <div class="col-xs-2 column__left__fix">
             <!-- RIGHT COLUMN: (tags + best members), same in all cases -->
             <h4 class="column__left__title">Popular Tags:</h4>
-            {% for tag in popular_tags %}<a href="{% url 'core:all_by_tag' tag.text %}"><span class="{{ tag.label }} tag__margin">{{ tag.text }}</span></a>
+            {% for tag in popular_tags %}<a href="{% url 'core:all_by_tag' tag.text %}"><span class="tag__margin" style="background-color: {{ tag.label }};">{{ tag.text }}</span></a>
             {% endfor %}
             <br><br>
             {% if popular_users %}
                 <h4 class="column__left__title">Best Members:</h4>
                 {% for pop_user in popular_users %}
-                    <p><span class="underline__link"><a href="{% url 'core:user' pop_user.id %}">{{ pop_user.nickname }}<a></span></p>
+                    <p><a href="{% url 'core:user' pop_user.id %}" class="underline__link">{{ pop_user.nickname }}<a></p>
                 {%  endfor %}
             {% else %}
                 <p>No best members yet</p>

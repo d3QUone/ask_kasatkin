@@ -43,17 +43,16 @@ label_color = [
     "#FBECE7", "#FBECE7", "#FBECE7", "#FBECE7", "#FBECE7",
 ]
 
+
 # get TOP20 tags here
 def get_pop_tags():
-    save = {}
     result = []
     append = result.append
-    for tag in TagName.objects.all():
+    for tag in list(TagName.objects.all()):
         amount = StoreTag.objects.filter(tag=tag).count()
-        append(amount)
-        save[amount] = tag.name
+        append([amount, tag.name])
     result.sort(reverse=True)
-    return [{"text": save[result[i]], "label": label_color[i]} for i in range(len(result[:20]))]
+    return [{"text": result[i][1], "label": label_color[i]} for i in range(len(result[:20]))]
 
 
 def save_data():

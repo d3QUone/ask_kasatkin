@@ -23,6 +23,6 @@ class NewAnswer(forms.Form):
     redirect_id = forms.IntegerField(min_value=0, required=True)
 
 
-class Like(forms.Form):
+class LikeAJAX(forms.Form):
     id = forms.IntegerField(min_value=0)
     like = forms.IntegerField(min_value=-1, max_value=1)

@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'ask_kasatkin.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ask_kas',
+        'NAME': 'ask_kas2',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '127.0.0.1',

@@ -35,14 +35,16 @@ def test(request):
 # select related /
 # prefetch related <- better
 
-# edit that 'prerender'
-
-# -- render question dict from DB-object
 def create_question_item(item):
+
     amount = Answer.objects.filter(question=item).count()
+
     prop = UserProperties.objects.get(user_id=item.author.id)
+
     related_tags = StoreTag.objects.filter(question=item)
+
     tags = [s_tag.tag.name for s_tag in related_tags]
+
     return {
         "question_id": item.id,
         "title": item.title,
@@ -51,7 +53,7 @@ def create_question_item(item):
         "answers": amount,
         "tags": tags,
 
-        "author": item.author,
+        # "author": item.author,   # actually it is login
         "avatar": "{0}.jpg".format(prop.filename),
         "nickname": prop.nickname  # for render
     }
@@ -61,7 +63,6 @@ def create_question_item(item):
 def index_page(request):
     try:
         page = int(request.GET["page"])
-        # page = int(request.GET.get("page")) # returns None if no par sent
         if page < 1:
             page = 1
     except:
@@ -83,14 +84,19 @@ def index_page(request):
     except:
         questions_to_render = paginator.page(paginator.num_pages)
 
+    '''
     buf = []
     append = buf.append
     for item in questions_to_render:
         append(create_question_item(item))
+    '''
+
+    related_tags = TagName.objects.prefetch_related(questions_to_render)
+
 
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
-    data["questions"] = buf
+    #data["questions"] = buf
     # paginator...
     data["page"] = page
     data["query"] = query

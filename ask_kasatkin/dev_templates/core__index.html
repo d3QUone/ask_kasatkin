@@ -10,7 +10,7 @@
   <div class="switcher__active">Popular</div>
 {% endif %}
 </div>
-{% for question in questions %}
+{% for question in paginator %}
   [[[ "_inc_question.html" ]]] 
 {% endfor %}
   [[[ "_inc_paginator.html" ]]]

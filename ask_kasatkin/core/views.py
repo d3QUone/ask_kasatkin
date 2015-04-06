@@ -1,11 +1,10 @@
 # coding:utf8
 
-# make UTF 8 global!
 import sys
 reload(sys)
-sys.setdefaultencoding('utf8')
+sys.setdefaultencoding('utf8') # make UTF 8 global-hack
 
-from core.models import Question, Answer, StoreTag, TagName, LikesAnswers, LikesQuestions
+from core.models import Question, Answer, TagName, Like
 from core.forms import Like, NewQuestion, NewAnswer
 from user_profile.models import UserProperties
 from user_profile.views import get_user_data
@@ -15,8 +14,8 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
 from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse, Http404         # jquery simple return
-
 from django.core.paginator import Paginator
+
 
 @csrf_exempt
 def test(request):
@@ -32,45 +31,18 @@ def test(request):
 
 ##### MAIN PAGE #####
 
-# select related /
-# prefetch related <- better
-
-def create_question_item(item):
-
-    amount = Answer.objects.filter(question=item).count()
-
-    prop = UserProperties.objects.get(user_id=item.author.id)
-
-    related_tags = StoreTag.objects.filter(question=item)
-
-    tags = [s_tag.tag.name for s_tag in related_tags]
-
-    return {
-        "question_id": item.id,
-        "title": item.title,
-        "text": item.text,
-        "rating": item.rating,
-        "answers": amount,
-        "tags": tags,
-
-        # "author": item.author,   # actually it is login
-        "avatar": "{0}.jpg".format(prop.filename),
-        "nickname": prop.nickname  # for render
-    }
-
-
 # we use paginator on Index, Question by tag and Search-result fields... - 3 similar blocks
 def index_page(request):
     try:
         page = int(request.GET["page"])
         if page < 1:
             page = 1
-    except:
+    except ValueError:
         page = 1
 
     try:
         query = request.GET["query"]
-    except:
+    except KeyError:
         query = "latest"
 
     if query != "popular":
@@ -84,25 +56,12 @@ def index_page(request):
     except:
         questions_to_render = paginator.page(paginator.num_pages)
 
-    '''
-    buf = []
-    append = buf.append
-    for item in questions_to_render:
-        append(create_question_item(item))
-    '''
-
-    related_tags = TagName.objects.prefetch_related(questions_to_render)
-
-
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
-    #data["questions"] = buf
-    # paginator...
     data["page"] = page
     data["query"] = query
-    data["paginator"] = questions_to_render
+    data["paginator"] = questions_to_render   # TODO: in template: change all list objects name to 'paginator' + load related objects there
     return render(request, "core__index.html", data)
-
 
 
 ##### QUESTION THREAD #####
@@ -110,12 +69,16 @@ def index_page(request):
 # shows a concrete thread: question + answers, allows logged in users add answers, vote
 def question_thread(request, qid=0, error=None):
     if qid != 0:
+        try:
+            question = Question.objects.get(id=qid)
+        except Question.DoesNotExist:
+            raise Http404
+
         data = get_static_data()
         data["personal"] = get_user_data(request)
         data["error"] = error
-        question = Question.objects.get(id=qid)
-        data["question"] = create_question_item(question)
-        if data["question"]["author"] == request.user:
+        data["question"] = question
+        if question.author.user == request.user:
             data["owner"] = True
         else:
             data["owner"] = False
@@ -124,16 +87,17 @@ def question_thread(request, qid=0, error=None):
             page = int(request.GET["page"])
             if page < 1:
                 page = 1
-        except:
+        except KeyError:
             page = 1
 
         # add pagination for answers here!
-        paginator = Paginator(Answer.objects.filter(question=question), 30)
+        paginator = Paginator(question.answers.all(), 30)
         try:
             ans_to_render = paginator.page(page)
         except:
             ans_to_render = paginator.page(paginator.num_pages)
 
+        '''
         buf = []
         append = buf.append
         for a in ans_to_render:
@@ -148,6 +112,8 @@ def question_thread(request, qid=0, error=None):
                 "avatar": "{0}.jpg".format(prop.filename),
             })
         data["answers"] = buf
+        '''
+
         # paginator...
         data["page"] = page
         data["paginator"] = ans_to_render
@@ -184,10 +150,9 @@ def add_new_question(request):
                     # get_or_create "style"
                     try:
                         tn = TagName.objects.get(name=str(t).lower())
-                    except:
+                    except TagName.DoesNotExist:
                         tn = TagName.objects.create(name=str(t).lower())
-
-                    StoreTag.objects.create(question=quest, tag=tn)
+                    quest.tags.add(tn)
             return question_thread(request, qid=quest.id)
         else:
             error = form.errors.as_json()
@@ -204,13 +169,16 @@ def add_new_answer(request):
         data = form.cleaned_data
         redirect_id = data["redirect_id"]
         text = data["text"]
-        Answer.objects.create(text=text, author=request.user, question=Question.objects.get(id=redirect_id))
+
+        new_answer = Answer.objects.create(text=text, author=request.user)
+        question = Question.objects.get(id=redirect_id)
+        question.answers.add(new_answer)
+
         # TODO: send mail to question-author about added answer
     else:
         redirect_id = request.POST["redirect_id"]
         error = form.errors.as_json()
     return question_thread(request, qid=redirect_id, error=error)
-
 
 
 # TODO: add mark-as-true method!!!
@@ -224,23 +192,17 @@ def all_by_tag(request, tag_n=None):
 
     try:
         page = int(request.GET.get("page", "1"))
-    except:
+    except ValueError:
         raise Http404
     try:
         data["tag"] = tag_n
-        tag = TagName.objects.get(name=tag_n)
+        paginator = Paginator(TagName.objects.get(name=tag_n), 30)
 
-        paginator = Paginator(StoreTag.objects.filter(tag=tag), 30)
         try:
             q_to_render = paginator.page(page)
         except:
-            q_to_render = paginator.page(paginator.num_pages)
+            q_to_render = paginator.page(paginator.num_pages)  # TODO: find paginator error names
 
-        buf = []
-        append = buf.append
-        for item in q_to_render:
-            append(create_question_item(item.question))
-        data["questions"] = buf
         data["page"] = page
         data["paginator"] = q_to_render
     except:
@@ -297,16 +259,16 @@ def like_post(request):
             except UserProperties.DoesNotExist:
                 return HttpResponse("None")
             try:
-                like = LikesQuestions.objects.get(question=question, user=usr)  # get 1 curr state
+                like = question.rating.get(user=usr)  # will throw another exception if Many (not 1) matching results
                 if abs(like.state + like_state) <= 1:
-                    LikesQuestions.objects.filter(question=question, user=usr).update(state=like.state+like_state)
-                    Question.objects.filter(id=pid).update(rating=question.rating+like_state)
+                    like.state = like.state+like_state
+                    like.save()
                     UserProperties.objects.filter(user=question.author).update(rating=author_account.rating+like_state)
-            except LikesQuestions.DoesNotExist:
+            except Like.DoesNotExist:
                 # create new like if no like
                 if abs(like_state) == 1:
-                    LikesQuestions.objects.create(user=usr, question=question, state=like_state)
-                    Question.objects.filter(id=pid).update(rating=question.rating+like_state)
+                    new_like = Like.objects.create(user=usr, state=like_state)
+                    question.rating.add(new_like)
                     UserProperties.objects.filter(user=question.author).update(rating=author_account.rating+like_state)
             return HttpResponse(Question.objects.get(id=pid).rating)
     return HttpResponse(None)
@@ -330,15 +292,15 @@ def like_answer(request):
             except UserProperties.DoesNotExist:
                 return HttpResponse("None")
             try:
-                like = LikesAnswers.objects.get(answer=answer, user=usr)  # get 1 curr state
+                like = answer.rating.get(user=usr)
                 if abs(like.state + like_state) <= 1:
-                    LikesAnswers.objects.filter(answer=answer, user=usr).update(state=like.state+like_state)
-                    Answer.objects.filter(id=pid).update(rating=answer.rating+like_state)
+                    like.state = like.state+like_state
+                    like.save()
                     UserProperties.objects.filter(user=answer.author).update(rating=author_account.rating+like_state)
-            except LikesAnswers.DoesNotExist:
+            except Like.DoesNotExist:
                 if abs(like_state) == 1:
-                    LikesAnswers.objects.create(user=usr, answer=answer, state=like_state)
-                    Answer.objects.filter(id=pid).update(rating=(answer.rating+like_state))
+                    new_like = Like.objects.create(user=usr, state=like_state)
+                    answer.rating.add(new_like)
                     UserProperties.objects.filter(user=answer.author).update(rating=author_account.rating+like_state)
             return HttpResponse(Answer.objects.get(id=pid).rating)
     return HttpResponse(None)

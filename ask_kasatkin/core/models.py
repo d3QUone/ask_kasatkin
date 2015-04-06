@@ -1,14 +1,13 @@
 # coding:utf8
 from django.db import models
-from django.contrib.auth.models import User
-
+from user_profile.models import UserProperties
 
 ### what if I have ONE like-table for all fields????
 # id-fields will not cross cause "LIKES" will not have any info about owners
 # all ids will be in question/answer :)
 
 class Like(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(UserProperties)
     state = models.IntegerField(default=0)
 
 
@@ -16,7 +15,7 @@ class Like(models.Model):
 class Answer(models.Model):
     text = models.TextField()
     chosen = models.BooleanField(default=False)  # + only one answer can be marked in one question
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(UserProperties)
     date = models.DateTimeField(auto_now_add=True)
     rating = models.ManyToManyField(Like)
 
@@ -30,10 +29,27 @@ class TagName(models.Model):
 class Question(models.Model):
     title = models.CharField(max_length=250)
     text = models.TextField()
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(UserProperties)       # right dependency
     has_answer = models.BooleanField(default=False)  # when author chooses an answer set 1
     date = models.DateTimeField(auto_now_add=True)   # will use to add date on pages
     # new ideas:
     answers = models.ManyToManyField(Answer)
     tags = models.ManyToManyField(TagName)
     rating = models.ManyToManyField(Like)
+
+
+'''
+# some model-tests
+
+from core.models import Like, Question, Answer, TagName
+
+u = User.objects.create(username="volkvid", email="volkvid@yandex.ru", password="qwerty")
+UserProperties.objects.create(user=u, nickname="Vladimir", avatar="ex2", filename="ex3")
+q1 = Question.objects.create(title="testing many2many", text="returning val by 'get' if it surely has 1 answer :)", author=u)
+l = Like.objects.create(state=1, user=u)
+q1.rating.add(l)
+
+a1 = Answer.objects.create(text="answezxczk owieom xa \n adsid u1", author=u)
+q1.answers.add(a1)
+ans = q1.answers.get(author=u)
+'''

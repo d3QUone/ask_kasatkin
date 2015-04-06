@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Ask-Kasatkin Main Page{% endblock title %}
 {% block content %}
-{% if questions %}
+{% if paginator %}
     <div class="row action__block">
         <h4>All questions by tag <span class="underline__link">{{ tag }}</span>:</h4><br>
     </div>
-  {% for question in questions %}
+  {% for question in paginator %}
   [[[ "_inc_question.html" ]]] 
   {% endfor %}
 

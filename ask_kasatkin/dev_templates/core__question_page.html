@@ -7,16 +7,16 @@
     <div class="col-xs-11">
         <div class="row">
             <div class="answers__amount__header">
-                <h4>{{ question.answers }} Answers</h4>
+                <h4>{{ question.answers.all.count }} Answers</h4>
             </div>
         </div>
     <!-- 30 answers on a page, do in backend 'offset' = page*30, 'count'=30 -->
-    {% for item in answers %}
+    {% for item in paginator %}
         <div class="row question__block">
             <div class="col-xs-2 question__left">
-                <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.avatar }}">
+                <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.author.filename }}.jpg">
                 <div id="{{ item.id }}" class="rating__info">
-                    Rating: {{ item.rating }} 
+                    Rating: ....
                 </div>
                 <div class="rating__like__block">
                     <span id="{{ item.id }}" class="like__button ans_like">+</span>
@@ -26,7 +26,7 @@
             <div class="col-xs-10 question__right">
                 <p>{{ item.text|linebreaks }}</p>
                 <div class="question__tags">
-                    <strong>Author:</strong> {{ item.author }}
+                    <strong>Author:</strong> {{ item.author.nickname }}
                 </div>
 
                 <!-- only author can vote! -->
@@ -91,25 +91,25 @@
       <ul class="pagination">
         <!-- first item -->
         <li>
-          <a href="{% url 'core:question' question.question_id %}?page=1" aria-label="Previous">
+          <a href="{% url 'core:question' question.id %}?page=1" aria-label="Previous">
             <span>&laquo;</span>
           </a>
         </li>
         
         {% if paginator.has_previous %}
-        <li><a href="{% url 'core:question' question.question_id %}?page={{ paginator.previous_page_number }}">
+        <li><a href="{% url 'core:question' question.id %}?page={{ paginator.previous_page_number }}">
             {{ paginator.previous_page_number }}</a></li>
         {% endif %}
 
         <li class="active"><a href="">{{ page }}</a></li>
             
         {% if paginator.has_next %}
-        <li><a href="{% url 'core:question' question.question_id %}?page={{ paginator.next_page_number }}">{{ paginator.next_page_number }}</a></li>
+        <li><a href="{% url 'core:question' question.id %}?page={{ paginator.next_page_number }}">{{ paginator.next_page_number }}</a></li>
         {% endif %}
 
         <!-- fifth item -->
         <li>
-          <a href="{% url 'core:question' question.question_id %}?page={{ paginator.paginator.num_pages }}" aria-label="Next">
+          <a href="{% url 'core:question' question.id %}?page={{ paginator.paginator.num_pages }}" aria-label="Next">
             <span>&raquo;</span>
           </a>
         </li>

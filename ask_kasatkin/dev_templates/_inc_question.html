@@ -1,24 +1,24 @@
 <div class="row question__block">
     <div class="col-xs-2 question__left">
-        <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ question.avatar }}"><br>
+        <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ question.author.filename }}.jpg"><br>
         <div id="{{ question.id }}" class="rating__info">
-            Rating: {{ question.rating }}
+            Rating: ...
         </div>
         <div class="rating__like__block">
-            <span id="{{ question.question_id }}" class="like__button question_like">+</span>
-            <span id="{{ question.question_id }}" class="like__button question_dislike">-</span>
+            <span id="{{ question.id }}" class="like__button question_like">+</span>
+            <span id="{{ question.id }}" class="like__button question_dislike">-</span>
         </div>
     </div>
     <div class="col-xs-10 question__right">
-        <p><a href="{%  url 'core:question' question.question_id %}" class="underline__link"><strong>{{ question.title }}</strong></a></p>
+        <p><a href="{%  url 'core:question' question.id %}" class="underline__link"><strong>{{ question.title }}</strong></a></p>
         <p>{{ question.text|linebreaks }}</p>
         <div class="question__tags">
-            <a href="{%  url 'core:question' question.question_id %}" class="underline__link"><strong>Answers ({{ question.answers }})</strong></a> &nbsp;&nbsp;
-            <strong>Asked:</strong> {{ question.nickname }} &nbsp;&nbsp;
+            <a href="{%  url 'core:question' question.id %}" class="underline__link"><strong>Answers ({{ question.answers.all.count }})</strong></a> &nbsp;&nbsp;
+            <strong>Asked:</strong> {{ question.author.nickname }} &nbsp;&nbsp;
         {%  if question.tags %}
             <strong>Tags: </strong>
-            {% for tag in question.tags %}
-                <a href="{% url 'core:all_by_tag' tag %}" class="underline__link">{{ tag }}</a>&nbsp;
+            {% for tag in question.tags.all %}
+                <a href="{% url 'core:all_by_tag' tag.name %}" class="underline__link">{{ tag.name }}</a>&nbsp;
             {% endfor %}
         {% endif %}
         </div>

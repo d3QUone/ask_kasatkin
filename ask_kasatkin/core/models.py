@@ -43,7 +43,7 @@ class Question(models.Model):
 
 from core.models import Like, Question, Answer, TagName
 
-u = User.objects.create(username="volkvid", email="volkvid@yandex.ru", password="qwerty")
+u = User.objects.create_user(username="volkvid", email="volkvid@yandex.ru", password="qwerty")
 UserProperties.objects.create(user=u, nickname="Vladimir", avatar="ex2", filename="ex3")
 q1 = Question.objects.create(title="testing many2many", text="returning val by 'get' if it surely has 1 answer :)", author=u)
 l = Like.objects.create(state=1, user=u)

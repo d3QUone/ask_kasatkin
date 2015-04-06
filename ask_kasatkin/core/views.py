@@ -14,53 +14,37 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
 from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse, Http404         # jquery simple return
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage
 
 
-@csrf_exempt
-def test(request):
-    out = "Hello World<hr>\n"
-    if request.method == "GET":
-        for key in request.GET:
-            out += "<strong>{0}:</strong> {1}<br>\n".format(key, request.GET[key])
-    elif request.method == "POST":
-        for key in request.POST:
-            out += "<strong>{0}:</strong> {1}<br>\n".format(key, request.POST[key])
-    return HttpResponse(out)
-
-
-##### MAIN PAGE #####
-
-# we use paginator on Index, Question by tag and Search-result fields... - 3 similar blocks
 def index_page(request):
     try:
-        page = int(request.GET["page"])
-        if page < 1:
-            page = 1
+        page = int(request.GET.get("page", "1"))
     except ValueError:
-        page = 1
+        raise Http404
+    query = request.GET.get("query", "latest")  # much better
 
-    try:
-        query = request.GET["query"]
-    except KeyError:
-        query = "latest"
+    all_questions = Question.objects.all().order_by('-id').prefetch_related("tags")
 
+    '''
     if query != "popular":
-        all_questions = Question.objects.all().order_by('-id')  # life hack :)
+        all_questions = Question.objects.all().order_by('-id').prefetch_related("tags", "rating")
     else:
-        all_questions = Question.objects.all().order_by('-rating')
+        # how to sort that?????
+        all_questions = Question.objects.all().order_by('-rating').prefetch_related("tags", "rating")
+    '''
 
     paginator = Paginator(all_questions, 30)
     try:
         questions_to_render = paginator.page(page)  # return all this data to render paginator only + buf(the same + even more data)
-    except:
+    except EmptyPage:
         questions_to_render = paginator.page(paginator.num_pages)
 
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
     data["page"] = page
     data["query"] = query
-    data["paginator"] = questions_to_render   # TODO: in template: change all list objects name to 'paginator' + load related objects there
+    data["paginator"] = questions_to_render
     return render(request, "core__index.html", data)
 
 
@@ -73,6 +57,10 @@ def question_thread(request, qid=0, error=None):
             question = Question.objects.get(id=qid)
         except Question.DoesNotExist:
             raise Http404
+        try:
+            page = int(request.GET.get("page", "1"))
+        except ValueError:
+            raise Http404
 
         data = get_static_data()
         data["personal"] = get_user_data(request)
@@ -83,38 +71,11 @@ def question_thread(request, qid=0, error=None):
         else:
             data["owner"] = False
 
-        try:
-            page = int(request.GET["page"])
-            if page < 1:
-                page = 1
-        except KeyError:
-            page = 1
-
-        # add pagination for answers here!
-        paginator = Paginator(question.answers.all(), 30)
+        paginator = Paginator(question.answers.all().select_related("rating"), 30)
         try:
             ans_to_render = paginator.page(page)
-        except:
+        except EmptyPage:
             ans_to_render = paginator.page(paginator.num_pages)
-
-        '''
-        buf = []
-        append = buf.append
-        for a in ans_to_render:
-            prop = UserProperties.objects.get(user_id=a.author.id)  # load user properties
-            append({
-                "id": a.id,
-                "text": a.text,
-                "rating": a.rating,
-                "selected": a.chosen,
-
-                "author": prop.nickname,
-                "avatar": "{0}.jpg".format(prop.filename),
-            })
-        data["answers"] = buf
-        '''
-
-        # paginator...
         data["page"] = page
         data["paginator"] = ans_to_render
         return render(request, "core__question_page.html", data)
@@ -188,27 +149,26 @@ def add_new_answer(request):
 @require_GET
 def all_by_tag(request, tag_n=None):
     data = get_static_data()
-    data["personal"] = get_user_data(request)  # processes all user's-stuff
-
-    try:
-        page = int(request.GET.get("page", "1"))
-    except ValueError:
-        raise Http404
-    try:
-        data["tag"] = tag_n
-        paginator = Paginator(TagName.objects.get(name=tag_n), 30)
-
+    if tag_n:
+        data["tag"] = tag_n.lower()
         try:
-            q_to_render = paginator.page(page)
-        except:
-            q_to_render = paginator.page(paginator.num_pages)  # TODO: find paginator error names
-
-        data["page"] = page
-        data["paginator"] = q_to_render
-    except:
-        data["questions"] = None
+            page = int(request.GET.get("page", "1"))
+        except ValueError:
+            raise Http404
+        try:
+            paginator = Paginator(Question.objects.filter(tags=TagName.objects.get(name=tag_n.lower())), 30)
+            try:
+                q_to_render = paginator.page(page)
+            except EmptyPage:
+                q_to_render = paginator.page(paginator.num_pages)  # TODO: find paginator error names
+            data["page"] = page
+            data["paginator"] = q_to_render
+        except TagName.DoesNotExist:
+            data["paginator"] = None
+    else:
+        raise Http404
+    data["personal"] = get_user_data(request)  # processes all user's-stuff
     return render(request, "core__by_tag.html", data)
-
 
 
 ##### USER PROFILE (additional feature) #####
@@ -218,7 +178,6 @@ def all_by_tag(request, tag_n=None):
 @require_GET
 def user_profile_stats(request, id=None):
     data = get_static_data()
-    data["personal"] = get_user_data(request)
     if id:
         try:
             current_user = User.objects.get(id=id)
@@ -229,6 +188,7 @@ def user_profile_stats(request, id=None):
         data["total_answers"] = Answer.objects.filter(author=current_user).count()
     else:
         data["error"] = "No profile selected :("
+    data["personal"] = get_user_data(request)
     return render(request, "core__user_stats.html", data)
 
 
@@ -313,7 +273,8 @@ def like_answer(request):
 @require_POST
 def search(request):
     if request.method == "POST":
-        input = request.POST["input"]
-        # smth here ...
+        input = request.POST.get("input", "")
+
+        # our search business here ...
 
         return HttpResponse({"text": "JSON result ... "}, content_type="application/json")

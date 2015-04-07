@@ -3,7 +3,8 @@ function change_rating_question(endpoint, eid, dif) {
   $.post(endpoint,
     {
       id: eid,
-      like: dif
+      like: dif,
+      csrfmiddlewaretoken: $.cookie('csrftoken')
     },
     update_rating
   );
@@ -27,7 +28,8 @@ function change_rating(endpoint, eid, dif) {
   $.post(endpoint,
     {
       id: eid,
-      like: dif
+      like: dif,
+      csrfmiddlewaretoken: $.cookie('csrftoken')
     },
     update_rating
   );

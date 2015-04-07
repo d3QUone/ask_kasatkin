@@ -197,9 +197,6 @@ def user_profile_all_data(request):
 
 ##### jQuery-AJAX (POST) methods #####
 
-# TODO: in all AJAX methods add fetching csrf-token from cookies and remove csrf_exempt
-
-@csrf_exempt
 @require_POST
 def like_post(request):
     if request.user.is_authenticated():
@@ -234,7 +231,6 @@ def like_post(request):
     return HttpResponse("None")
 
 
-@csrf_exempt
 @require_POST
 def like_answer(request):
     if request.user.is_authenticated():
@@ -268,7 +264,6 @@ def like_answer(request):
     return HttpResponse("None")
 
 
-@csrf_exempt
 @require_POST
 def mark_as_true(request):
     if request.user.is_authenticated():

@@ -2,7 +2,8 @@
 function change_rating(endpoint, eid) {
   $.post(endpoint,
     {
-      id: eid
+      id: eid, 
+      csrfmiddlewaretoken: $.cookie('csrftoken')
     },
     update
   );

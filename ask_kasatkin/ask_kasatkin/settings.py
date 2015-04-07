@@ -36,7 +36,6 @@ if not DEBUG:
         ),
     )
 
-
 # nginx care
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -52,11 +51,10 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',   # used in deploy
     'core',
     'user_profile',
-
-    #'debug_toolbar',  # db debug tool :)
-    #'django.contrib.staticfiles',   # used in deploy
+    'debug_toolbar',
 )
 
 '''

@@ -21,6 +21,7 @@
                 <a href="{% url 'core:all_by_tag' tag.name %}" class="underline__link">{{ tag.name }}</a>&nbsp;
             {% endfor %}
         {% endif %}
+            {% if question.has_answer %}<span class="question__has__answer">Has answer!</span>{% else %}<span class="question__has__answer">No answer</span>{% endif %}
         </div>
     </div>
 </div>

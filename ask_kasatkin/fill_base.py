@@ -14,7 +14,7 @@ django.setup()
 
 from django.contrib.auth.models import User
 from user_profile.models import UserProperties
-from core.models import Question, Answer, TagName, StoreTag, LikesQuestions, LikesAnswers
+from core.models import Question, Answer, TagName, Like
 
 from datetime import datetime
 from time import time

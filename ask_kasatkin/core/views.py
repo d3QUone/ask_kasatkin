@@ -210,7 +210,7 @@ def like_post(request):
             like_state = data["like"]
             try:
                 question = Question.objects.filter(id=pid).select_related("author", "rating")[0]
-                author_account = question.author #UserProperties.objects.get(user=question.author)
+                author_account = question.author
                 usr = UserProperties.objects.get(user=request.user)
             except Question.DoesNotExist:
                 return HttpResponse("None")
@@ -231,7 +231,7 @@ def like_post(request):
                     Question.objects.filter(id=pid).update(rating=question.rating+like_state)
                     UserProperties.objects.filter(user=author_account).update(rating=author_account.rating+like_state)
             return HttpResponse(Question.objects.get(id=pid).rating)
-    return HttpResponse(None)
+    return HttpResponse("None")
 
 
 @csrf_exempt
@@ -265,16 +265,37 @@ def like_answer(request):
                     Answer.objects.filter(id=pid).update(rating=answer.rating+like_state)
                     UserProperties.objects.filter(user=author_account).update(rating=author_account.rating+like_state)
             return HttpResponse(Answer.objects.get(id=pid).rating)
-    return HttpResponse(None)
+    return HttpResponse("None")
 
-
-# TODO: add mark-as-true method (of course with AJAX)
 
 @csrf_exempt
 @require_POST
 def mark_as_true(request):
-
-    return None
+    if request.user.is_authenticated():
+        try:
+            answer_id = int(request.POST.get("id"))
+        except ValueError:
+            return HttpResponse("None")
+        try:
+            a = Answer.objects.get(id=answer_id)
+            q = Question.objects.get(answers=a)
+            if not q.has_answer:
+                # has not answer -> add answer
+                a.chosen = True
+                a.save()  #Answer.objects.filter(id=answer_id).update(chosen=True)
+                q.has_answer = True
+                q.save()
+                return HttpResponse("True")
+            else:
+                if a.chosen:
+                    a.chosen = False
+                    a.save()
+                    q.has_answer = False
+                    q.save()
+                    return HttpResponse("False")
+        except Answer.DoesNotExist, Question.DoesNotExist:
+            return HttpResponse("None")
+    return HttpResponse("None")
 
 
 #

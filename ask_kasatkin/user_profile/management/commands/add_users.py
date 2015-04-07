@@ -16,9 +16,10 @@ Tags > 10 000
 Likes > 2 000 000
 '''
 
+# can use 'label command' for all meths in one class
 
 class Command(NoArgsCommand):
-    def create(self):
+    def handle_noargs(self, **options):
         timestamp = int(time())
         username = "test_{0}".format(uuid4())[:30]  # django max size
         email = "{0}@test.com".format(timestamp)
@@ -30,5 +31,5 @@ class Command(NoArgsCommand):
         UserProperties.objects.create(
             user=new_user,
             filename="ex1",
-            nickname=username,
+            nickname=username[:20],
         )

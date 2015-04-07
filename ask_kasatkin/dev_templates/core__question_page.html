@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Ask-Kasatkin Main Page{% endblock title %}
 {% block content %}
-[[[ "_inc_question.html" ]]] 
+[[[ "_inc_question.html" ]]]
 <div class="row">
     <div class="col-xs-1"></div>
     <div class="col-xs-11">
@@ -15,7 +15,7 @@
         <div class="row question__block">
             <div class="col-xs-2 question__left">
                 <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.author.filename }}.jpg">
-                <div id="{{ item.id }}" class="rating__info">
+                <div id="{{ item.id }}" class="rating__info answer_rating">
                     Rating: {{ item.rating }}
                 </div>
                 <div class="rating__like__block">
@@ -31,22 +31,12 @@
 
                 <!-- only author can vote! -->
                 {% if owner %}
-                    <!-- this must be showing/working only for the author -->
-                    <form method="post" action="/correct_answer">
-                        <div class="checkbox">
-                            <label>
-                                {% if item.selected %}
-                                    <p class="bg-success"><input type="checkbox" checked="checked">Correct!</p>
-                                {% else %}
-                                    <input type="checkbox">Correct?
-                                {% endif %}
-                            </label>
-                          </div>
-                    </form>
+                    {% if item.chosen %}<span id="{{ item.id }}" class="correct__button">Correct!</span>
+                    {% else %}
+                    <span id="{{ item.id }}" class="correct__button">Press here to mark as true</span>
+                    {% endif %}
                 {% else %}
-                    <!-- draw a badge here -->
-                    {% if item.selected %}
-                        <p class="bg-success">Correct!</p>
+                    {% if item.chosen %}<span class="correct__bage">Correct!</span>
                     {% endif %}
                 {% endif %}
             </div>
@@ -133,4 +123,5 @@
         }
     }
 </script>
+<script src="/static/js/mark.js"></script>
 {% endblock scripts %}

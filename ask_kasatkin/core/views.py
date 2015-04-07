@@ -141,9 +141,6 @@ def add_new_answer(request):
     return question_thread(request, qid=redirect_id, error=error)
 
 
-# TODO: add mark-as-true method!!!
-
-
 ##### TAGS ######
 @require_GET
 def all_by_tag(request, tag_n=None):
@@ -200,7 +197,7 @@ def user_profile_all_data(request):
 
 ##### jQuery-AJAX (POST) methods #####
 
-# TODO: bring likes work on new model ...
+# TODO: in all AJAX methods add fetching csrf-token from cookies and remove csrf_exempt
 
 @csrf_exempt
 @require_POST
@@ -216,28 +213,24 @@ def like_post(request):
                 author_account = question.author #UserProperties.objects.get(user=question.author)
                 usr = UserProperties.objects.get(user=request.user)
             except Question.DoesNotExist:
-                return HttpResponse("None1")
+                return HttpResponse("None")
             except UserProperties.DoesNotExist:
-                return HttpResponse("None2")
+                return HttpResponse("None")
             try:
-                like = question.rating.get(user=usr)  # will throw another exception if Many (not 1) matching results
+                like = question.likes.get(user=usr)  # will throw another exception if Many (not 1) matching results
                 if abs(like.state + like_state) <= 1:
                     like.state += like_state
                     like.save()
+                    Question.objects.filter(id=pid).update(rating=question.rating+like_state)
                     UserProperties.objects.filter(user=author_account).update(rating=author_account.rating+like_state)
             except Like.DoesNotExist:
-                # create new like if no like
+                # create new like if no like from this used
                 if abs(like_state) == 1:
                     new_like = Like.objects.create(user=usr, state=like_state)
-                    question.rating.add(new_like)
+                    question.likes.add(new_like)
+                    Question.objects.filter(id=pid).update(rating=question.rating+like_state)
                     UserProperties.objects.filter(user=author_account).update(rating=author_account.rating+like_state)
-            #return HttpResponse(Question.objects.get(id=pid).rating)
-            try:
-                q = Question.objects.filter(id=pid).select_related("rating").in_bulk(["rating", "state"])
-                rating = [x.rating.state for x in q]
-                return HttpResponse(rating)
-            except Exception as e:
-                return HttpResponse(e)
+            return HttpResponse(Question.objects.get(id=pid).rating)
     return HttpResponse(None)
 
 
@@ -255,25 +248,33 @@ def like_answer(request):
                 author_account = answer.author
                 usr = UserProperties.objects.get(user=request.user)
             except Answer.DoesNotExist:
-                return HttpResponse("None1")
+                return HttpResponse("None")
             except UserProperties.DoesNotExist:
-                return HttpResponse("None2")
+                return HttpResponse("None")
             try:
-                like = answer.rating.get(user=usr)
+                like = answer.likes.get(user=usr)
                 if abs(like.state + like_state) <= 1:
                     like.state += like_state
                     like.save()
+                    Answer.objects.filter(id=pid).update(rating=answer.rating+like_state)
                     UserProperties.objects.filter(user=author_account).update(rating=author_account.rating+like_state)
             except Like.DoesNotExist:
                 if abs(like_state) == 1:
                     new_like = Like.objects.create(user=usr, state=like_state)
-                    answer.rating.add(new_like)
+                    answer.likes.add(new_like)
+                    Answer.objects.filter(id=pid).update(rating=answer.rating+like_state)
                     UserProperties.objects.filter(user=author_account).update(rating=author_account.rating+like_state)
-            #return HttpResponse(Answer.objects.get(id=pid).rating)  # count all???
-            q = Question.objects.filter(id=pid).select_related("rating").in_bulk(["rating"])[0]
-            rating = sum([int(x.rating.state) for x in q])
-            return HttpResponse(rating)
+            return HttpResponse(Answer.objects.get(id=pid).rating)
     return HttpResponse(None)
+
+
+# TODO: add mark-as-true method (of course with AJAX)
+
+@csrf_exempt
+@require_POST
+def mark_as_true(request):
+
+    return None
 
 
 #

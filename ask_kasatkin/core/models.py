@@ -17,7 +17,8 @@ class Answer(models.Model):
     chosen = models.BooleanField(default=False)  # + only one answer can be marked in one question
     author = models.ForeignKey(UserProperties)
     date = models.DateTimeField(auto_now_add=True)
-    rating = models.ManyToManyField(Like)
+    likes = models.ManyToManyField(Like)
+    rating = models.IntegerField(default=0)
 
 
 # used for searching tips & loading tags
@@ -32,10 +33,10 @@ class Question(models.Model):
     author = models.ForeignKey(UserProperties)       # right dependency
     has_answer = models.BooleanField(default=False)  # when author chooses an answer set 1
     date = models.DateTimeField(auto_now_add=True)   # will use to add date on pages
-    # new ideas:
     answers = models.ManyToManyField(Answer)
     tags = models.ManyToManyField(TagName)
-    rating = models.ManyToManyField(Like)
+    likes = models.ManyToManyField(Like)
+    rating = models.IntegerField(default=0)
 
 
 '''
@@ -47,7 +48,9 @@ u = User.objects.create_user(username="volkvid", email="volkvid@yandex.ru", pass
 UserProperties.objects.create(user=u, nickname="Vladimir", avatar="ex2", filename="ex3")
 q1 = Question.objects.create(title="testing many2many", text="returning val by 'get' if it surely has 1 answer :)", author=u)
 l = Like.objects.create(state=1, user=u)
-q1.rating.add(l)
+q1.likes.add(l)
+q1.rating += l.state
+q1.save()
 
 a1 = Answer.objects.create(text="answezxczk owieom xa \n adsid u1", author=u)
 q1.answers.add(a1)

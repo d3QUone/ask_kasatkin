@@ -16,7 +16,7 @@
             <div class="col-xs-2 question__left">
                 <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.author.filename }}.jpg">
                 <div id="{{ item.id }}" class="rating__info">
-                    Rating: ....
+                    Rating: {{ item.rating }}
                 </div>
                 <div class="rating__like__block">
                     <span id="{{ item.id }}" class="like__button ans_like">+</span>

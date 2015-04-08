@@ -1,8 +1,6 @@
 from django.conf.urls import patterns, url
 from core.views import index_page, new_question, add_new_question, question_thread, add_new_answer, all_by_tag, like_post, like_answer, user_profile_stats, mark_as_true
 
-#import debug_toolbar
-
 urlpatterns = patterns('',
     url(r'^$', index_page, name='home'),
     url(r'^add/$', new_question, name='create_question'),   # do this in front-end later
@@ -16,5 +14,4 @@ urlpatterns = patterns('',
     url(r'^mark_as_true/$', mark_as_true),
     url(r'^user/(?P<id>\d+)/$', user_profile_stats, name='user'),
     url(r'^user/$', user_profile_stats, name='user'),       # same but with error message
-    #url(r'^__debug__/', include(debug_toolbar.urls)),
 )

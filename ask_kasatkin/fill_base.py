@@ -32,22 +32,22 @@ def create_user():
     new_user = User.objects.create_user(username=username, email=email, password=password)
     new_user.save()
 
-    UserProperties.objects.create(
+    author = UserProperties.objects.create(
         user=new_user,
         filename="ex1",
         nickname=username[:20],
     )
-    return new_user
+    return author
 
 
 # 1 user -> 10 questions -> 100 answers -> 1 tag -> 200 likes
 
 def create_question(user):
     # add 1 tag
-    tag_name = "test_set_{0}".format(user.username)
+    tag_name = "test_set_{0}".format(user.nickname[:10])
     try:
         tn = TagName.objects.get(name=tag_name)
-    except:
+    except TagName.DoesNotExist:
         tn = TagName.objects.create(name=tag_name)
 
     # 10 question on 1 user
@@ -60,15 +60,9 @@ def create_question(user):
             title=test_set,
             text="Test question\n" + "\n".join([str(uuid4())*2 for i in range(8)]),
         )
-        # link the tag
-        StoreTag.objects.create(question=question, tag=tn)
-
+        question.tags.add(tn)  # link the tag
         for j in range(10):
-            Answer.objects.create(
-                text="Test answer\n" + "\n".join(["{0}) {1}".format(i, uuid4()) for i in range(4)]),
-                author=user,
-                question=question
-            )
+            question.answers.add(Answer.objects.create(text="Test answer\n" + "\n".join(["{0}) {1}".format(i, uuid4()) for i in range(4)]), author=user))
 
 
 # + add likes..., but at the end
@@ -76,42 +70,36 @@ def do_likes():
     question_amount = Question.objects.all().count()
     answer_amount = Answer.objects.all().count()
 
-    for user in User.objects.all():
+    for user in UserProperties.objects.all():
         print user.id
         for i in range(100):
             try:
                 # 100 on random questions
                 question = Question.objects.get(id=randint(0, question_amount))
                 Question.objects.filter(id=question.id).update(rating=question.rating + 1)
-                LikesQuestions.objects.create(question=question, user=user, state=1)
-                owner = UserProperties.objects.get(user=question.author)
-                UserProperties.objects.filter(user=question.author).update(rating=owner.rating + 1)
+                question.likes.add(Like.objects.create(user=user, state=1))
+                UserProperties.objects.filter(user=user).update(rating=user.rating + 1)
             except Question.DoesNotExist:
                 pass
-
             try:
                 # and 100 on random answers by every user
                 answer = Answer.objects.get(id=randint(0, answer_amount))
                 Answer.objects.filter(id=answer.id).update(rating=answer.rating + 1)
-                LikesAnswers.objects.create(answer=answer, user=user, state=1)
-                owner = UserProperties.objects.get(user=answer.author)
-                UserProperties.objects.filter(user=answer.author).update(rating=owner.rating + 1)
+                answer.likes.add(Like.objects.create(user=user, state=1))
+                UserProperties.objects.filter(user=user).update(rating=user.rating + 1)
             except Answer.DoesNotExist:
                 pass
 
 
-def fb():
+def fb(amount=100):
     t0 = datetime.now()
     total_users = User.objects.all().count()
     print "{0} users now".format(total_users)
-    for i in range(10000 - total_users):
+    for i in range(amount - total_users):
         user = create_user()
         create_question(user=user)
     do_likes()
     print "Done in {0}".format(datetime.now() - t0)
-
-
-fb()
 
 
 '''

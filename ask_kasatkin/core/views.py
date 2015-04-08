@@ -25,15 +25,10 @@ def index_page(request):
         raise Http404
     query = request.GET.get("query", "latest")  # much better
 
-    all_questions = Question.objects.all().order_by('-id').prefetch_related("tags")
-
-    '''
     if query != "popular":
-        all_questions = Question.objects.all().order_by('-id').prefetch_related("tags", "rating")
+        all_questions = Question.objects.all().order_by('-id').prefetch_related("tags", "author", "answers")
     else:
-        # how to sort that?????
-        all_questions = Question.objects.all().order_by('-rating').prefetch_related("tags", "rating")
-    '''
+        all_questions = Question.objects.all().order_by('-rating').prefetch_related("tags", "author", "answers")
 
     paginator = Paginator(all_questions, 30)
     try:
@@ -56,7 +51,7 @@ def index_page(request):
 def question_thread(request, qid=0, error=None):
     if qid != 0:
         try:
-            question = Question.objects.get(id=qid)
+            question = Question.objects.filter(id=qid).select_related("tags", "author", "answers")[0]
         except Question.DoesNotExist:
             raise Http404
         try:
@@ -73,7 +68,7 @@ def question_thread(request, qid=0, error=None):
         else:
             data["owner"] = False
 
-        paginator = Paginator(question.answers.all().select_related("rating"), 30)
+        paginator = Paginator(question.answers.all().select_related("author"), 30)
         try:
             ans_to_render = paginator.page(page)
         except EmptyPage:
@@ -155,7 +150,8 @@ def all_by_tag(request, tag_n=None):
         except ValueError:
             raise Http404
         try:
-            paginator = Paginator(Question.objects.filter(tags=TagName.objects.get(name=tag_n.lower())), 30)
+            #paginator = Paginator(Question.objects.filter(tags=TagName.objects.get(name=tag_n.lower())).select_related("tags", "author", "answers"), 30)  # 27 hits total
+            paginator = Paginator(TagName.objects.get(name=tag_n.lower()).question_set.all().select_related("tags", "author", "answers"), 30)  # 27 hits total too..
             try:
                 q_to_render = paginator.page(page)
             except EmptyPage:

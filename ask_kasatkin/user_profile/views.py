@@ -96,7 +96,7 @@ def validate_register(request):
             return HttpResponsePermanentRedirect(reverse("core:home"))
         except ValidationError as ve:
             data["error"] = {"error": ve.message}
-        except IntegrityError as ve:
+        except IntegrityError:
             data["error"] = {"error": "That login is not free!"}
     else:
         data["error"] = form.errors.as_json()
@@ -133,7 +133,7 @@ def update_settings(request):
 
         # update nickname if OK
         nickname_ = request.POST['input_nickname']
-        if len(nickname_) >= 5 and len(nickname_) <= 20:
+        if 5 <= len(nickname_) <= 20:
             UserProperties.objects.filter(user_id=uid).update(nickname=nickname_)
         elif len(nickname_) > 0:
             error = {"title": "Your nickname must be at least 5 chars long and less then 20 chars", "text": ""}

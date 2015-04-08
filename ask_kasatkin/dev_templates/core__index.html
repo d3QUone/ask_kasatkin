@@ -2,7 +2,7 @@
 {% block title %}Ask-Kasatkin Main Page{% endblock title %}
 {% block content %}
 <div class="switchers__block">
-{% if query == 'latest' %}
+{% if query != 'popular' %}
   <div class="switcher__active">New</div>
   <div class="switcher__notactive"><a href="{% url 'core:home' %}?query=popular" class="link__clear">Popular</a></div>
 {% else %}
@@ -10,7 +10,7 @@
   <div class="switcher__active">Popular</div>
 {% endif %}
 </div>
-{% for question in questions %}
+{% for question in paginator %}
   [[[ "_inc_question.html" ]]] 
 {% endfor %}
   [[[ "_inc_paginator.html" ]]]

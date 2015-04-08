@@ -15,7 +15,7 @@ django.setup()
 # 2) import models, etc else
 
 from user_profile.models import UserProperties
-from core.models import TagName, StoreTag
+from core.models import TagName, Question
 import json
 
 FILENAME = "best_data.txt"
@@ -49,7 +49,7 @@ def get_pop_tags():
     result = []
     append = result.append
     for tag in list(TagName.objects.all()):
-        amount = StoreTag.objects.filter(tag=tag).count()
+        amount = Question.objects.filter(tags=tag).count()
         append([amount, tag.name])
     result.sort(reverse=True)
     return [{"text": result[i][1], "label": label_color[i]} for i in range(len(result[:20]))]
@@ -63,5 +63,5 @@ def save_data():
         f.write(json.dumps(data))
 
 
-save_data()  # run this stuff once
+#save_data()  # run this stuff once
 

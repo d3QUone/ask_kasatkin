@@ -36,13 +36,11 @@ if not DEBUG:
         ),
     )
 
-
 # nginx care
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost'
 ]
-
 
 # Application definition
 
@@ -52,11 +50,10 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',   # used in deploy
     'core',
     'user_profile',
-
-    #'debug_toolbar',  # db debug tool :)
-    #'django.contrib.staticfiles',
+    'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -67,7 +64,25 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
+
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.sql.SQLPanel',
+    #'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    #'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.profiling.ProfilingPanel',
+]
+
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
+
+INTERNAL_IPS = ('127.0.0.1', )
+
 
 ROOT_URLCONF = 'ask_kasatkin.urls'
 
@@ -80,7 +95,7 @@ WSGI_APPLICATION = 'ask_kasatkin.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ask_kas',
+        'NAME': 'ask_kas2',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '127.0.0.1',
@@ -114,4 +129,4 @@ MEDIA_ROOT = BASE_DIR + '/uploads'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR + '/static'
-
+STATICFILES_DIRS = (BASE_DIR + '/static_debug', )  # from where fetch statics into STATIC_ROOT

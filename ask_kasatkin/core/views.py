@@ -11,12 +11,13 @@ from user_profile.views import get_user_data
 from common_methods import get_static_data
 from django.contrib.auth.models import User
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt  # reset csrf-checkup, will use in AJAX
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie  # reset csrf-checkup, will use in AJAX
 from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse, Http404         # jquery simple return
 from django.core.paginator import Paginator, EmptyPage
 
 
+@ensure_csrf_cookie
 def index_page(request):
     try:
         page = int(request.GET.get("page", "1"))
@@ -51,6 +52,7 @@ def index_page(request):
 ##### QUESTION THREAD #####
 
 # shows a concrete thread: question + answers, allows logged in users add answers, vote
+@ensure_csrf_cookie
 def question_thread(request, qid=0, error=None):
     if qid != 0:
         try:
@@ -142,6 +144,7 @@ def add_new_answer(request):
 
 
 ##### TAGS ######
+@ensure_csrf_cookie
 @require_GET
 def all_by_tag(request, tag_n=None):
     data = get_static_data()

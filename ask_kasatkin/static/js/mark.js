@@ -1,5 +1,5 @@
 /* Mark answer as chosen */
-function change_rating(endpoint, eid) {
+function mark(endpoint, eid) {
   $.post(endpoint,
     {
       id: eid, 
@@ -22,5 +22,5 @@ function change_rating(endpoint, eid) {
 }
 
 $("span.correct__button").click(function(){
-  change_rating("/mark_as_true/", $(this).attr('id'));
+  mark("/mark_as_true/", $(this).attr('id'));
 });

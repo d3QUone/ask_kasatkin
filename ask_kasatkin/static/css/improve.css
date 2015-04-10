@@ -184,7 +184,7 @@ body {
 /* question block */
 .question__block {
     background-color: #DED3DC;
-    box-shadow: 0 0 3px #c9c9c9;
+    box-shadow: 0px 0px 3px #c9c9c9;
     border-color: black;
     border-radius: 5px;
     padding-right: 10px;
@@ -217,11 +217,22 @@ body {
     bottom: 3px;
 }
 
-.question__has__answer {
+.question__no__answer {
+    display: block-inline;
     background-color: #BEA8B9;
     border-radius: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.question__has__answer {
+    display: block-inline;
+    background-color: #9de1a8;
+    border-radius: 5px;
+    padding-left: 1px;
+    padding-right: 1px;
     padding-top: 2px;
     padding-bottom: 2px;
 }
@@ -362,4 +373,34 @@ body {
 .user__profile__item {
     margin-left: 35%;
     font-size: 20px;
+}
+
+.notf {
+    position: fixed;
+    display: block;
+    width: 200px;
+    margin-top: 35px;
+}
+
+.notf__message {
+    display: inline-block;
+    background-color: #DED3DC;
+    color: red;
+    border-radius: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 3px;
+    padding-bottom: 2px;
+
+    box-shadow: 2px 2px red;
+}
+
+.notf__message:hover {
+    text-decoration: none;
+    color: black;
+
+    /* stylish push */
+    margin-left: 1px;
+    margin-top: 1px;
+    box-shadow: 1px 1px black;
 }

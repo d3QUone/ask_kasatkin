@@ -8,6 +8,9 @@
             <span id="{{ question.id }}" class="like__button question_like">+</span>
             <span id="{{ question.id }}" class="like__button question_dislike">-</span>
         </div>
+        <div style="margin-top: 10px;">
+            {% if question.has_answer %}<span class="question__has__answer">Has answer!</span>{% else %}<span class="question__no__answer">No answer</span>{% endif %}
+        </div>
     </div>
     <div class="col-xs-10 question__right">
         <p><a href="{%  url 'core:question' question.id %}" class="underline__link"><strong>{{ question.title }}</strong></a></p>
@@ -21,7 +24,6 @@
                 <a href="{% url 'core:all_by_tag' tag.name %}" class="underline__link">{{ tag.name }}</a>&nbsp;
             {% endfor %}
         {% endif %}
-            {% if question.has_answer %}<span class="question__has__answer">Has answer!</span>{% else %}<span class="question__has__answer">No answer</span>{% endif %}
         </div>
     </div>
 </div>

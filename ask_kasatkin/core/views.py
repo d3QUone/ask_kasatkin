@@ -15,6 +15,8 @@ from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie  # rese
 from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse, Http404         # jquery simple return
 from django.core.paginator import Paginator, EmptyPage
+from django.core.urlresolvers import reverse
+from django.core.mail import send_mail
 
 
 @ensure_csrf_cookie
@@ -121,21 +123,36 @@ def add_new_question(request):
 # adding-answer method
 def add_new_answer(request):
     error = None
-    form = NewAnswer(request.POST or None)
-    if form.is_valid():
-        data = form.cleaned_data
-        redirect_id = data["redirect_id"]
-        text = data["text"]
+    if request.user.is_authenticated():
+        form = NewAnswer(request.POST or None)
+        if form.is_valid():
+            data = form.cleaned_data
+            redirect_id = data["redirect_id"]
+            text = data["text"]
 
-        new_answer = Answer.objects.create(text=text, author=UserProperties.objects.get(user=request.user))
-        question = Question.objects.get(id=redirect_id)
-        question.answers.add(new_answer)
+            new_answer = Answer.objects.create(text=text, author=UserProperties.objects.get(user=request.user))
+            question = Question.objects.get(id=redirect_id)
+            question.answers.add(new_answer)
 
-        # TODO: send mail to question-author about added answer
-    else:
-        redirect_id = request.POST["redirect_id"]
-        error = form.errors.as_json()
-    return question_thread(request, qid=redirect_id, error=error)
+            # send in another thread ?
+            send_mail(
+                "New answer to {0}".format(question.title),
+                "Check new answer from user '{0}' by this URL: vksmm.info{1}".format(
+                    UserProperties.objects.get(user=request.user).nickname,
+                    reverse('core:question', args=[redirect_id])
+                ),
+                "ask_kasatkin@mail.ru",
+                [request.user.email],
+                #headers = {"Content-type": "text/html"}
+            )
+
+            # TODO: send message to NGINX endpoint for real-time notification!
+            # cid = request.user.id
+
+        else:
+            redirect_id = request.POST["redirect_id"]
+            error = form.errors.as_json()
+        return question_thread(request, qid=redirect_id, error=error)
 
 
 ##### TAGS ######
@@ -195,6 +212,8 @@ def user_profile_all_data(request):
 
 
 ##### jQuery-AJAX (POST) methods #####
+
+# Q id = 57  returns get-error....
 
 @require_POST
 def like_post(request):

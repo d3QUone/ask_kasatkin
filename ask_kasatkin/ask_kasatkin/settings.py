@@ -50,10 +50,10 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',   # used in deploy
     'core',
     'user_profile',
-    'debug_toolbar',
+    #'django.contrib.staticfiles',   # used in deploy
+    #'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -64,7 +64,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 DEBUG_TOOLBAR_PANELS = [
@@ -129,4 +129,15 @@ MEDIA_ROOT = BASE_DIR + '/uploads'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR + '/static'
-STATICFILES_DIRS = (BASE_DIR + '/static_debug', )  # from where fetch statics into STATIC_ROOT
+#STATICFILES_DIRS = (BASE_DIR + '/static_debug', )  # from where fetch statics into STATIC_ROOT
+
+
+# Mailing settings (MAIL.RU gaps)
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'  # pip install django_smtp_ssl
+EMAIL_USE_SSL = True
+EMAIL_PORT = 465
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_HOST_USER = "ask_kasatkin@mail.ru"
+EMAIL_HOST_PASSWORD = "QWERTY123!"
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

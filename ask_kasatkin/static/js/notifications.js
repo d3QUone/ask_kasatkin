@@ -1,16 +1,17 @@
-var channelId = $("div#channel_id").html();  // loads user_id from page
+var channel_id = $('div#channel_id').html();  // loads user_id from page
 
 function check_messages() {
-	$.get('/listen?cid=' + channelId, {}, function(r) {
-		// Считаем, что у нас есть div c id=messages, куда мы дописываем сообщения
-		//$('#messages').append(r);
-
-		// r == question id ? full block
-
-		setTimeout(check_messages, 500);
-	}, 'json');
+	$.getJSON('/fetch_updates?cid=' + channel_id, {}, function(r) {
+		if (r != 'None') {
+			$('div#notf').css("display", "block");
+			$.each(r, function (key, val) {
+				$('div#notf').append('<a href="/question/' + val.q_id + '" class="notf__message">You have a new answer!</a>');
+			})
+		}
+		setTimeout(check_messages, 700);
+	});
 }
 
-if (channelId != "None") {
+if (channel_id != 'None') {
 	check_messages();
 }

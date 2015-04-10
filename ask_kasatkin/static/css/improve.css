@@ -358,7 +358,6 @@ body {
     color: black;
 }
 
-
 .pagination>.active>a {
     background-color: #8E6784;
     border-color: #8E6784;
@@ -377,8 +376,8 @@ body {
 
 .notf {
     position: fixed;
-    display: block;
-    width: 200px;
+    
+    width: 150px;
     margin-top: 35px;
 }
 
@@ -391,7 +390,7 @@ body {
     padding-right: 5px;
     padding-top: 3px;
     padding-bottom: 2px;
-
+    margin-bottom: 10px;
     box-shadow: 2px 2px red;
 }
 

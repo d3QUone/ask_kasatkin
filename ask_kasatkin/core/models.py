@@ -39,6 +39,11 @@ class Question(models.Model):
     rating = models.IntegerField(default=0)
 
 
+class NotificationStorage(models.Model):
+    user_id = models.IntegerField()
+    question_id = models.IntegerField()
+
+
 '''
 # some model-tests
 

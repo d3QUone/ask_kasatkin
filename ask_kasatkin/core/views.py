@@ -4,7 +4,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8') # make UTF 8 global-hack
 
-from core.models import Question, Answer, TagName, Like
+from core.models import Question, Answer, TagName, Like, NotificationStorage
 from core.forms import LikeAJAX, NewQuestion, NewAnswer
 from user_profile.models import UserProperties
 from user_profile.views import get_user_data
@@ -13,10 +13,11 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie  # reset csrf-checkup, will use in AJAX
 from django.views.decorators.http import require_POST, require_GET
-from django.http import HttpResponse, Http404         # jquery simple return
+from django.http import HttpResponse, Http404, JsonResponse         # jquery simple return
 from django.core.paginator import Paginator, EmptyPage
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
+import thread
 
 
 @ensure_csrf_cookie
@@ -134,28 +135,46 @@ def add_new_answer(request):
             question = Question.objects.get(id=redirect_id)
             question.answers.add(new_answer)
 
-            # send in another thread ?
-            send_mail(
+            # simply run in another thread
+            thread.start_new_thread(send_mail, (
                 "New answer to {0}".format(question.title),
                 "Check new answer from user '{0}' by this URL: vksmm.info{1}".format(
                     UserProperties.objects.get(user=request.user).nickname,
                     reverse('core:question', args=[redirect_id])
                 ),
                 "ask_kasatkin@mail.ru",
-                [request.user.email],
-                #headers = {"Content-type": "text/html"}
-            )
+                [request.user.email]
+            ))
 
-            # TODO: send message to NGINX endpoint for real-time notification!
-            # cid = request.user.id
-
+            NotificationStorage.objects.create(user_id=question.author.user.id, question_id=redirect_id)  # add message to notification API endpoint
         else:
             redirect_id = request.POST["redirect_id"]
             error = form.errors.as_json()
         return question_thread(request, qid=redirect_id, error=error)
 
 
+##### NOTIFICATIONS ######
+
+# without long polling yet. straight get-requests from Jquery now.. move to nginx
+
+@require_GET
+def fetch_updates(request):
+    try:
+        user_id = int(request.GET.get("cid"))
+    except ValueError, KeyError:
+        return HttpResponse(None)
+    try:
+        updates = NotificationStorage.objects.filter(user_id=user_id)
+    except NotificationStorage.DoesNotExist:
+        return HttpResponse(None)
+
+    data = [{"q_id": int(item.question_id)} for item in updates]
+    updates.delete()  # + delete dat messages
+    return JsonResponse(data, safe=False)
+
+
 ##### TAGS ######
+
 @ensure_csrf_cookie
 @require_GET
 def all_by_tag(request, tag_n=None):

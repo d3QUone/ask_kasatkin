@@ -17,6 +17,8 @@ from user_profile.models import UserProperties
 from user_profile.forms import LoginForm, RegistrationForm, SettingsFrom
 from common_methods import get_static_data
 import uuid  # to generate unique file names
+from datetime import datetime as dtime
+import os
 
 
 ##### USER PERSONAL DATA main method #####
@@ -27,7 +29,7 @@ def get_user_data(request):
         prop = UserProperties.objects.get(user_id=request.user.id)
         data["id"] = request.user.id
         data["nickname"] = prop.nickname
-        data["avatar"] = "{0}.jpg".format(prop.filename)  # don't forget to update extensions
+        data["avatar"] = prop.filename
     return data
 
 
@@ -62,9 +64,14 @@ def register(request):
 
 
 def save_avatar_by_id(f, user_id):
-    # -- next step: get file extension with JS on frontend, save by correct extension
-    filename = "{0}-{1}".format(user_id, uuid.uuid4())
-    with open("uploads/{0}.jpg".format(filename), "wb+") as destination:
+    date = dtime.now()
+    folder_name = "{0}-{1}-{2}".format(date.year, date.month, date.day)
+    directory = "uploads/{0}".format(folder_name)
+    if not os.path.isdir(directory):
+        os.makedirs(directory)
+
+    filename = "{0}/{1}-{2}.jpg".format(folder_name, user_id, uuid.uuid4())
+    with open("uploads/" + filename, "wb+") as destination:
         for chunk in f.chunks():
             destination.write(chunk)
     return filename
@@ -144,7 +151,8 @@ def update_settings(request):
             # will exit condition if no file
             filename_ = save_avatar_by_id(avatar_file, uid)
             UserProperties.objects.filter(user_id=uid).update(filename=filename_)
-        except:
+        except KeyError:
+            # no File in the dict
             pass
 
         # update email if OK

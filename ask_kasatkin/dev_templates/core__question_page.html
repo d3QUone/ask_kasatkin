@@ -14,7 +14,7 @@
     {% for item in paginator %}
         <div class="row question__block">
             <div class="col-xs-2 question__left">
-                <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.author.filename }}.jpg">
+                <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.author.filename }}">
                 <div id="{{ item.id }}" class="rating__info answer_rating">
                     Rating: {{ item.rating }}
                 </div>

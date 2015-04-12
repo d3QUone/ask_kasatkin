@@ -34,7 +34,7 @@ def create_user():
 
     author = UserProperties.objects.create(
         user=new_user,
-        filename="ex1",
+        filename="ex1.jpg",
         nickname=username[:20],
     )
     return author

@@ -19,7 +19,7 @@ from common_methods import get_static_data
 import uuid  # to generate unique file names
 from datetime import datetime as dtime
 import os
-
+from ask_kasatkin.settings import BASE_DIR
 
 ##### USER PERSONAL DATA main method #####
 
@@ -66,12 +66,12 @@ def register(request):
 def save_avatar_by_id(f, user_id):
     date = dtime.now()
     folder_name = "{0}-{1}-{2}".format(date.year, date.month, date.day)
-    directory = "uploads/{0}".format(folder_name)
+    directory = "{0}/uploads/{1}".format(BASE_DIR, folder_name)
     if not os.path.isdir(directory):
         os.makedirs(directory)
 
     filename = "{0}/{1}-{2}.jpg".format(folder_name, user_id, uuid.uuid4())
-    with open("uploads/" + filename, "wb+") as destination:
+    with open(BASE_DIR + "/uploads/" + filename, "wb+") as destination:
         for chunk in f.chunks():
             destination.write(chunk)
     return filename

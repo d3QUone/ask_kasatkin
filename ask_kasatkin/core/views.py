@@ -218,10 +218,10 @@ def user_profile_stats(request, id=None):
     data = get_static_data()
     if id:
         try:
-            current_user = User.objects.get(id=id)
-        except User.DoesNotExist:
+            current_user = UserProperties.objects.get(user=User.objects.get(id=id))
+        except UserProperties.DoesNotExist:
             raise Http404
-        data["profile"] = UserProperties.objects.get(user=current_user)
+        data["profile"] = current_user
         data["total_questions"] = Question.objects.filter(author=current_user).count()
         data["total_answers"] = Answer.objects.filter(author=current_user).count()
     else:
@@ -263,14 +263,14 @@ def like_post(request):
                     like.state += like_state
                     like.save()
                     Question.objects.filter(id=pid).update(rating=question.rating+like_state)
-                    UserProperties.objects.filter(user=author_account).update(rating=author_account.rating+like_state)
+                    UserProperties.objects.filter(id=author_account.id).update(rating=author_account.rating+like_state)
             except Like.DoesNotExist:
                 # create new like if no like from this used
                 if abs(like_state) == 1:
                     new_like = Like.objects.create(user=usr, state=like_state)
                     question.likes.add(new_like)
                     Question.objects.filter(id=pid).update(rating=question.rating+like_state)
-                    UserProperties.objects.filter(user=author_account).update(rating=author_account.rating+like_state)
+                    UserProperties.objects.filter(id=author_account.id).update(rating=author_account.rating+like_state)
             return HttpResponse(Question.objects.get(id=pid).rating)
     return HttpResponse("None")
 
@@ -297,13 +297,13 @@ def like_answer(request):
                     like.state += like_state
                     like.save()
                     Answer.objects.filter(id=pid).update(rating=answer.rating+like_state)
-                    UserProperties.objects.filter(user=author_account).update(rating=author_account.rating+like_state)
+                    UserProperties.objects.filter(id=author_account.id).update(rating=author_account.rating+like_state)
             except Like.DoesNotExist:
                 if abs(like_state) == 1:
                     new_like = Like.objects.create(user=usr, state=like_state)
                     answer.likes.add(new_like)
                     Answer.objects.filter(id=pid).update(rating=answer.rating+like_state)
-                    UserProperties.objects.filter(user=author_account).update(rating=author_account.rating+like_state)
+                    UserProperties.objects.filter(id=author_account.id).update(rating=author_account.rating+like_state)
             return HttpResponse(Answer.objects.get(id=pid).rating)
     return HttpResponse("None")
 

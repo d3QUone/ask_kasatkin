@@ -65,10 +65,17 @@ def register(request):
 
 def save_avatar_by_id(f, user_id):
     date = dtime.now()
+
+    # use 'os.path' for building paths
+
     folder_name = "{0}-{1}-{2}".format(date.year, date.month, date.day)
     directory = "{0}/uploads/{1}".format(BASE_DIR, folder_name)
+
+    # catch is-exists exception
     if not os.path.isdir(directory):
         os.makedirs(directory)
+
+    # add reading extensions from raw file (first 2 bytes)
 
     filename = "{0}/{1}-{2}.jpg".format(folder_name, user_id, uuid.uuid4())
     with open(BASE_DIR + "/uploads/" + filename, "wb+") as destination:

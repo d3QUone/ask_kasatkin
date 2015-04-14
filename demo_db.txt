@@ -1,0 +1,22 @@
+mysql -u root -p (to ask password)
+>> create database ask_name character set utf8 collate utf8_general_cl
+
+now we'll add user to work with db: 
+>> grand all privelegies on ask_name.* to ask_user@localhost identified by 'password' 
+
+-- Managers --
+
+class QuestionManager(models.Manager):
+	
+	def popular(self):
+		return self.get_queryset().order_by("rating")
+
+
+# in model: 
+class Question(models.Model)
+	# ....
+	object = models.Manager()
+
+
+# usage: 
+Questions.objects.popular()

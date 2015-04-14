@@ -18,6 +18,7 @@ from django.core.paginator import Paginator, EmptyPage
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 import thread
+import requests  # for long-polling
 
 
 @ensure_csrf_cookie
@@ -132,7 +133,7 @@ def add_new_answer(request):
             text = data["text"]
 
             new_answer = Answer.objects.create(text=text, author=UserProperties.objects.get(user=request.user))
-            question = Question.objects.get(id=redirect_id)
+            question = Question.objects.filter(id=redirect_id).select_related("author")[0]
             question.answers.add(new_answer)
 
             # simply run in another thread
@@ -143,10 +144,16 @@ def add_new_answer(request):
                     reverse('core:question', args=[redirect_id])
                 ),
                 "ask_kasatkin@mail.ru",
-                [request.user.email]
+                [question.author.user.email]
             ))
 
             NotificationStorage.objects.create(user_id=question.author.user.id, question_id=redirect_id)  # add message to notification API endpoint
+
+            # ^
+            # NO! send request to nginx... send custom redirect?
+            # publish/ - nginx endpoint
+            #url = "{0}/publish?cid={1}&?qid={2}".format(request.META["HTTP_HOST"], question.author.user.id, redirect_id)
+
         else:
             redirect_id = request.POST["redirect_id"]
             error = form.errors.as_json()

@@ -239,8 +239,6 @@ def user_profile_all_data(request):
 
 ##### jQuery-AJAX (POST) methods #####
 
-# Q id = 57  returns get-error....
-
 @require_POST
 def like_post(request):
     if request.user.is_authenticated():

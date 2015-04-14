@@ -20,9 +20,3 @@ class RegistrationForm(forms.Form):
         if pas1 and pas1 != pas2:
             raise forms.ValidationError("Passwords are not equal")
         return self.cleaned_data
-
-
-class SettingsFrom(forms.Form):
-    nickname = forms.CharField(min_length=5, max_length=20)
-    email = forms.EmailField()
-    avatar = forms.ImageField()

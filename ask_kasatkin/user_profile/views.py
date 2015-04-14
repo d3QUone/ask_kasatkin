@@ -14,7 +14,7 @@ from django.views.decorators.http import require_POST, require_GET
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from user_profile.models import UserProperties
-from user_profile.forms import LoginForm, RegistrationForm, SettingsFrom
+from user_profile.forms import LoginForm, RegistrationForm
 from common_methods import get_static_data
 import uuid  # to generate unique file names
 from datetime import datetime as dtime
@@ -141,8 +141,6 @@ def self_settings(request, error=None):
 def update_settings(request):
     error = None
     if request.user.is_authenticated():
-        #form = SettingsFrom(request.POST)  # do with forms...
-
         uid = request.user.id
 
         # update nickname if OK
@@ -155,7 +153,6 @@ def update_settings(request):
         # upload new ava if any
         try:
             avatar_file = request.FILES['avatar']
-            # will exit condition if no file
             filename_ = save_avatar_by_id(avatar_file, uid)
             UserProperties.objects.filter(user_id=uid).update(filename=filename_)
         except KeyError:

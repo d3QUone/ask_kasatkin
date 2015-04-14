@@ -11,7 +11,7 @@
 {% endif %}
 </div>
 {% for question in paginator %}
-  [[[ "_inc_question.html" ]]] 
+	{% include "_inc_question.html" %}
 {% endfor %}
-  [[[ "_inc_paginator.html" ]]]
+	{% include "_inc_paginator.html" %}
 {% endblock content %}

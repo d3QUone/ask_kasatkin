@@ -2,14 +2,8 @@
 *.pyc
 avatars
 screenshots
-ask_kasatkin/templates
+ask_kasatkin/uploads
+ask_kasatkin/static_debug
 ask_kasatkin/core/static/core
 best_data.txt
 веб тз.pdf
-84-34db4553-4b64-4e58-801f-3ad00d59635a.jpg
-86-296cc9e0-323d-4440-aec9-45d19c8e138e.jpg
-103-c4ea1a1f-966a-4d33-bceb-0dd8526064d4.jpg
-301-0f2bbafe-9761-44d7-8bc9-ed8f7c3b842d.jpg
-1-d992d846-51ce-4374-9f58-fc7481a8a87c.jpg
-ask_kasatkin/uploads
-ask_kasatkin/static_debug

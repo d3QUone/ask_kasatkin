@@ -6,7 +6,7 @@
         <h4>All questions by tag <span class="underline__link">{{ tag }}</span>:</h4><br>
     </div>
   {% for question in paginator %}
-  [[[ "_inc_question.html" ]]] 
+  {% include "_inc_question.html" %}
   {% endfor %}
 
   <nav>

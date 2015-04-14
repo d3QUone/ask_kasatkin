@@ -53,7 +53,7 @@ def validate_login(request):
         except AttributeError:
             data["error"] = {"title": "No such user", "text": "You can register this user"}
     else:
-        data["error"] = form.errors.as_json()
+        data["form"] = form
     return render(request, "user_profile__login.html", data)
 
 
@@ -106,7 +106,7 @@ def validate_register(request):
         except IntegrityError:
             data["error"] = {"error": "That login is not free!"}
     else:
-        data["error"] = form.errors.as_json()
+        data["form"] = form
     # returns error message
     data["personal"] = get_user_data(request)  # processes all user's-stuff
     return render(request, "user_profile__register.html", data)

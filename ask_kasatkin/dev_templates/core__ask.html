@@ -9,33 +9,35 @@
             <h4>New Question</h4>
         </div>
     </div>
-    {% if error %}
-            <div class="form-group" id="add_error">
-                <div class="col-sm-2"></div>
-                <div class="col-sm-10">
-                <div class="alert alert-danger" role="alert">
-                    <strong>{{ error.title }}</strong>
-                    <p>{{ error.text }}</p>
-                </div>
-                </div>
-            </div>
-        {% endif %}
+
     <div class="form-group">
         <label for="title" class="col-sm-2 control-label">Title</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" name="title">
+            {% if form.title.errors %}<div class="alert alert-danger error__block" role="alert">
+                {{ form.title.errors }}
+            </div>
+            {% endif %}
         </div>
     </div>
     <div class="form-group">
         <label for="text" class="col-sm-2 control-label">Text</label>
         <div class="col-sm-10">
             <textarea class="form-control" name="text" rows="15" style="max-width: 100%;"></textarea>
+            {% if form.text.errors %}<div class="alert alert-danger error__block" role="alert">
+                {{ form.text.errors }}
+            </div>
+            {% endif %}
         </div>
     </div>
     <div class="form-group"> <!-- add JS onclick func to load hints -->
         <label for="input_email" class="col-sm-2 control-label">Tags</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" name="tags" placeholder="separated with comma, 3 tags max">
+            {% if form.tags.errors %}<div class="alert alert-danger error__block" role="alert">
+                {{ form.tags.errors }}
+            </div>
+            {% endif %}
         </div>
     </div>
     <div class="form-group">
@@ -45,18 +47,4 @@
         </div>
     </div>
 </form>
-
 {% endblock content %}
-
-
-{% block scripts %}
-<script>
-    function h() {
-        try {
-            document.getElementById("add_error").hidden = true;
-        } catch(e) {
-            // no element
-        }
-    }
-</script>
-{% endblock scripts %}

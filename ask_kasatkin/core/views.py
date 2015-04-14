@@ -88,10 +88,10 @@ def question_thread(request, qid=0, error=None):
 ##### QUESTIONS ######
 
 # show add-new-question page
-def new_question(request, error=None):
+def new_question(request, form_errors=None):
     data = get_static_data()
     data["personal"] = get_user_data(request)  # processes all user's-stuff
-    data["error"] = error
+    data["form"] = form_errors
     return render(request, "core__ask.html", data)
 
 
@@ -116,10 +116,10 @@ def add_new_question(request):
                     quest.tags.add(tn)
             return question_thread(request, qid=quest.id)
         else:
-            error = form.errors.as_json()
+            error = form
     else:
         error = {"title": "You are not logged in", "text": ""}
-    return new_question(request, error=error)
+    return new_question(request, form_errors=error)
 
 
 # adding-answer method
@@ -156,7 +156,7 @@ def add_new_answer(request):
 
         else:
             redirect_id = request.POST["redirect_id"]
-            error = form.errors.as_json()
+            error = form
         return question_thread(request, qid=redirect_id, error=error)
 
 

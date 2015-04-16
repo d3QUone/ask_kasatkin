@@ -5,6 +5,12 @@
 <div class="alert alert-danger" role="alert" id="jsalert" hidden>
     <strong>All fields must be filled</strong>
 </div>
+{% if form.no_user %}
+    <div class="alert alert-danger error__block" role="alert">
+        <h5>{{ form.no_user }}</h5>
+    </div>
+    <br>
+{% endif %}
 <form method="POST" action="{% url 'user_profile:validate_login' %}" name="mf" onsubmit="return c()" onclick="h()">
     {% csrf_token %}
     <div class="form-group">        

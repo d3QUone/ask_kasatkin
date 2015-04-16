@@ -39,6 +39,10 @@ def show_login(request):
     return render(request, "user_profile__login.html", get_static_data())
 
 
+# TODO: add good 'help-page' with info on Russian and English + add footer
+
+# TODO: return good error messages
+
 # check input values + return main page back
 @require_POST
 def validate_login(request):
@@ -51,7 +55,7 @@ def validate_login(request):
             login(request, user)
             return HttpResponsePermanentRedirect(reverse("core:home"))
         except AttributeError:
-            data["error"] = {"title": "No such user", "text": "You can register this user"}
+            data["form"] = {"no_user": "No such user. You can register this user"}
     else:
         data["form"] = form
     return render(request, "user_profile__login.html", data)

@@ -12,7 +12,7 @@ class RegistrationForm(forms.Form):
     input_email = forms.EmailField(min_length=5)
     input_password = forms.CharField(min_length=5)
     input_password_rep = forms.CharField(min_length=5)
-    avatar = forms.ImageField()
+    avatar = forms.ImageField(required=True)
 
     def clean(self):
         pas1 = self.cleaned_data.get("input_password")

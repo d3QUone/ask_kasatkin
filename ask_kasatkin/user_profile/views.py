@@ -88,6 +88,8 @@ def save_avatar_by_id(f, user_id):
     return filename
 
 
+# TODO: move validate methods into the same endpoint but with use of AJAX + redirect ...
+
 # check input values + return info - OK
 @require_POST
 def validate_register(request):
@@ -101,7 +103,6 @@ def validate_register(request):
         email_ = data['input_email']
         password_ = data['input_password']
         avatar_file = data['avatar']
-
         try:
             validate_email(email_)
             user = User.objects.create_user(username=login_, email=email_, password=password_)
@@ -113,9 +114,9 @@ def validate_register(request):
             login(request, user)
             return HttpResponsePermanentRedirect(reverse("core:home"))
         except ValidationError as ve:
-            data["error"] = {"error": ve.message}
+            data["form"] = {"error": ve.message}
         except IntegrityError:
-            data["error"] = {"error": "That login is not free!"}
+            data["form"] = {"error": "That login is not free!"}
     else:
         data["form"] = form
     # returns error message

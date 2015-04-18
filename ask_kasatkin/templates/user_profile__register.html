@@ -1,48 +1,67 @@
 {% extends "user_profile__base.html" %}
 {% block title %}Ask-Kasatkin Registration Page{% endblock title %}
 {% block content %}
-<h4>Registration page. <small>Please fill all fields!</small></h4>
+<h4>Registration page. <small>All fields are required!</small></h4>
+{% if form.error %}
+    <div class="alert alert-danger error__block" role="alert">
+        <h5>{{ form.error }}</h5>
+    </div>
+    <br>
+{% endif %}
 <form enctype="multipart/form-data" method="POST" action="{% url 'user_profile:validate_register' %}" name="mf" onsubmit="return c()" onclick="h()">
     {% csrf_token %}
     <div class="form-group">
-        <input class="form-control" name="input_login" placeholder="Enter login">
+        {% if form.input_login.value|length %}<input class="form-control" name="input_login" value="{{ form.input_login.value }}">
+        {% else %}<input class="form-control" name="input_login" placeholder="Enter login">
+        {% endif %}
         {% if form.input_login.errors %}<div class="alert alert-danger error__block" role="alert">
             {{ form.input_login.errors }}
         </div>
         {% endif %}
     </div>
     <div class="form-group">
-        <input class="form-control" name="input_nickname" placeholder="Enter nickname">
+        {% if form.input_nickname.value|length %}<input class="form-control" name="input_nickname" value="{{ form.input_nickname.value }}">
+        {% else %}<input class="form-control" name="input_nickname" placeholder="Enter nickname">
+        {% endif %}
         {% if form.input_nickname.errors %}<div class="alert alert-danger error__block" role="alert">
             {{ form.input_nickname.errors }}
         </div>
         {% endif %}        
     </div>
     <div class="form-group">
-        <input type="email" class="form-control" name="input_email" placeholder="Enter email">
+        {% if form.input_email.value|length %}<input type="email" class="form-control" name="input_email" value="{{ form.input_email.value }}">
+        {% else %}<input type="email" class="form-control" name="input_email" placeholder="Enter email">
+        {% endif %}
         {% if form.input_email.errors %}<div class="alert alert-danger error__block" role="alert">
             {{ form.input_email.errors }}
         </div>
         {% endif %}
     </div>
     <div class="form-group">
-        <input type="password" class="form-control" name="input_password" placeholder="Enter password">
+        {% if form.input_password.value|length %}<input type="password" class="form-control" name="input_password" value="{{ form.input_password.value }}">
+        {% else %}<input type="password" class="form-control" name="input_password" placeholder="Enter password">
+        {% endif %}
         {% if form.input_password.errors %}<div class="alert alert-danger error__block" role="alert">
             {{ form.input_password.errors }}
         </div>
         {% endif %}
     </div>
     <div class="form-group">
-        <input type="password" class="form-control" name="input_password_rep" placeholder="Repeat password">
+        {% if form.input_password_rep.value|length %}<input type="password" class="form-control" name="input_password_rep" value="{{ form.input_password_rep.value }}">
+        {% else %}<input type="password" class="form-control" name="input_password_rep" placeholder="Repeat password">
+        {% endif %}
         {% if form.input_password_rep.errors %}<div class="alert alert-danger error__block" role="alert">
             {{ form.input_password_rep.errors }}
         </div>
         {% endif %}
     </div>
-    <div class="form-group">
+    {% if form.avatar.errors %}<div class="alert alert-danger error__block form-group" role="alert">
+    {% else %}<div class="form-group">
+    {% endif %}
         <input type="file" name="avatar">
-            <p class="help-block">Upload avatar, only JPG is allowed. Size 100px * 100px is prefered for the best performance</p>
-            </div>
+        <p class="help-block">Upload avatar, only JPG is allowed. Size 100px * 100px is prefered for the best performance</p>
+    </div>
+    <br>
     <button type="submit" class="btn btn-default">Register</button>
 </form>
 {% endblock content %}

@@ -10,8 +10,8 @@
                 <h4>{{ question.answers.all.count }} Answers</h4>
             </div>
         </div>
-    <!-- 30 answers on a page, do in backend 'offset' = page*30, 'count'=30 -->
     {% for item in paginator %}
+        <a name="answer_{{ item.id }}"></a>
         <div class="row question__block">
             <div class="col-xs-2 question__left">
                 <img class="img-rounded question__avatar" src="{{ MEDIA_URL }}{{ item.author.filename }}">
@@ -43,8 +43,6 @@
         </div>
         <br>
     {% endfor %}
-
-    <a name="add"></a>
     {% if user.is_authenticated %}
         <div class="row">
             <div class="add__answer__header">
@@ -55,7 +53,9 @@
             {% csrf_token %}
             <input type="hidden" name="redirect_id" value="{{ question.id }}">
             <div class="form-group">
-                <textarea class="form-control add__answer__textarea" name="text" rows="5"></textarea>
+                {% if form.text.value|length %}<textarea class="form-control add__answer__textarea" name="text" rows="5" value="{{ form.text.value }}"></textarea>
+                {% else %}<textarea class="form-control add__answer__textarea" name="text" rows="5"></textarea>
+                {% endif %}
                 {% if form.text.errors %}<div class="alert alert-danger error__block" role="alert">
                     {{ form.text.errors }}
                 </div>
@@ -68,7 +68,7 @@
     {% else %}
         <div class="row">
             <div class="add__answer__header">
-                <h4>Login to add answer</h4>
+                <h4>Login to be able to answer</h4>
             </div>
         </div>
     {% endif %}

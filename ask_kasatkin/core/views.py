@@ -27,16 +27,15 @@ def index_page(request):
         page = int(request.GET.get("page", "1"))
     except ValueError:
         raise Http404
-    query = request.GET.get("query", "latest")  # much better
 
+    query = request.GET.get("query", "latest")
     if query != "popular":
-        all_questions = Question.objects.all().order_by('-id').prefetch_related("tags", "author", "answers")
+        paginator = Paginator(Question.objects.all().order_by('-id').prefetch_related("tags", "author", "answers"), 30)
     else:
-        all_questions = Question.objects.all().order_by('-rating').prefetch_related("tags", "author", "answers")
+        paginator = Paginator(Question.objects.all().order_by('-rating').prefetch_related("tags", "author", "answers"), 30)
 
-    paginator = Paginator(all_questions, 30)
     try:
-        questions_to_render = paginator.page(page)  # return all this data to render paginator only + buf(the same + even more data)
+        questions_to_render = paginator.page(page)
     except EmptyPage:
         questions_to_render = paginator.page(paginator.num_pages)
 

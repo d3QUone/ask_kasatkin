@@ -13,15 +13,19 @@
 {% endif %}
 <form method="POST" action="{% url 'user_profile:validate_login' %}" name="mf" onsubmit="return c()" onclick="h()">
     {% csrf_token %}
-    <div class="form-group">        
-        <input class="form-control" name="login" id="inpl" placeholder="Enter login" type="text" required>
+    <div class="form-group">
+        {% if form.login.value|length %}<input class="form-control" name="login" value="{{ form.login.value }}">
+        {% else %}<input class="form-control" name="login" placeholder="Enter login" type="text" required>
+        {% endif %}
         {% if form.login.errors %}<div class="alert alert-danger error__block" role="alert">
             {{ form.login.errors }}
         </div>
         {% endif %}
     </div>
     <div class="form-group">
-        <input class="form-control" name="password" placeholder="Enter password" type="password" required>
+        {% if form.password.value|length %}<input type="password" class="form-control" name="password" value="{{ form.password.value }}">
+        {% else %}<input type="password" class="form-control" name="password" placeholder="Enter password" required>
+        {% endif %}
         {% if form.password.errors %}<div class="alert alert-danger error__block" role="alert">
             {{ form.password.errors }}
         </div>

@@ -41,7 +41,8 @@ def show_login(request):
 
 # TODO: add good 'help-page' with info on Russian and English + add footer
 
-# TODO: return good error messages
+# TODO: add restore/reset-password-page
+
 
 # check input values + return main page back
 @require_POST
@@ -51,10 +52,15 @@ def validate_login(request):
     if form.is_valid():
         data = form.cleaned_data
         try:
+            User.objects.get(username=data["login"])  # just to ensure we have this user
+
             user = authenticate(username=data["login"], password=data["password"])
-            login(request, user)
-            return HttpResponsePermanentRedirect(reverse("core:home"))
-        except AttributeError:
+            if user:  # so the password is valid
+                login(request, user)
+                return HttpResponsePermanentRedirect(reverse("core:home"))
+            else:
+                data["form"] = {"no_user": "Wrong password!"}
+        except User.DoesNotExist:
             data["form"] = {"no_user": "No such user. You can register this user"}
     else:
         data["form"] = form
@@ -97,7 +103,6 @@ def validate_register(request):
     form = RegistrationForm(request.POST, request.FILES)
     if form.is_valid():
         data = form.cleaned_data
-
         login_ = data['input_login']
         nickname_ = data['input_nickname']
         email_ = data['input_email']
@@ -115,7 +120,7 @@ def validate_register(request):
             return HttpResponsePermanentRedirect(reverse("core:home"))
         except ValidationError as ve:
             data["form"] = {"error": ve.message}
-        except IntegrityError:
+        except IntegrityError:  # user = User.objects.get(username=data["login"])  # is dat good?
             data["form"] = {"error": "That login is not free!"}
     else:
         data["form"] = form

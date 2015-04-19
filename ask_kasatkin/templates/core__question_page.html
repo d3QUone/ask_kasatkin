@@ -52,6 +52,7 @@
         <form class="form-horizontal" method="POST" action="{% url 'core:add_new_answer' %}" onclick="h()">
             {% csrf_token %}
             <input type="hidden" name="redirect_id" value="{{ question.id }}">
+            <input type="hidden" name="redirect_page" value="{{ paginator.paginator.num_pages }}">
             <div class="form-group">
                 {% if form.text.value|length %}<textarea class="form-control add__answer__textarea" name="text" rows="5" value="{{ form.text.value }}"></textarea>
                 {% else %}<textarea class="form-control add__answer__textarea" name="text" rows="5"></textarea>

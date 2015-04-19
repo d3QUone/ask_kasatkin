@@ -3,7 +3,6 @@ from django import forms
 
 class NewQuestion(forms.Form):
     title = forms.CharField(min_length=10, max_length=100)
-    #text = forms.Textarea()  # WTF with that????
     text = forms.CharField(min_length=10)
     tags = forms.CharField(required=False)
     '''
@@ -21,6 +20,7 @@ class NewQuestion(forms.Form):
 class NewAnswer(forms.Form):
     text = forms.CharField(min_length=15)
     redirect_id = forms.IntegerField(min_value=0, required=True)
+    redirect_page = forms.IntegerField(min_value=0, required=True)
 
 
 class LikeAJAX(forms.Form):

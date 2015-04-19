@@ -10,7 +10,7 @@ from user_profile.models import UserProperties
 from user_profile.views import get_user_data
 from common_methods import get_static_data
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie  # reset csrf-checkup, will use in AJAX
 from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse, Http404, JsonResponse         # jquery simple return
@@ -129,6 +129,7 @@ def add_new_answer(request):
         if form.is_valid():
             data = form.cleaned_data
             redirect_id = data["redirect_id"]
+            redirect_page = data["redirect_page"]
             text = data["text"]
 
             new_answer = Answer.objects.create(text=text, author=UserProperties.objects.get(user=request.user))
@@ -153,10 +154,11 @@ def add_new_answer(request):
             # publish/ - nginx endpoint
             #url = "{0}/publish?cid={1}&?qid={2}".format(request.META["HTTP_HOST"], question.author.user.id, redirect_id)
 
+            return redirect(reverse("core:question", kwargs={"qid": redirect_id}) + "?page={0}#answer_{1}".format(redirect_page, new_answer.id))
         else:
             redirect_id = request.POST["redirect_id"]
             error = form
-        return question_thread(request, qid=redirect_id, error=error)
+            return question_thread(request, qid=redirect_id, error=error)
 
 
 ##### NOTIFICATIONS ######

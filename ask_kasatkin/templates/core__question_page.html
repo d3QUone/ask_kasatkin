@@ -49,7 +49,7 @@
                 <h4>Add answer:</h4>
             </div>
         </div>
-        <form class="form-horizontal" method="POST" action="{% url 'core:add_new_answer' %}" onclick="h()">
+        <form class="form-horizontal" method="POST" action="{% url 'core:add_new_answer' %}">
             {% csrf_token %}
             <input type="hidden" name="redirect_id" value="{{ question.id }}">
             <input type="hidden" name="redirect_page" value="{{ paginator.paginator.num_pages }}">

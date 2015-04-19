@@ -368,10 +368,8 @@ body {
     border-color: #8E6784;
 }
 
-/* user profile (but inside 'core' app lol) */
 .user__profile__item {
-    margin-left: 35%;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .notf {

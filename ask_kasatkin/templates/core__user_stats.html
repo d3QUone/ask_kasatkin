@@ -2,23 +2,28 @@
 {% block title %}Ask-Kasatkin New Question{% endblock title %}
 {% block content %}    
 <div class="question__block">
-    {% if not error %}<div class="user__profile__item">
-        Nickname: {{ profile.nickname }}
-    </div>
-    
-    <div class="user__profile__item">    
-        Rating: {% if profile.rating > 0 %}<span style="color: green;">{{ profile.rating }}</span>{% else %}<span style="color: red;">{{ profile.rating }}</span>{% endif %}
-    </div>
-    
-    <div class="user__profile__item">
-        Questions: {{ total_questions }}
-    </div>
-
-    <div class="user__profile__item">    
-        Answers: {{ total_answers }}
+    {% if not error %}<div class="row">
+        <div class="col-xs-3">
+            <img class="img-rounded current_avatar" src="{{ MEDIA_URL }}{{ profile.filename }}">
+        </div>
+        <div class="col-xs-9">
+            <div class="user__profile__item">
+                Nickname: {{ profile.nickname }}
+            </div>    
+            <div class="user__profile__item">    
+                Rating: {% if profile.rating > 0 %}<span style="color: green;">{{ profile.rating }}</span>{% else %}<span style="color: red;">{{ profile.rating }}</span>{% endif %}
+            </div>
+            <div class="user__profile__item">
+                Questions: {{ total_questions }}
+            </div>
+            <div class="user__profile__item">    
+                Answers: {{ total_answers }}
+            </div>
+        </div>
     </div>
     {% else %}<div class="user__profile__item">
         {{ error }}
     </div>
-{% endif %}</div>
+    {% endif %}
+</div>
 {% endblock content %}

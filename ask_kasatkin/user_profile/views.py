@@ -125,47 +125,37 @@ def do_logout(request):
     return HttpResponsePermanentRedirect(reverse("core:home"))
 
 
-def self_settings(request, error=None):
+def self_settings(request):
     data = get_static_data()
-    data["personal"] = get_user_data(request)  # processes all user's-stuff
-    if error:
-        data["error"] = error
-    if request.user.is_authenticated(): # add email to other data
+    if request.user.is_authenticated():
         user_id = request.user.id
+        if request.method == "POST":
+
+            # update nickname if OK
+            nickname_ = request.POST['input_nickname']
+            if 5 <= len(nickname_) <= 20:
+                UserProperties.objects.filter(user_id=user_id).update(nickname=nickname_)
+            elif len(nickname_) > 0:
+                data["error"] = {"title": "Your nickname must be at least 5 chars long and less then 20 chars", "text": ""}
+
+            # upload new ava if any
+            try:
+                avatar_file = request.FILES['avatar']
+                filename_ = save_avatar_by_id(avatar_file, user_id)
+                UserProperties.objects.filter(user_id=user_id).update(filename=filename_)
+            except KeyError:
+                # no File in the dict
+                pass
+
+            # update email if OK
+            email_ = request.POST['input_email']
+            if len(email_) > 0:
+                try:
+                    validate_email(email_)
+                    User.objects.filter(id=user_id).update(email=email_)
+                except ValidationError as ve:
+                    data["error"] = {"text": ve.message}  # + update templates to show errors in its fields
+
+        data["personal"] = get_user_data(request)  # processes all user's-stuff
         data["personal"]["email"] = User.objects.get(id=user_id).email
     return render(request, "user_profile__setting.html", data)
-
-
-@require_POST
-def update_settings(request):
-    error = None
-    if request.user.is_authenticated():
-        uid = request.user.id
-
-        # update nickname if OK
-        nickname_ = request.POST['input_nickname']
-        if 5 <= len(nickname_) <= 20:
-            UserProperties.objects.filter(user_id=uid).update(nickname=nickname_)
-        elif len(nickname_) > 0:
-            error = {"title": "Your nickname must be at least 5 chars long and less then 20 chars", "text": ""}
-
-        # upload new ava if any
-        try:
-            avatar_file = request.FILES['avatar']
-            filename_ = save_avatar_by_id(avatar_file, uid)
-            UserProperties.objects.filter(user_id=uid).update(filename=filename_)
-        except KeyError:
-            # no File in the dict
-            pass
-
-        # update email if OK
-        email_ = request.POST['input_email']
-        if len(email_) > 0:
-            try:
-                validate_email(email_)
-                User.objects.filter(id=uid).update(email=email_)
-            except ValidationError as ve:
-                error = {"text": ve.message}  # + update templates to show errors in its fields
-    else:
-        error = {"title": "Auth error", "text": "Login and try once more please"}
-    return self_settings(request, error=error)  # return the same page with new data

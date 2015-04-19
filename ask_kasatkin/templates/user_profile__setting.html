@@ -3,7 +3,7 @@
 {% block content %}
 {% if user.is_authenticated %}
 <div class="question__block">
-    <form class="form-horizontal" enctype="multipart/form-data" method="POST" action="{% url 'user_profile:validate_settings' %}" onclick="h()">
+    <form class="form-horizontal" enctype="multipart/form-data" method="POST" action="{% url 'user_profile:settings' %}" onclick="h()">
         {% csrf_token %}
         <div class="form-group">
             <div class="col-sm-2"></div>
@@ -58,13 +58,7 @@
 {% else %}
     <div class="alert alert-danger" role="alert">
         <strong>Authentication error</strong>
-        <p>You must be logged in to watch this page. Log in or create a new account to see this page:</p>
-    </div>
-
-    <div class="container-fluid action__block">
-        <a href="{% url 'user_profile:register' %}" class="btn btn-primary">Register</a>
-        &nbsp;
-        <a href="{% url 'user_profile:login' %}" class="btn btn-primary">Log in</a>
+        <p>You must be logged in to watch this page.<br>Log in or create a new account to see this page:</p>
     </div>
 {% endif %}
 {% endblock content %}

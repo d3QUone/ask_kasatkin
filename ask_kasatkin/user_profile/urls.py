@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from user_profile.views import do_login, do_logout, register, self_settings, update_settings
+from user_profile.views import do_login, do_logout, register, self_settings
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -9,5 +9,4 @@ urlpatterns = patterns('',
     url(r'^logout/$', do_logout, name='logout'),
     url(r'^signup/$', register, name='register'),
     url(r'^settings/$', self_settings, name='settings'),
-    url(r'^update_settings/$', update_settings, name='validate_settings'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

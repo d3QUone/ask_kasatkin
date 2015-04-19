@@ -134,14 +134,13 @@ def add_new_answer(request):
                 "New answer to {0}".format(question.title),
                 "Check new answer from user '{0}' by this URL: vksmm.info{1}".format(
                     UserProperties.objects.get(user=request.user).nickname,
-                    reverse('core:question', args=[redirect_id])
+                    reverse("core:question", kwargs={"qid": redirect_id}) + "?page={0}#answer_{1}".format(redirect_page, new_answer.id)
                 ),
                 "ask_kasatkin@mail.ru",
                 [question.author.user.email]
             ))
 
             NotificationStorage.objects.create(user_id=question.author.user.id, question_id=redirect_id)  # add message to notification API endpoint
-
             # ^
             # NO! send request to nginx... send custom redirect?
             # publish/ - nginx endpoint
@@ -170,6 +169,9 @@ def fetch_updates(request):
         return HttpResponse(None)
 
     data = [{"q_id": int(item.question_id)} for item in updates]
+
+    # send also Page_number AND Answer_id to scroll...
+
     updates.delete()  # + delete dat messages
     return JsonResponse(data, safe=False)
 

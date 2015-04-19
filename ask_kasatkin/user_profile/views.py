@@ -21,6 +21,11 @@ from datetime import datetime as dtime
 import os
 from ask_kasatkin.settings import BASE_DIR
 
+# TODO: add good 'help-page' with info on Russian and English + add footer
+
+# TODO: add restore/reset-password-page
+
+
 ##### USER PERSONAL DATA main method #####
 
 def get_user_data(request):
@@ -33,51 +38,35 @@ def get_user_data(request):
     return data
 
 
-# render login page - OK
-@require_GET
-def show_login(request):
-    return render(request, "user_profile__login.html", get_static_data())
-
-
-# TODO: add good 'help-page' with info on Russian and English + add footer
-
-# TODO: add restore/reset-password-page
-
-
-# check input values + return main page back
-@require_POST
-def validate_login(request):
+# GET -> render login page
+# POST -> process input-form
+def do_login(request):
     data = get_static_data()
-    form = LoginForm(request.POST)
-    if form.is_valid():
-        data = form.cleaned_data
-        try:
-            User.objects.get(username=data["login"])  # just to ensure we have this user
-
-            user = authenticate(username=data["login"], password=data["password"])
-            if user:  # so the password is valid
-                login(request, user)
-                return HttpResponsePermanentRedirect(reverse("core:home"))
+    if not request.user.is_authenticated():
+        if request.method == "POST":
+            form = LoginForm(request.POST or None)
+            if form.is_valid():
+                try:
+                    User.objects.get(username=form.cleaned_data["login"])  # just to ensure we have this user
+                    user = authenticate(username=form.cleaned_data["login"], password=form.cleaned_data["password"])
+                    if user:  # so the password is valid
+                        login(request, user)
+                        return HttpResponsePermanentRedirect(reverse("core:home"))
+                    else:
+                        data["form"] = {"no_user": "Wrong password!"}
+                except User.DoesNotExist:
+                    data["form"] = {"no_user": "No such user. You can register this user"}
             else:
-                data["form"] = {"no_user": "Wrong password!"}
-        except User.DoesNotExist:
-            data["form"] = {"no_user": "No such user. You can register this user"}
+                data["form"] = form
+        return render(request, "user_profile__login.html", data)
     else:
-        data["form"] = form
-    return render(request, "user_profile__login.html", data)
-
-
-# render registration page - OK
-@require_GET
-def register(request):
-    return render(request, "user_profile__register.html", get_static_data())
+        return HttpResponsePermanentRedirect(reverse("core:home"))
 
 
 def save_avatar_by_id(f, user_id):
     date = dtime.now()
 
     # use 'os.path' for building paths
-
     folder_name = "{0}-{1}-{2}".format(date.year, date.month, date.day)
     directory = "{0}/uploads/{1}".format(BASE_DIR, folder_name)
 
@@ -86,7 +75,6 @@ def save_avatar_by_id(f, user_id):
         os.makedirs(directory)
 
     # add reading extensions from raw file (first 2 bytes)
-
     filename = "{0}/{1}-{2}.jpg".format(folder_name, user_id, uuid.uuid4())
     with open(BASE_DIR + "/uploads/" + filename, "wb+") as destination:
         for chunk in f.chunks():
@@ -94,44 +82,45 @@ def save_avatar_by_id(f, user_id):
     return filename
 
 
-# TODO: move validate methods into the same endpoint but with use of AJAX + redirect ...
-
-# check input values + return info - OK
-@require_POST
-def validate_register(request):
+# GET -> render registration page
+# POST -> process input-form
+def register(request):
     data = get_static_data()
-    form = RegistrationForm(request.POST, request.FILES)
-    if form.is_valid():
-        data = form.cleaned_data
-        login_ = data['input_login']
-        nickname_ = data['input_nickname']
-        email_ = data['input_email']
-        password_ = data['input_password']
-        avatar_file = data['avatar']
-        try:
-            validate_email(email_)
-            user = User.objects.create_user(username=login_, email=email_, password=password_)
+    if not request.user.is_authenticated():
+        if request.method == "POST":
+            form = RegistrationForm(request.POST, request.FILES)
+            if form.is_valid():
+                data = form.cleaned_data
+                login_ = data['input_login']
+                nickname_ = data['input_nickname']
+                email_ = data['input_email']
+                password_ = data['input_password']
+                avatar_file = data['avatar']
+                try:
+                    validate_email(email_)
+                    user = User.objects.create_user(username=login_, email=email_, password=password_)
 
-            filename_ = save_avatar_by_id(avatar_file, user.id)
-            UserProperties.objects.create(user=user, nickname=nickname_, filename=filename_)
+                    filename_ = save_avatar_by_id(avatar_file, user.id)
+                    UserProperties.objects.create(user=user, nickname=nickname_, filename=filename_)
 
-            user = authenticate(username=login_, password=password_)
-            login(request, user)
-            return HttpResponsePermanentRedirect(reverse("core:home"))
-        except ValidationError as ve:
-            data["form"] = {"error": ve.message}
-        except IntegrityError:  # user = User.objects.get(username=data["login"])  # is dat good?
-            data["form"] = {"error": "That login is not free!"}
+                    user = authenticate(username=login_, password=password_)
+                    login(request, user)
+                    return HttpResponsePermanentRedirect(reverse("core:home"))
+                except ValidationError as ve:
+                    data["form"] = {"error": ve.message}
+                except IntegrityError:  # user = User.objects.get(username=data["login"])  # is dat good?
+                    data["form"] = {"error": "That login is not free!"}
+            else:
+                data["form"] = form
+            data["personal"] = get_user_data(request)  # processes all user's-stuff
+        return render(request, "user_profile__register.html", data)
     else:
-        data["form"] = form
-    # returns error message
-    data["personal"] = get_user_data(request)  # processes all user's-stuff
-    return render(request, "user_profile__register.html", data)
+        return HttpResponsePermanentRedirect(reverse("core:home"))
 
 
 # shown only for logged users - OK
 @require_GET
-def self_logout(request):
+def do_logout(request):
     logout(request)
     return HttpResponsePermanentRedirect(reverse("core:home"))
 

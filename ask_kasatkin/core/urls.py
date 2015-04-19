@@ -1,11 +1,9 @@
 from django.conf.urls import patterns, url
-from core.views import index_page, new_question, add_new_question, question_thread, add_new_answer, all_by_tag, like_post, like_answer, user_profile_stats, mark_as_true, fetch_updates
+from core.views import index_page, new_question, question_thread, add_new_answer, all_by_tag, like_post, like_answer, user_profile_stats, mark_as_true, fetch_updates
 
 urlpatterns = patterns('',
     url(r'^$', index_page, name='home'),
     url(r'^add/$', new_question, name='create_question'),
-    url(r'^save_question/$', add_new_question, name='save_question'),  # to AJAX ?
-
     url(r'^question/(?P<qid>\d+)/$', question_thread, name='question'),
     url(r'^question/$', question_thread, name='question'),  # same but with error message
     url(r'^add_new_answer/$', add_new_answer, name='add_new_answer'),

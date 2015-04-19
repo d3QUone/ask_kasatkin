@@ -8,7 +8,7 @@
     </div>
     <br>
 {% endif %}
-<form enctype="multipart/form-data" method="POST" action="{% url 'user_profile:validate_register' %}" name="mf" onsubmit="return c()" onclick="h()">
+<form enctype="multipart/form-data" method="POST" action="{% url 'user_profile:register' %}">
     {% csrf_token %}
     <div class="form-group">
         {% if form.input_login.value|length %}<input class="form-control" name="input_login" value="{{ form.input_login.value }}">

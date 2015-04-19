@@ -11,7 +11,7 @@
     </div>
     <br>
 {% endif %}
-<form method="POST" action="{% url 'user_profile:validate_login' %}" name="mf" onsubmit="return c()" onclick="h()">
+<form method="POST" action="{% url 'user_profile:login' %}">
     {% csrf_token %}
     <div class="form-group">
         {% if form.login.value|length %}<input class="form-control" name="login" value="{{ form.login.value }}">

@@ -86,39 +86,32 @@ def question_thread(request, qid=0, error=None):
 
 ##### QUESTIONS ######
 
-# show add-new-question page
-def new_question(request, form_errors=None):
+# GET -> show add-page
+# POST -> process input form
+def new_question(request):
     data = get_static_data()
-    data["personal"] = get_user_data(request)  # processes all user's-stuff
-    data["form"] = form_errors
-    return render(request, "core__ask.html", data)
-
-
-# upload data and add question
-def add_new_question(request):
-    error = None
     if request.user.is_authenticated():
-        form = NewQuestion(request.POST or None)
-        if form.is_valid():
-            data = form.cleaned_data
-            title = data["title"]
-            text = data["text"]
-            tags = data["tags"].replace(" ", "").split(",")
+        data["personal"] = get_user_data(request)  # processes all user's-stuff
+        if request.method == "POST":
+            form = NewQuestion(request.POST or None)
+            if form.is_valid():
+                data = form.cleaned_data
+                title = data["title"]
+                text = data["text"]
+                tags = data["tags"].replace(" ", "").split(",")
 
-            quest = Question.objects.create(title=title[:250], text=text, author=UserProperties.objects.get(user=request.user))
-            for t in tags[:3]:
-                if len(t) > 0:
-                    try:
-                        tn = TagName.objects.get(name=str(t).lower())
-                    except TagName.DoesNotExist:
-                        tn = TagName.objects.create(name=str(t).lower())
-                    quest.tags.add(tn)
-            return question_thread(request, qid=quest.id)
-        else:
-            error = form
-    else:
-        error = {"title": "You are not logged in", "text": ""}
-    return new_question(request, form_errors=error)
+                quest = Question.objects.create(title=title[:250], text=text, author=UserProperties.objects.get(user=request.user))
+                for t in tags[:3]:
+                    if len(t) > 0:
+                        try:
+                            tn = TagName.objects.get(name=str(t).lower())
+                        except TagName.DoesNotExist:
+                            tn = TagName.objects.create(name=str(t).lower())
+                        quest.tags.add(tn)
+                return question_thread(request, qid=quest.id)
+            else:
+                data["form"] = form
+    return render(request, "core__ask.html", data)
 
 
 # adding-answer method

@@ -1,4 +1,6 @@
+#!/usr/bin/python
 # coding:utf8
+
 #
 # script for creating the popular-set
 #
@@ -18,9 +20,7 @@ from user_profile.models import UserProperties
 from core.models import TagName, Question
 import json
 
-FILENAME = "best_data.txt"
-
-# I don't want to work with cron now.. so is will be manual now
+FILENAME = "best_data.txt"  # for output
 
 # this script loads (?) once an hour, asks db for updates and save the results
 
@@ -62,6 +62,5 @@ def save_data():
     with open(FILENAME, "w") as f:
         f.write(json.dumps(data))
 
-
-#save_data()  # run this stuff once
-
+if __name__ == "__main__":
+    save_data()

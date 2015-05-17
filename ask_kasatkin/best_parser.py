@@ -33,7 +33,7 @@ def get_pop_users():
 
     time_window = timezone.now() - timedelta(days=7)
 
-    for best in list(Question.objects.filter(date__gte=time_window).order_by("-rating").prefetch_related("author")[:10]):
+    for best in list(Question.objects.filter(date__gte=time_window).order_by("-rating").prefetch_related("author")[:20]):
         buf = {
             "rating": best.rating,
             "nickname": best.author.nickname,
@@ -42,7 +42,7 @@ def get_pop_users():
         if buf not in result:
             append(buf)
 
-    for best in list(Answer.objects.filter(date__gte=time_window).order_by("-rating").prefetch_related("author")[:10]):
+    for best in list(Answer.objects.filter(date__gte=time_window).order_by("-rating").prefetch_related("author")[:20]):
         buf = {
             "rating": best.rating,
             "nickname": best.author.nickname,
@@ -52,7 +52,19 @@ def get_pop_users():
             append(buf)
 
     result.sort()
-    return result[:10]
+
+    output = []
+    append = output.append
+    for usr in result:
+        buf = {
+            "nickname": usr["nickname"],
+            "id": usr["id"]
+        }
+        if buf not in output:
+            append(buf)
+        if len(output) == 10:
+            break
+    return output
 
 
 label_color = [

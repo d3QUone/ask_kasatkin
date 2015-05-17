@@ -16,24 +16,43 @@ django.setup()
 
 # 2) import models, etc else
 
+from django.utils import timezone
+from datetime import timedelta
 from user_profile.models import UserProperties
-from core.models import TagName, Question
+from core.models import TagName, Question, Answer
 import json
 
 FILENAME = "best_data.txt"  # for output
 
-# this script loads (?) once an hour, asks db for updates and save the results
+# this script loads every 15 min, asks db for updates and save the results
 
-# get TOP20 users - easy
+# get TOP10 users !!! which questions and answers are most popular this week !!!
 def get_pop_users():
     result = []
     append = result.append
-    for user_data in list(UserProperties.objects.all().order_by('-rating')[:20]):
-        append({
-            "nickname": user_data.nickname,
-            "id": user_data.user.id
-        })
-    return result
+
+    time_window = timezone.now() - timedelta(days=7)
+
+    for best in list(Question.objects.filter(date__gte=time_window).order_by("-rating").prefetch_related("author")[:10]):
+        buf = {
+            "rating": best.rating,
+            "nickname": best.author.nickname,
+            "id": best.author.user.id
+        }
+        if buf not in result:
+            append(buf)
+
+    for best in list(Answer.objects.filter(date__gte=time_window).order_by("-rating").prefetch_related("author")[:10]):
+        buf = {
+            "rating": best.rating,
+            "nickname": best.author.nickname,
+            "id": best.author.user.id
+        }
+        if buf not in result:
+            append(buf)
+
+    result.sort()
+    return result[:10]
 
 
 label_color = [

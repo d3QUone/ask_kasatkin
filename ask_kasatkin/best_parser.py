@@ -27,13 +27,13 @@ FILENAME = "best_data.txt"  # for output
 # this script loads every 15 min, asks db for updates and save the results
 
 # get TOP10 users !!! which questions and answers are most popular this week !!!
-def get_pop_users():
+
+
+def load_unique_users(amount):
     result = []
     append = result.append
-
     time_window = timezone.now() - timedelta(days=7)
-
-    for best in list(Question.objects.filter(date__gte=time_window).order_by("-rating").prefetch_related("author")[:20]):
+    for best in list(Question.objects.filter(date__gte=time_window).order_by("-rating").prefetch_related("author")[:amount]):
         buf = {
             "rating": best.rating,
             "nickname": best.author.nickname,
@@ -42,7 +42,7 @@ def get_pop_users():
         if buf not in result:
             append(buf)
 
-    for best in list(Answer.objects.filter(date__gte=time_window).order_by("-rating").prefetch_related("author")[:20]):
+    for best in list(Answer.objects.filter(date__gte=time_window).order_by("-rating").prefetch_related("author")[:amount]):
         buf = {
             "rating": best.rating,
             "nickname": best.author.nickname,
@@ -50,8 +50,14 @@ def get_pop_users():
         }
         if buf not in result:
             append(buf)
-
     result.sort()
+    return result
+
+
+def get_pop_users():
+    result = load_unique_users(20)
+    if len(result) == 0:
+        result = load_unique_users(40)
 
     output = []
     append = output.append
@@ -64,6 +70,7 @@ def get_pop_users():
             append(buf)
         if len(output) == 10:
             break
+            
     return output
 
 

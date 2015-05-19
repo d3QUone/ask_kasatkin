@@ -116,7 +116,7 @@ def new_question(request):
 
 # send update to notification server in new thread
 def push_updates(update):
-    requests.post("http://localhost/publish", data=update)
+    requests.post("http://127.0.0.1/publish/", data=update)
 
 
 # adding-answer method
@@ -149,10 +149,10 @@ def add_new_answer(request):
             #NotificationStorage.objects.create(user_id=question.author.user.id, question_id=redirect_id)  # add message to notification API endpoint
 
             # send notification in new thread
-            thread.start_new_thread(push_updates, {
+            thread.start_new_thread(push_updates, ({
                 "cid": question.author.user.id,
                 "qid": redirect_id
-            })
+            },))
 
             return redirect(reverse("core:question", kwargs={"qid": redirect_id}) + "?page={0}#answer_{1}".format(redirect_page, new_answer.id))
         else:

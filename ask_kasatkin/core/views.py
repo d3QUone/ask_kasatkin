@@ -4,7 +4,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8') # make UTF 8 global-hack
 
-from core.models import Question, Answer, TagName, Like, NotificationStorage
+from core.models import Question, Answer, TagName, Like
 from core.forms import LikeAJAX, NewQuestion, NewAnswer
 from user_profile.models import UserProperties
 from user_profile.views import get_user_data
@@ -18,8 +18,6 @@ from django.core.paginator import Paginator, EmptyPage
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 import thread
-import json
-import urllib2
 import requests
 
 
@@ -118,7 +116,9 @@ def new_question(request):
 
 # send update to notification server in new thread
 def push_updates(update):
-    requests.put("http://vksmm.info/publish/", update)
+    requests.put("http://vksmm.info/publish/?cid={0}".format(update["cid"]))  # create channel
+    requests.post("http://vksmm.info/publish/", data=update)  # push updates
+    # + add flags?
 
 
 # adding-answer method

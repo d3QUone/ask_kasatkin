@@ -114,6 +114,11 @@ def new_question(request):
     return render(request, "core__ask.html", data)
 
 
+# send update to notification server in new thread
+def push_updates(update):
+    requests.post("http://localhost/publish", data=update)
+
+
 # adding-answer method
 def add_new_answer(request):
     error = None
@@ -129,22 +134,25 @@ def add_new_answer(request):
             question = Question.objects.filter(id=redirect_id).select_related("author")[0]
             question.answers.add(new_answer)
 
-            # simply run in another thread
+            # send main in new thread
             thread.start_new_thread(send_mail, (
                 "New answer to {0}".format(question.title),
-                "Check new answer from user '{0}' by this URL: vksmm.info{1}".format(
+                """Check new answer from user "{0}" to your question "{1}" by this URL: vksmm.info{2}""".format(
                     UserProperties.objects.get(user=request.user).nickname,
+                    question.title,
                     reverse("core:question", kwargs={"qid": redirect_id}) + "?page={0}#answer_{1}".format(redirect_page, new_answer.id)
                 ),
                 "ask_kasatkin@mail.ru",
                 [question.author.user.email]
             ))
 
-            NotificationStorage.objects.create(user_id=question.author.user.id, question_id=redirect_id)  # add message to notification API endpoint
-            # ^
-            # NO! send request to nginx... send custom redirect?
-            # publish/ - nginx endpoint
-            #url = "{0}/publish?cid={1}&?qid={2}".format(request.META["HTTP_HOST"], question.author.user.id, redirect_id)
+            #NotificationStorage.objects.create(user_id=question.author.user.id, question_id=redirect_id)  # add message to notification API endpoint
+
+            # send notification in new thread
+            thread.start_new_thread(push_updates, {
+                "cid": question.author.user.id,
+                "qid": redirect_id
+            })
 
             return redirect(reverse("core:question", kwargs={"qid": redirect_id}) + "?page={0}#answer_{1}".format(redirect_page, new_answer.id))
         else:
@@ -170,7 +178,8 @@ def fetch_updates(request):
 
     data = [{"q_id": int(item.question_id)} for item in updates]
 
-    # send also Page_number AND Answer_id to scroll...
+    # send also Page_number AND Answer_id to scroll???...
+    # - or redirect on last page???
 
     updates.delete()  # + delete dat messages
     return JsonResponse(data, safe=False)

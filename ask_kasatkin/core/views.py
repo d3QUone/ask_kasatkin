@@ -116,7 +116,9 @@ def new_question(request):
 
 # send update to notification server in new thread
 def push_updates(update):
-    requests.post("http://127.0.0.1/publish/", data=update)
+    r = requests.post("http://127.0.0.1/publish/", data=update)
+    with open("publish_file.txt", "w") as f:
+        f.write(r.text)
 
 
 # adding-answer method

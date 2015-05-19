@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from core.views import index_page, new_question, question_thread, add_new_answer, all_by_tag, like_post, like_answer, user_profile_stats, mark_as_true, fetch_updates
+from core.views import index_page, new_question, question_thread, add_new_answer, all_by_tag, like_post, like_answer, user_profile_stats, mark_as_true
 
 urlpatterns = patterns('',
     url(r'^$', index_page, name='home'),
@@ -11,7 +11,6 @@ urlpatterns = patterns('',
     url(r'^like_post/$', like_post),
     url(r'^like_answ/$', like_answer),
     url(r'^mark_as_true/$', mark_as_true),
-    #url(r'^fetch_updates/$', fetch_updates),                # real-time notifications GET-endpoint
     url(r'^user/(?P<id>\d+)/$', user_profile_stats, name='user'),
     url(r'^user/$', user_profile_stats, name='user'),       # same but with error message
 )

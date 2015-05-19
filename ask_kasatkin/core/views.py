@@ -20,6 +20,7 @@ from django.core.mail import send_mail
 import thread
 import json
 import urllib2
+import requests
 
 
 @ensure_csrf_cookie
@@ -117,10 +118,7 @@ def new_question(request):
 
 # send update to notification server in new thread
 def push_updates(update):
-    request = urllib2.Request('http://localhost/publish/', json.dumps(update))
-    response = urllib2.urlopen(request)
-    with open("publish_file.txt", "w") as f:
-        f.write("test:\n" + str(response))
+    requests.put("http://vksmm.info/publish/", update)
 
 
 # adding-answer method
@@ -150,8 +148,6 @@ def add_new_answer(request):
                 [question.author.user.email]
             ))
 
-            #NotificationStorage.objects.create(user_id=question.author.user.id, question_id=redirect_id)  # add message to notification API endpoint
-
             # send notification in new thread
             thread.start_new_thread(push_updates, ({
                 "cid": question.author.user.id,
@@ -163,27 +159,6 @@ def add_new_answer(request):
             redirect_id = request.POST["redirect_id"]
             error = form
             return question_thread(request, qid=redirect_id, error=error)
-
-
-##### NOTIFICATIONS ######
-
-# without long polling yet. straight get-requests from Jquery now.. move to nginx
-
-@require_GET
-def fetch_updates(request):
-    try:
-        user_id = int(request.GET.get("cid"))
-    except ValueError, KeyError:
-        return HttpResponse(None)
-    try:
-        updates = NotificationStorage.objects.filter(user_id=user_id)
-    except NotificationStorage.DoesNotExist:
-        return HttpResponse(None)
-
-    data = [{"q_id": int(item.question_id)} for item in updates]
-
-    updates.delete()  # + delete dat messages
-    return JsonResponse(data, safe=False)
 
 
 ##### TAGS ######

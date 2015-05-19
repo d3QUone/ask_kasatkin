@@ -65,7 +65,7 @@ server {
 	}
 
 	# long pooling 
-	location /publish {
+	location /publish/ {
 		set $push_channel_id $arg_cid;
 		push_store_messages off; 
 		push_publisher;
@@ -73,7 +73,7 @@ server {
 		deny all;
 	}
 
-	location /listen {
+	location /listen/ {
 		push_subscriber_concurrency broadcast;
 		set $push_channel_id $arg_cid;
 		default_type application/json; 

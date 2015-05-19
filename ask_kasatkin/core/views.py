@@ -18,7 +18,8 @@ from django.core.paginator import Paginator, EmptyPage
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 import thread
-import requests  # for long-polling
+import json
+import urllib2
 
 
 @ensure_csrf_cookie
@@ -116,9 +117,10 @@ def new_question(request):
 
 # send update to notification server in new thread
 def push_updates(update):
-    r = requests.post("http://127.0.0.1/publish/", data=update)
+    request = urllib2.Request('http://localhost/publish/', json.dumps(update))
+    response = urllib2.urlopen(request)
     with open("publish_file.txt", "w") as f:
-        f.write(r.text)
+        f.write("test:\n" + str(response))
 
 
 # adding-answer method
@@ -179,9 +181,6 @@ def fetch_updates(request):
         return HttpResponse(None)
 
     data = [{"q_id": int(item.question_id)} for item in updates]
-
-    # send also Page_number AND Answer_id to scroll???...
-    # - or redirect on last page???
 
     updates.delete()  # + delete dat messages
     return JsonResponse(data, safe=False)

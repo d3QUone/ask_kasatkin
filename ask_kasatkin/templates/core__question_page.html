@@ -10,6 +10,8 @@
                 <h4>{{ question.answers.all.count }} Answers</h4>
             </div>
         </div>
+        <div id="fresh_answers">
+        </div> 
     {% for item in paginator %}
         <a name="answer_{{ item.id }}"></a>
         <div class="row question__block">
@@ -28,7 +30,6 @@
                 <div class="question__tags">
                     <strong>Author:</strong> {{ item.author.nickname }}
                 </div>
-
                 <!-- only author can vote! -->
                 {% if owner %}
                     {% if item.chosen %}<span id="{{ item.id }}" class="correct__button">Correct!</span>

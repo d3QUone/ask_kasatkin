@@ -1,5 +1,12 @@
 # coding: utf8
+#
+# usage:
+#
+# python app.py start
+# python app.py stop
+#
 
+from daemon import runner  # pip install python-daemon
 from tornado import websocket, web, ioloop
 import json
 
@@ -36,13 +43,28 @@ class ApiHandler(web.RequestHandler):
             for c in subs[channel_id]:
                 c.write_message(data)
 
+
+# daemon stuff
+class App():
+    def __init__(self):
+        self.stdin_path = '/dev/null'
+        self.stdout_path = '/dev/tty'
+        self.stderr_path = '/dev/tty'
+        self.pidfile_path =  '/tmp/ask_kas_tornado.pid'
+        self.pidfile_timeout = 5
+    def run(self):
+        app = web.Application([
+            (r'/ws/([0-9]*)$', SocketHandler),
+            (r'/push', ApiHandler),
+        ])
+        app.listen(8888)
+        ioloop.IOLoop.instance().start()
+
+
 if __name__ == '__main__':
-    app = web.Application([
-        (r'/ws/([0-9]*)$', SocketHandler),
-        (r'/push', ApiHandler),
-    ])
-    app.listen(8888)
-    ioloop.IOLoop.instance().start()
+    tornado_daemon = App()
+    daemon_runner = runner.DaemonRunner(tornado_daemon)
+    daemon_runner.do_action()
 
 # test:
 # curl --data "channel=8511&id=12321&text=asudoad%20asjwoiqoweio%20oioqiwoioeqw&avatar=123.png&nickname=Noiweoiqwoe" http://localhost:8888/push

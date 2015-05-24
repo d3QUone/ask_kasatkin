@@ -43,3 +43,6 @@ if __name__ == '__main__':
     ])
     app.listen(8888)
     ioloop.IOLoop.instance().start()
+
+# test:
+# curl --data "channel=8511&id=12321&text=asudoad%20asjwoiqoweio%20oioqiwoioeqw&avatar=123.png&nickname=Noiweoiqwoe" http://localhost:8888/push

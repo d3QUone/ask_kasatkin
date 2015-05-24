@@ -198,6 +198,10 @@ body {
     background-color: #e0b07c;
 }
 
+.fresh__like__block {
+    background-color: #e0773f;
+}
+
 .question__left {
     width: 90px;
     padding-left: 5px;

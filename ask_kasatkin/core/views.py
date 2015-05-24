@@ -116,7 +116,7 @@ def new_question(request):
 
 # send update to notification server in new thread
 def push_updates(update):
-    requests.post("http://localhost:8888/push", data=update)
+    requests.post("http://vksmm.info:8888/push", data=update)
 
 
 # adding-answer method
@@ -149,6 +149,7 @@ def add_new_answer(request):
 
             # send notification in new thread
             thread.start_new_thread(push_updates, ({
+                "channel": question.id,
                 "id": new_answer.id,
                 "text": new_answer.text,
                 "avatar": author.filename,

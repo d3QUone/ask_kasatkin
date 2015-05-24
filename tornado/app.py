@@ -25,9 +25,9 @@ class ApiHandler(web.RequestHandler):
     @web.asynchronous
     def post(self, *args):
         self.finish()
-        channel_id = self.get_argument("id")  # questionID = channelID 
+        channel_id = self.get_argument("channel")
         data = json.dumps({
-                "id": channel_id,
+                "id": self.get_argument("id"),
                 "text": self.get_argument("text"),
                 "avatar": self.get_argument("avatar"),
                 "nickname": self.get_argument("nickname")
@@ -35,7 +35,6 @@ class ApiHandler(web.RequestHandler):
         if channel_id in subs:
             for c in subs[channel_id]:
                 c.write_message(data)
-
 
 if __name__ == '__main__':
     app = web.Application([

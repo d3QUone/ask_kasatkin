@@ -1,6 +1,6 @@
 var $message = $("#message");
 var channel_id = $("div#channel_id").html();  // opened question id
-var ws = new WebSocket("ws://localhost:8888/ws/" + channel_id);
+var ws = new WebSocket("ws://vksmm.info:8888/ws/" + channel_id);
 
 ws.onopen = function(){
   $message.attr("class", "label label-success");

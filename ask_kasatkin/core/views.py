@@ -54,7 +54,7 @@ def index_page(request):
 def question_thread(request, qid=0, error=None):
     if qid != 0:
         try:
-            question = Question.objects.filter(id=qid).select_related("tags", "author", "answers")[0]
+            question = Question.objects.filter(id=qid).order_by('-rating').select_related("tags", "author", "answers")[0]
         except Question.DoesNotExist:
             raise Http404
         try:

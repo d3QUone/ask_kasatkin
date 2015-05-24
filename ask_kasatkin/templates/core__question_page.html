@@ -3,14 +3,12 @@
 {% block content %}
 {% include "_inc_question.html" %}
 <div class="row">
-    <div class="col-xs-1">
-        WebSocket status : <span id="message"></span>
-        <div id="channel_id" style="display: none;">{{ question.id }}</div>
-    </div>
+    <div class="col-xs-1"></div>
     <div class="col-xs-11">
         <div class="row">
             <div class="answers__amount__header">
-                <h4>{{ question.answers.all.count }} Answers</h4>
+                <h4>{{ question.answers.all.count }} Answers. WebSocket status: <span id="message"></span></h4>
+                <div id="channel_id" style="display: none;">{{ question.id }}</div>
             </div>
         </div>
         <div id="fresh_answers">

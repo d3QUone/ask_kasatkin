@@ -198,8 +198,19 @@ body {
     background-color: #e0b07c;
 }
 
-.fresh__like {
+/*.fresh__like {
     background-color: #e0773f;
+}*/
+
+.fresh__like {
+    display: inline;
+    background-color: #e0773f;
+    width: 30px;
+    border-radius: 5px;
+    border-color: black;
+    padding: 5px;
+    padding-top: 8px;
+    margin-left: 8px;
 }
 
 .question__left {

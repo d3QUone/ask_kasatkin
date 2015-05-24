@@ -54,7 +54,7 @@ def index_page(request):
 def question_thread(request, qid=0, error=None):
     if qid != 0:
         try:
-            question = Question.objects.filter(id=qid).order_by('-rating').select_related("tags", "author", "answers")[0]
+            question = Question.objects.filter(id=qid).select_related("tags", "author", "answers")[0]
         except Question.DoesNotExist:
             raise Http404
         try:
@@ -71,7 +71,7 @@ def question_thread(request, qid=0, error=None):
         else:
             data["owner"] = False
 
-        paginator = Paginator(question.answers.all().select_related("author"), 30)
+        paginator = Paginator(question.answers.all().order_by('-rating').select_related("author"), 30)
         try:
             ans_to_render = paginator.page(page)
         except EmptyPage:

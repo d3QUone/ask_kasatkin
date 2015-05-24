@@ -14,12 +14,12 @@ class SocketHandler(websocket.WebSocketHandler):
                 subs[channel_id] = []
             if self not in subs[channel_id]:
                 subs[channel_id].append(self)
-            print "current subs:", subs
     def on_close(self):
         for i in subs.keys():
             if self in subs[i]:
                 subs[i].remove(self)
                 break
+
 
 class ApiHandler(web.RequestHandler):
     @web.asynchronous
@@ -35,11 +35,7 @@ class ApiHandler(web.RequestHandler):
         if channel_id in subs:
             for c in subs[channel_id]:
                 c.write_message(data)
-    """
-    @web.asynchronous
-    def get(self, *args):
-        self.render("index.html")
-    """
+
 
 if __name__ == '__main__':
     app = web.Application([

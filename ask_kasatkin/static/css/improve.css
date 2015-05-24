@@ -194,6 +194,10 @@ body {
     word-break: break-all;
 }
 
+.new {
+    background-color: #e0b07c;
+}
+
 .question__left {
     width: 90px;
     padding-left: 5px;

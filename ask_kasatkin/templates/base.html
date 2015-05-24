@@ -12,9 +12,7 @@
 {% include "_inc_header.html" %}
 <div class="container-fixed">
     <div class="row-fluid">
-        <div class="col-xs-2">
-            <div id="channel_id" style="display: none;">{{ user.id }}</div>
-        </div>
+        <div class="col-xs-2"></div>
         <div class="col-xs-8">
             <!-- LEFT COLUMN: questions / add answer / add question / etc. -->
             {% block content %}{% endblock content %}
@@ -38,12 +36,7 @@
 <script src="/static/js/bootstrap.min.js"></script>
 <script src="/static/js/jquery.cookie.js"></script>
 <script src="/static/js/ajax_likes.js"></script>
-<script src="/static/js/notifications.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip();   
-});
-</script>
+<script type="text/javascript">$(document).ready(function(){ $('[data-toggle="tooltip"]').tooltip(); });</script>
 {% block scripts %}{% endblock scripts %}
 <script type="text/javascript">
     (function (d, w, c) {

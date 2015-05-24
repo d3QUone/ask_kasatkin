@@ -116,9 +116,7 @@ def new_question(request):
 
 # send update to notification server in new thread
 def push_updates(update):
-    requests.put("http://vksmm.info/publish/?cid={0}".format(update["cid"]))  # create channel
-    requests.post("http://vksmm.info/publish/", data=update)  # push updates
-    # + add flags?
+    requests.post("http://localhost:8888/push", data=update)
 
 
 # adding-answer method
@@ -132,7 +130,8 @@ def add_new_answer(request):
             redirect_page = data["redirect_page"]
             text = data["text"]
 
-            new_answer = Answer.objects.create(text=text, author=UserProperties.objects.get(user=request.user))
+            author = UserProperties.objects.get(user=request.user)
+            new_answer = Answer.objects.create(text=text, author=author)
             question = Question.objects.filter(id=redirect_id).select_related("author")[0]
             question.answers.add(new_answer)
 
@@ -150,8 +149,10 @@ def add_new_answer(request):
 
             # send notification in new thread
             thread.start_new_thread(push_updates, ({
-                "cid": question.author.user.id,
-                "qid": redirect_id
+                "id": new_answer.id,
+                "text": new_answer.text,
+                "avatar": author.filename,
+                "nickname": author.nickname
             },))
 
             return redirect(reverse("core:question", kwargs={"qid": redirect_id}) + "?page={0}#answer_{1}".format(redirect_page, new_answer.id))

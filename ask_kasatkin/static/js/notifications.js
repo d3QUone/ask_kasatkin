@@ -1,10 +1,10 @@
-var channel_id = $('div#channel_id').html();  // loads user_id from page
-var ws = new WebSocket('ws://localhost:8888/ws');
-var $message = $('#message');
+var $message = $("#message");
+var channel_id = $("div#channel_id").html();  // opened question id
+var ws = new WebSocket("ws://localhost:8888/ws/" + channel_id);
 
 ws.onopen = function(){
-  $message.attr("class", 'label label-success');
-  $message.text('open');
+  $message.attr("class", "label label-success");
+  $message.text("open");
 };
 ws.onmessage = function(ev){
   $message.attr("class", 'label label-info');
@@ -13,25 +13,27 @@ ws.onmessage = function(ev){
   $message.text('recieved message');
 
   var json = JSON.parse(ev.data);
-  $('#' + json.id).hide();
-  $('#' + json.id).fadeIn("slow");
-  $('#' + json.id).text(json.value);
+  var new_ans = '<a name="answer_' + json.id + '"></a>
+        <div class="row question__block fresh">
+            <div class="col-xs-2 question__left">
+                <img class="img-rounded question__avatar" src="/uploads/' + json.avatar + '">
+                <div id="' + json.id + '" class="rating__info answer_rating">
+                    Rating: 0
+                </div>
+                <div class="rating__like__block">
+                    <span id="' + json.id + '" class="like__button ans_like">+</span>
+                    <span id="' + json.id + '" class="like__button ans_dislike">-</span>
+                </div>
+            </div>
+            <div class="col-xs-10 question__right">
+                <p>' + json.text + '</p>
+                <div class="question__tags">
+                    <strong>Author:</strong>' + json.nickname + '
+                </div>
+            </div>
+        </div>'
 
-  var $rowid = $('#row' + json.id);
-  if(json.value > 500){
-    $rowid.attr("class", "error");
-  }
-  else if(json.value > 200){
-    $rowid.attr("class", "warning");
-  }
-  else{
-    $rowid.attr("class", "");
-  }
-
-
-  $('div#fresh_answers').append("new data....");
-
-
+  $('div#fresh_answers').append(new_ans);
 };
 ws.onclose = function(ev){
   $message.attr("class", 'label label-important');

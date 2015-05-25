@@ -298,7 +298,10 @@ def mark_as_true(request):
             return HttpResponse("None")
         try:
             a = Answer.objects.get(id=answer_id)
-            q = Question.objects.get(answers=a)
+            q = Question.objects.filter(answers=a).select_related("author")[0]
+            if q.author != UserProperties.objects.get(user=request.user):
+                return HttpResponse("None")
+
             if not q.has_answer:
                 # has not answer -> add answer
                 a.chosen = True

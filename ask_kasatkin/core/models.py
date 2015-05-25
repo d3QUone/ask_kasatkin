@@ -2,9 +2,6 @@
 from django.db import models
 from user_profile.models import UserProperties
 
-### what if I have ONE like-table for all fields????
-# id-fields will not cross cause "LIKES" will not have any info about owners
-# all ids will be in question/answer :)
 
 class Like(models.Model):
     user = models.ForeignKey(UserProperties)

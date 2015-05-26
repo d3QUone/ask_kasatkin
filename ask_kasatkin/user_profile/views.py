@@ -118,11 +118,12 @@ def register(request):
         return HttpResponsePermanentRedirect(reverse("core:home"))
 
 
-# shown only for logged users - OK
-@require_GET
+# only for logged users - OK
+@require_POST
 def do_logout(request):
-    logout(request)
-    return HttpResponsePermanentRedirect(reverse("core:home"))
+    if request.user.is_authenticated():
+        logout(request)
+        return HttpResponsePermanentRedirect(reverse("core:home"))
 
 
 def self_settings(request):

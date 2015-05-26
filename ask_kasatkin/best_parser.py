@@ -33,7 +33,7 @@ def load_unique_users(amount):
     result = []
     append = result.append
     time_window = timezone.now() - timedelta(days=7)
-    for best in list(Question.objects.filter(date__gte=time_window).order_by("-rating").prefetch_related("author")[:amount]):
+    for best in Question.objects.filter(date__gte=time_window).order_by("-rating").prefetch_related("author")[:amount]:
         buf = {
             "rating": best.rating,
             "nickname": best.author.nickname,
@@ -42,7 +42,7 @@ def load_unique_users(amount):
         if buf not in result:
             append(buf)
 
-    for best in list(Answer.objects.filter(date__gte=time_window).order_by("-rating").prefetch_related("author")[:amount]):
+    for best in Answer.objects.filter(date__gte=time_window).order_by("-rating").prefetch_related("author")[:amount]:
         buf = {
             "rating": best.rating,
             "nickname": best.author.nickname,
@@ -86,7 +86,7 @@ label_color = [
 def get_pop_tags():
     result = []
     append = result.append
-    for tag in list(TagName.objects.all()):
+    for tag in TagName.objects.all():
         amount = Question.objects.filter(tags=tag).count()
         append([amount, tag.name])
     result.sort(reverse=True)

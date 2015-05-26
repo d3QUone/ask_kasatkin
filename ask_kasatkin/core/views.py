@@ -17,6 +17,7 @@ from django.http import HttpResponse, Http404, JsonResponse         # jquery sim
 from django.core.paginator import Paginator, EmptyPage
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
+from django.db.models import F
 import thread
 import requests
 
@@ -216,7 +217,7 @@ def user_profile_stats(request, id=None):
 @require_GET
 def user_profile_all_data(request):
 
-    # paginator for all questions / or separate page with all questions and all answers
+    # TODO: paginator for all questions / or separate page with all questions and all answers
     return None
 
 
@@ -243,15 +244,15 @@ def like_post(request):
                 if abs(like.state + like_state) <= 1:
                     like.state += like_state
                     like.save()
-                    Question.objects.filter(id=pid).update(rating=question.rating+like_state)
-                    UserProperties.objects.filter(id=author_account.id).update(rating=author_account.rating+like_state)
+                    Question.objects.filter(id=pid).update(rating=F("rating")+like_state)
+                    UserProperties.objects.filter(id=author_account.id).update(rating=F("rating")+like_state)
             except Like.DoesNotExist:
                 # create new like if no like from this used
                 if abs(like_state) == 1:
                     new_like = Like.objects.create(user=usr, state=like_state)
                     question.likes.add(new_like)
-                    Question.objects.filter(id=pid).update(rating=question.rating+like_state)
-                    UserProperties.objects.filter(id=author_account.id).update(rating=author_account.rating+like_state)
+                    Question.objects.filter(id=pid).update(rating=F("rating")+like_state)
+                    UserProperties.objects.filter(id=author_account.id).update(rating=F("rating")+like_state)
             return HttpResponse(Question.objects.get(id=pid).rating)
     return HttpResponse("None")
 
@@ -277,14 +278,14 @@ def like_answer(request):
                 if abs(like.state + like_state) <= 1:
                     like.state += like_state
                     like.save()
-                    Answer.objects.filter(id=pid).update(rating=answer.rating+like_state)
-                    UserProperties.objects.filter(id=author_account.id).update(rating=author_account.rating+like_state)
+                    Answer.objects.filter(id=pid).update(rating=F("rating")+like_state)
+                    UserProperties.objects.filter(id=author_account.id).update(rating=F("rating")+like_state)
             except Like.DoesNotExist:
                 if abs(like_state) == 1:
                     new_like = Like.objects.create(user=usr, state=like_state)
                     answer.likes.add(new_like)
-                    Answer.objects.filter(id=pid).update(rating=answer.rating+like_state)
-                    UserProperties.objects.filter(id=author_account.id).update(rating=author_account.rating+like_state)
+                    Answer.objects.filter(id=pid).update(rating=F("rating")+like_state)
+                    UserProperties.objects.filter(id=author_account.id).update(rating=F("rating")+like_state)  # !
             return HttpResponse(Answer.objects.get(id=pid).rating)
     return HttpResponse("None")
 

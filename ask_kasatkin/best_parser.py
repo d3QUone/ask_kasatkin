@@ -16,18 +16,15 @@ django.setup()
 
 # 2) import models, etc else
 
+from django.core.cache import cache
 from django.utils import timezone
 from datetime import timedelta
 from user_profile.models import UserProperties
 from core.models import TagName, Question, Answer
-import json
-
-FILENAME = "best_data.txt"  # for output
 
 # this script loads every 15 min, asks db for updates and save the results
 
 # get TOP10 users !!! which questions and answers are most popular this week !!!
-
 
 def load_unique_users(amount):
     result = []
@@ -93,12 +90,6 @@ def get_pop_tags():
     return [{"text": result[i][1], "label": label_color[i]} for i in range(len(result[:20]))]
 
 
-def save_data():
-    data = {}
-    data["popular_users"] = get_pop_users()
-    data["popular_tags"] = get_pop_tags()
-    with open(FILENAME, "w") as f:
-        f.write(json.dumps(data))
-
 if __name__ == "__main__":
-    save_data()
+    cache.set("popular_users", get_pop_users(), 3600) # 1 hour
+    cache.set("popular_tags", get_pop_tags(), 3600)

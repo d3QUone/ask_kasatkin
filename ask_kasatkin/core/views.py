@@ -8,7 +8,6 @@ from core.models import Question, Answer, TagName, Like
 from core.forms import LikeAJAX, NewQuestion, NewAnswer
 from user_profile.models import UserProperties
 from user_profile.views import get_user_data
-from common_methods import get_static_data
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie  # reset csrf-checkup, will use in AJAX
@@ -40,7 +39,7 @@ def index_page(request):
     except EmptyPage:
         questions_to_render = paginator.page(paginator.num_pages)
 
-    data = get_static_data()
+    data = {}
     data["personal"] = get_user_data(request)  # processes all user's-stuff
     data["page"] = page
     data["query"] = query
@@ -63,7 +62,7 @@ def question_thread(request, qid=0, error=None):
         except ValueError:
             raise Http404
 
-        data = get_static_data()
+        data = {}
         data["personal"] = get_user_data(request)
         data["error"] = error
         data["question"] = question
@@ -90,7 +89,7 @@ def question_thread(request, qid=0, error=None):
 # GET -> show add-page
 # POST -> process input form
 def new_question(request):
-    data = get_static_data()
+    data = {}
     if request.user.is_authenticated():
         data["personal"] = get_user_data(request)  # processes all user's-stuff
         if request.method == "POST":
@@ -169,7 +168,7 @@ def add_new_answer(request):
 @ensure_csrf_cookie
 @require_GET
 def all_by_tag(request, tag_n=None):
-    data = get_static_data()
+    data = {}
     if tag_n:
         data["tag"] = tag_n.lower()
         try:
@@ -199,7 +198,7 @@ def all_by_tag(request, tag_n=None):
 # - separate page for question-preview, answer-preview
 @require_GET
 def user_profile_stats(request, id=None):
-    data = get_static_data()
+    data = {}
     if id:
         try:
             current_user = UserProperties.objects.get(user=User.objects.get(id=id))

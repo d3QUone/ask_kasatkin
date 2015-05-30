@@ -15,7 +15,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from user_profile.models import UserProperties
 from user_profile.forms import LoginForm, RegistrationForm
-from common_methods import get_static_data
 import uuid  # to generate unique file names
 from datetime import datetime as dtime
 import os
@@ -41,7 +40,7 @@ def get_user_data(request):
 # GET -> render login page
 # POST -> process input-form
 def do_login(request):
-    data = get_static_data()
+    data = {}
     if not request.user.is_authenticated():
         if request.method == "POST":
             form = LoginForm(request.POST or None)
@@ -85,7 +84,7 @@ def save_avatar_by_id(f, user_id):
 # GET -> render registration page
 # POST -> process input-form
 def register(request):
-    data = get_static_data()
+    data = {}
     if not request.user.is_authenticated():
         if request.method == "POST":
             form = RegistrationForm(request.POST, request.FILES)
@@ -127,7 +126,7 @@ def do_logout(request):
 
 
 def self_settings(request):
-    data = get_static_data()
+    data = {}
     if request.user.is_authenticated():
         user_id = request.user.id
         if request.method == "POST":

@@ -1,1 +1,1 @@
-*/15 * * * * (cd /root/ask_kasatkin/ask_kasatkin/;  /usr/bin/python best_parser.py)
+*/15 * * * * (cd /root/ask_kasatkin/ask_kasatkin/ && /usr/bin/python best_parser.py)

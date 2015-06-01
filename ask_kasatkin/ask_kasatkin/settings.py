@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'core',
     'user_profile',
+    'techno_rating',
     #'django.contrib.staticfiles',   # used in deploy
     #'debug_toolbar',
 )

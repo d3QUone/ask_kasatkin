@@ -17,7 +17,7 @@
         <p>{{ question.text|linebreaks }}</p>
         <div class="question__tags">
             <a href="{%  url 'core:question' question.id %}" class="underline__link"><strong>Answers ({{ question.answers.all.count }})</strong></a> &nbsp;&nbsp;
-            <strong>Asked:</strong> {{ question.author.nickname }} &nbsp;&nbsp;
+            <strong>Author:</strong> {{ question.author.nickname }} &nbsp;&nbsp;
         {%  if question.tags %}
             <strong>Tags: </strong>
             {% for tag in question.tags.all %}

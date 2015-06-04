@@ -16,12 +16,13 @@ def index(request):
     except ValueError:
         raise Http404
 
-    query = request.GET.get("sort", "latest")
-    if query != "popular":
-        paginator = Paginator(TechIdea.objects.all().order_by('-id'), 30)
-    else:
-        paginator = Paginator(TechIdea.objects.all().order_by('-like'), 30)
+    # query = request.GET.get("sort", "latest")
+    # if query != "popular":
+    #     paginator = Paginator(TechIdea.objects.all().order_by('-id'), 30)
+    # else:
+    #     paginator = Paginator(TechIdea.objects.all().order_by('-like'), 30)
 
+    paginator = Paginator(TechIdea.objects.all().order_by('-like'), 30)
     try:
         data = paginator.page(page)
     except EmptyPage:

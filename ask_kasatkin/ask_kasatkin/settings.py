@@ -38,8 +38,8 @@ if not DEBUG:
 
 # nginx care
 ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost'
+    'vksmm.info',
+    'localhost' # debug on local machine
 ]
 
 # Application definition

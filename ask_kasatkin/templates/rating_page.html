@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>Rating</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/improve.css">
+</head>
+<body>
+<div class="container-fixed">
+    <div class="row-fluid">
+        <div class="col-xs-2"></div>
+        <div class="col-xs-8">
+            <br>
+            {% for item in data %}
+                <div class="row question__block">
+                    <div class="col-xs-2 question__left">
+                        <strong>{{ item.name }}</strong>
+                    </div>
+                    <div class="col-xs-10 question__right">
+                        rating = {{ item.like }}
+                    </div>
+                </div>
+                <br>
+            {% endfor %}
+
+        </div>
+        <div class="col-xs-2">
+        </div>
+    </div>
+</div>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/jquery.cookie.js"></script>
+<script src="/static/js/ajax_likes.js"></script>
+<script type="text/javascript">$(document).ready(function(){ $('[data-toggle="tooltip"]').tooltip(); });</script>
+{% block scripts %}{% endblock scripts %}
+<script type="text/javascript">
+    (function (d, w, c) {
+     (w[c] = w[c] || []).push(function() {
+                              try {
+                              w.yaCounter28737341 = new Ya.Metrika({id:28737341,
+                                                                   webvisor:true,
+                                                                   clickmap:true,
+                                                                   trackLinks:true,
+                                                                   accurateTrackBounce:true});
+                              } catch(e) { }
+                              });
+     var n = d.getElementsByTagName("script")[0],
+     s = d.createElement("script"),
+     f = function () { n.parentNode.insertBefore(s, n); };
+     s.type = "text/javascript";
+     s.async = true;
+     s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+     if (w.opera == "[object Opera]") {
+     d.addEventListener("DOMContentLoaded", f, false);
+     } else { f(); }
+     })(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript><div><img src="//mc.yandex.ru/watch/28737341" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+</body>
+</html>

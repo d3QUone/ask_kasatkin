@@ -7,5 +7,6 @@ from django.conf.urls.static import static
 urlpatterns = patterns('',
     url(r'^', include('core.urls', namespace='core')),
     url(r'^', include('user_profile.urls', namespace='user_profile')),
+    url(r'^', include('techno_rating.urls', namespace='trating')),
     #url(r'^__debug__/', include(debug_toolbar.urls)),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

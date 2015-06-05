@@ -7,22 +7,9 @@
     <title>Rating</title>
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/improve.css">
-    <style>
-        .block__small {
-            margin-left: 20px;
-            margin-right: 20px;
-        }
-        .no_underline {
-            text-decoration: none;
-        }
-        .no_underline:hover {
-            text-decoration: none;
-        }
-
-    </style>
 </head>
 <body>
-<nav class="navbar navbar-default navbar-static-top navbar__new__color">
+<nav class="navbar navbar-default navbar-static-top navbar__just__color">
     <div class="col-xs-1"></div>
     <div class="col-xs-8">
         <a class="navbar__title" href="http://vksmm.info/techno_rating/">Здесь все идеи Техностарта, отсортированые по рейтингу. Обновление каждые 15 минут</a>
@@ -34,7 +21,7 @@
         <div class="col-xs-2"></div>
         <div class="col-xs-8">
             {% for item in data %}
-            <a class="underline__link no_underline" href="http://techno-start.ru/idea/{{ item.tech_id }}/" target=_blank>
+            <a class="colored__link" href="http://techno-start.ru/idea/{{ item.tech_id }}/" target=_blank>
                 <div class="row question__block">
                     <span class="block__small"><strong>{{ item.name }}</strong></span>
                     <span class="block__small">{{ item.like }} <span class="glyphicon glyphicon-heart" aria-hidden=​"true">​</span>​​</span>

@@ -37,6 +37,7 @@ def parse_site():
 
     top_ID = int(link.split("/")[2])  # ['', 'idea', '8', '']
     for i in range(top_ID + 1):
+        print "ID {0} gone...".format(i)
         parse_content_by_id(i)
 
 
@@ -59,6 +60,8 @@ def parse_content_by_id(tech_id):
             #TechIdea.objects.filter(tech_id=tech_id).update(like=like, comm=comm)  # doesn't hit when no object
         except TechIdea.DoesNotExist:
             TechIdea.objects.create(tech_id=tech_id, name=title, like=like, comm=comm)
+
+        print "OK"
 
 
 if __name__ == "__main__":

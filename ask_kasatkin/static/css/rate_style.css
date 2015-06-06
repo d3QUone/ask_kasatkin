@@ -1,0 +1,62 @@
+html{
+	min-height: 100%;
+}
+
+body{
+	padding: 0px;
+	margin: 0px;
+	min-height: 100%;
+}
+
+h1{
+	font-family: 'Poiret One', cursive;
+}
+
+h3, h4{
+	font-family: 'Open Sans Condensed', sans-serif;
+}
+
+#main{
+	width: 600px;
+}
+
+.width100{
+	width: 100%;
+	float: left;
+	padding: 0px;
+}
+.page{
+	width:900px;
+	margin-bottom: 0px;
+}
+.marginTopOnly{
+	margin: 0px;
+	margin-top: 15px;
+}
+.center{
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+.fleft{
+	float: left;
+}
+.imgText{
+	width: 20px;
+	height: 20px;
+}
+.padLeft{
+	padding-left: 15px;
+}
+.h20{
+	height: 20px;
+}
+.m0{
+	margin: 0;
+}
+a:link, a:visited, a:hover{
+	text-decoration: underline;
+	font-family: 'Open Sans Condensed', sans-serif;
+	color: black;
+	display: block;
+}

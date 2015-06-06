@@ -1,65 +1,94 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="utf-8">
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <title>Rating</title>
-    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/improve.css">
-</head>
-<body>
-<nav class="navbar navbar-default navbar-static-top navbar__just__color">
-    <div class="col-xs-1"></div>
-    <div class="col-xs-8">
-        <a class="navbar__title" href="http://vksmm.info/techno_rating/">Здесь все идеи Техностарта, отсортированые по рейтингу. Обновление каждые 15 минут</a>
-    </div>
-    <div class="col-xs-3"></div>
-</nav>
-<div class="container-fixed">
-    <div class="row-fluid">
-        <div class="col-xs-2"></div>
-        <div class="col-xs-8">
-            {% for item in data %}
-            <a class="colored__link" href="http://techno-start.ru/idea/{{ item.tech_id }}/" target=_blank>
-                <div class="row question__block">
-                    <span class="block__small"><strong>{{ item.name }}</strong></span>
-                    <span class="block__small">{{ item.like }} <span class="glyphicon glyphicon-heart" aria-hidden=​"true">​</span>​​</span>
-                    <span class="block__small">{{ item.comm }} <span class="glyphicon glyphicon-pencil" aria-hidden=​"true">​</span>​​</span>
-                </div>
-            </a>
-            <br>
-            {% endfor %}
-        </div>
-        <div class="col-xs-2">
-        </div>
-    </div>
-</div>
-<script src="/static/js/jquery.min.js"></script>
-<script src="/static/js/bootstrap.min.js"></script>
-<script src="/static/js/jquery.cookie.js"></script>
-<script type="text/javascript">
-    (function (d, w, c) {
-     (w[c] = w[c] || []).push(function() {
-                              try {
-                              w.yaCounter28737341 = new Ya.Metrika({id:28737341,
-                                                                   webvisor:true,
-                                                                   clickmap:true,
-                                                                   trackLinks:true,
-                                                                   accurateTrackBounce:true});
-                              } catch(e) { }
-                              });
-     var n = d.getElementsByTagName("script")[0],
-     s = d.createElement("script"),
-     f = function () { n.parentNode.insertBefore(s, n); };
-     s.type = "text/javascript";
-     s.async = true;
-     s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
-     if (w.opera == "[object Opera]") {
-     d.addEventListener("DOMContentLoaded", f, false);
-     } else { f(); }
-     })(document, window, "yandex_metrika_callbacks");
-</script>
-<noscript><div><img src="//mc.yandex.ru/watch/28737341" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-</body>
+	<head>
+	    <meta charset="utf-8">
+	    <meta name="description" content="">
+	    <meta name="keywords" content="">
+	    <title>Rating</title>
+	    <link rel="stylesheet" href="/static/css/rate_style.css">
+	    <link href='http://fonts.googleapis.com/css?family=Poiret+One&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+	    <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+	</head>
+
+	<body>
+		<header class="width100">
+			<div class="page center">
+				<h1 class="center">
+					Добро пожаловать на Лайкомер
+				</h1>
+			</div>
+		</header>
+
+		<hr>
+
+		<article class="width100">
+			<div class="page center">
+				<h3 class="center">
+					На этой страничке можно найти самые популярные идеи проекта Техностарт
+				</h3>
+				<div id="main" class="center marginTopOnly">
+					{% for item in data %}
+					<div class="marginTopOnly h20">
+						<div class="fleft">
+							<img src="/uploads/like.png" class="imgText">
+						</div>
+						<div class="fleft">
+							<h3 class="m0">
+								{{ item.like }}
+							</h3>
+						</div>
+						<div class="fleft padLeft">
+							<img src="/uploads/com.png" class="imgText">
+						</div>
+						<div class="fleft">
+							<h3 class="m0">
+								{{ item.comm }}
+							</h3>
+						</div>
+						<div class="fleft padLeft">
+							<a href="http://techno-start.ru/idea/{{ item.tech_id }}/" target=blank_>
+								<h3 class="m0">
+									{{ item.name }}
+								</h3>
+							</a>
+						</div>
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+		</article>
+
+		<hr>
+
+		<footer class="width100">
+			<div class="page center">
+				<h4 class="center">
+					2015, Команда разработчиков сервиса WithMe
+				</h4>
+			</div>
+		</footer>
+    <script type="text/javascript">
+        (function (d, w, c) {
+         (w[c] = w[c] || []).push(function() {
+                                  try {
+                                  w.yaCounter28737341 = new Ya.Metrika({id:28737341,
+                                                                       webvisor:true,
+                                                                       clickmap:true,
+                                                                       trackLinks:true,
+                                                                       accurateTrackBounce:true});
+                                  } catch(e) { }
+                                  });
+         var n = d.getElementsByTagName("script")[0],
+         s = d.createElement("script"),
+         f = function () { n.parentNode.insertBefore(s, n); };
+         s.type = "text/javascript";
+         s.async = true;
+         s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+         if (w.opera == "[object Opera]") {
+         d.addEventListener("DOMContentLoaded", f, false);
+         } else { f(); }
+         })(document, window, "yandex_metrika_callbacks");
+    </script>
+    <noscript><div><img src="//mc.yandex.ru/watch/28737341" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+	</body>
 </html>

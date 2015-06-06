@@ -431,17 +431,3 @@ body {
     padding-bottom: 5px;
     margin-bottom: 0px;
 }
-
-/* techno_rating style */
-.block__small {
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
-.colored__link {
-    color: #5E2750;
-}
-
-.colored__link:hover {
-    color: #E36C43;
-}

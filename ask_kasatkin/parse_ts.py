@@ -19,7 +19,7 @@ from techno_rating.models import TechIdea
 from bs4 import BeautifulSoup as bs
 import requests
 
-href_len = len('''href="''')
+href = '''<a class="idea-card-link" href="'''  # main key
 
 headers = {
     "User-agent": "Mozilla/5.0"
@@ -27,18 +27,19 @@ headers = {
 
 def parse_site():
     page = requests.get("http://techno-start.ru/ideas_top/", headers=headers)
-    soup = bs(page.text)
-
-    # get top ID (latest), load one by one then
-    item = soup.find_all("div", "idea idea_bg-10")[0]
-    a = str(item).find('''href="''')
-    item = str(item)[a+href_len:]
-    link = item[:item.find('"')]
-
-    top_ID = int(link.split("/")[2])  # ['', 'idea', '8', '']
-    for i in range(top_ID + 1):
-        print "ID {0} gone...".format(i)
-        parse_content_by_id(i)
+    data = page.text
+    a = data.find(href)
+    data = data[a+len(href):]
+    link = data[:data.find('"')]
+    try:
+        top_ID = int(link.split("/")[2])  # ['', 'idea', '8', '']
+        for i in range(top_ID + 1):
+            print "ID {0} gone...".format(i)
+            parse_content_by_id(i)
+    except IndexError as e:
+        print "Error:", e
+        print "link =", link
+        print "item =", item
 
 
 def parse_content_by_id(tech_id):

@@ -15,9 +15,11 @@ django.setup()
 
 # 2) import models, etc else
 
-from techno_rating.models import TechIdea
-from bs4 import BeautifulSoup as bs
 import requests
+from bs4 import BeautifulSoup as bs
+
+from techno_rating.models import TechIdea
+
 
 href = '''<a class="idea-card-link" href="'''  # main key
 

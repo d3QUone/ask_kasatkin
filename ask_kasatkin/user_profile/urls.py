@@ -1,8 +1,9 @@
+from django.conf import settings
 from django.conf.urls import patterns, url
+from django.conf.urls.static import static
+
 from user_profile.views import do_login, do_logout, register, self_settings
 
-from django.conf import settings
-from django.conf.urls.static import static
 
 urlpatterns = patterns('',
     url(r'^login/$', do_login, name='login'),

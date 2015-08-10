@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, url
+
 from core.views import index_page, new_question, question_thread, add_new_answer, all_by_tag, like_post, like_answer, user_profile_stats, mark_as_true
 
 urlpatterns = patterns('',

@@ -1,25 +1,26 @@
 # coding:utf8
 
-# make UTF 8 global!
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
+import os
+import uuid  # to generate unique file names
+from datetime import datetime as dtime
 
-from django.core.validators import validate_email, ValidationError
 from django.db import IntegrityError
 from django.http import HttpResponsePermanentRedirect
-from django.core.urlresolvers import reverse
 from django.shortcuts import render
-from django.views.decorators.http import require_POST, require_GET
+from django.core.urlresolvers import reverse
+from django.core.validators import validate_email, ValidationError
+from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+
+from ask_kasatkin.settings import BASE_DIR
 from user_profile.models import UserProperties
 from user_profile.forms import LoginForm, RegistrationForm
 from common_methods import get_static_data
-import uuid  # to generate unique file names
-from datetime import datetime as dtime
-import os
-from ask_kasatkin.settings import BASE_DIR
+
 
 # TODO: add good 'help-page' with info on Russian and English + add footer
 

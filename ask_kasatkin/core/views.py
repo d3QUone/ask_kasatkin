@@ -3,23 +3,24 @@
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8') # make UTF 8 global-hack
-
-from core.models import Question, Answer, TagName, Like
-from core.forms import LikeAJAX, NewQuestion, NewAnswer
-from user_profile.models import UserProperties
-from user_profile.views import get_user_data
-from common_methods import get_static_data
-from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie  # reset csrf-checkup, will use in AJAX
-from django.views.decorators.http import require_POST, require_GET
-from django.http import HttpResponse, Http404, JsonResponse         # jquery simple return
-from django.core.paginator import Paginator, EmptyPage
-from django.core.urlresolvers import reverse
-from django.core.mail import send_mail
-from django.db.models import F
 import thread
 import requests
+
+from django.http import HttpResponse, Http404, JsonResponse         # jquery simple return
+from django.db.models import F
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.core.paginator import Paginator, EmptyPage
+from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie  # reset csrf-checkup, will use in AJAX
+from django.views.decorators.http import require_POST, require_GET
+
+from core.models import Question, Answer, TagName, Like
+from user_profile.models import UserProperties
+from core.forms import LikeAJAX, NewQuestion, NewAnswer
+from user_profile.views import get_user_data
+from common_methods import get_static_data
 
 
 @ensure_csrf_cookie

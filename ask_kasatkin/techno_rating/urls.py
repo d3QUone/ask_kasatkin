@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, url
+
 from techno_rating.views import index
 
 urlpatterns = patterns('',

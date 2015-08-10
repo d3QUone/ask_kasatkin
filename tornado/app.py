@@ -6,21 +6,24 @@
 # python app.py stop
 #
 
+import json
+
 from daemon import runner  # pip install python-daemon
 from tornado import websocket, web, ioloop
-import json
 
 subs = {}
 
 class SocketHandler(websocket.WebSocketHandler):
     def check_origin(self, origin):
         return True
+
     def open(self, channel_id):
         if channel_id:
             if channel_id not in subs:
                 subs[channel_id] = []
             if self not in subs[channel_id]:
                 subs[channel_id].append(self)
+
     def on_close(self):
         for i in subs.keys():
             if self in subs[i]:
@@ -50,8 +53,9 @@ class App():
         self.stdin_path = '/dev/null'
         self.stdout_path = '/dev/tty'
         self.stderr_path = '/dev/tty'
-        self.pidfile_path =  '/tmp/ask_kas_tornado.pid'
+        self.pidfile_path = '/tmp/ask_kas_tornado.pid'
         self.pidfile_timeout = 5
+
     def run(self):
         app = web.Application([
             (r'/ws/([0-9]*)$', SocketHandler),

@@ -1,7 +1,8 @@
 # coding:utf8
 
-from best_parser import FILENAME
 import json
+
+from best_parser import FILENAME
 
 # this script loads data every time any page is requested from BROWSER!
 

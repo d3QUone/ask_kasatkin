@@ -16,11 +16,13 @@ django.setup()
 
 # 2) import models, etc else
 
-from django.utils import timezone
+import json
 from datetime import timedelta
+
+from django.utils import timezone
+
 from user_profile.models import UserProperties
 from core.models import TagName, Question, Answer
-import json
 
 FILENAME = "best_data.txt"  # for output
 

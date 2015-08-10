@@ -1,5 +1,6 @@
 # coding:utf8
 from django.db import models
+
 from user_profile.models import UserProperties
 
 

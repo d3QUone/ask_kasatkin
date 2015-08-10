@@ -12,14 +12,15 @@ django.setup()
 
 # now we are able to fetch django methods
 
-from django.contrib.auth.models import User
-from user_profile.models import UserProperties
-from core.models import Question, Answer, TagName, Like
-
 from datetime import datetime
 from time import time
 from uuid import uuid4
 from random import randint
+
+from django.contrib.auth.models import User
+
+from user_profile.models import UserProperties
+from core.models import Question, Answer, TagName, Like
 
 
 # create one user

@@ -1,24 +1,20 @@
-# coding:utf8
-
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8') # make UTF 8 global-hack
+from __future__ import absolute_import, unicode_literals
 import thread
-import requests
 
-from django.http import HttpResponse, Http404, JsonResponse         # jquery simple return
+from django.http import HttpResponse, Http404
+from django.shortcuts import render, redirect
 from django.db.models import F
 from django.core.mail import send_mail
-from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie  # reset csrf-checkup, will use in AJAX
 from django.views.decorators.http import require_POST, require_GET
+import requests
 
 from core.models import Question, Answer, TagName, Like
-from user_profile.models import UserProperties
 from core.forms import LikeAJAX, NewQuestion, NewAnswer
+from user_profile.models import UserProperties
 from user_profile.views import get_user_data
 from common_methods import get_static_data
 
@@ -217,7 +213,6 @@ def user_profile_stats(request, id=None):
 
 @require_GET
 def user_profile_all_data(request):
-
     # TODO: paginator for all questions / or separate page with all questions and all answers
     return None
 
@@ -321,17 +316,3 @@ def mark_as_true(request):
         except Answer.DoesNotExist, Question.DoesNotExist:
             return HttpResponse("None")
     return HttpResponse("None")
-
-
-#
-# - add a page dividing results by tag / by question ???
-#
-@csrf_exempt
-@require_POST
-def search(request):
-    if request.method == "POST":
-        input = request.POST.get("input", "")
-
-        # our search business here ...
-
-        return HttpResponse({"text": "JSON result ... "}, content_type="application/json")
